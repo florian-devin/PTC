@@ -65,44 +65,46 @@ void startup(){
 	
 void loop() {
 	if (Rx_chaine(chaine_courante) == 1){
-		char commande[7] = {0};
-		Send_str("La chaine est :");
-		Send_str(chaine_courante);
-		Send_str("\r\n");
-		get_commande(chaine_courante,commande);
-		
-		if (my_strcmp(commande,"A")){
-			char str_param[12] = {0};
-			int param = 0;
-			Send_str("Avancer");
-			get_param(chaine_courante,1, str_param);
-			param = my_atoi(str_param);
-			if( param <= 100 && param >= 5){
-				Send_str("a la vitesse : ");
-				Send_str(str_param);
-				Send_str("\r\n");
-				AR_cmd_correcte();
-				Send_str_uart1("mogo 1:45 2:45\r\n");
-			}
-			else {
-				AR_cmd_incorrecte();
-			}
-		}
-		else if (my_strcmp(commande,"S")){
-			Send_str("Stop\r\n");
-			AR_cmd_correcte();
-			Send_str_uart1("stop\r\n");
-		}
-		else {
-			AR_cmd_incorrecte();
-		}
-		
-		RAZ_str(chaine_courante);
+		decodage_commande(chaine_courante);
 	}
 	//str_cutting("A 8 2:45 B:32");
 }
 
-
+void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commades et les applique
+	char commande[7] = {0};
+	Send_str("La chaine est :");
+	Send_str(PPchaine_courante);
+	Send_str("\r\n");
+	get_commande(Pchaine_courante,commande);
+	
+	if (my_strcmp(commande,"A")){ //Avancer
+		char str_param[12] = {0};
+		int param = 0;
+		Send_str("Avancer");
+		get_param(Pchaine_courante,1, str_param);
+		param = my_atoi(str_param);
+		if( param <= 100 && param >= 5){
+			Send_str("a la vitesse : ");
+			Send_str(str_param);
+			Send_str("\r\n");
+			AR_cmd_correcte();
+			Send_str_uart1("mogo 1:45 2:45\r\n");
+		}
+		else {
+			AR_cmd_incorrecte();
+		}
+	}
+	else if (my_strcmp(commande,"S")){ //Stop
+		Send_str("Stop\r\n");
+		AR_cmd_correcte();
+		Send_str_uart1("stop\r\n");
+	}
+	else {
+		AR_cmd_incorrecte();
+	}
+	
+	RAZ_str(Pchaine_courante);
+}
 
 //void Interrupt_Time(void) interrupt 1 {//interruption declancher par l'overflow du Timer 0 (toutes les us)
 //    TF0 = 0; //interrupt flag
