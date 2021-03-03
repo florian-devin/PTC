@@ -33,3 +33,5 @@
 int my_strcmp(const char *s1, const char *s2);
 void RAZ_str(char *str);
 
+size_t my_strlen(char const *str);
+char *my_strcat(char *s1, const char *s2);

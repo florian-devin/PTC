@@ -84,20 +84,24 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 		get_param(Pchaine_courante,1, str_param);
 		param = my_atoi(str_param);
 		if( param <= 100 && param >= 5){
-			Send_str("a la vitesse : ");
-			Send_str(str_param);
-			Send_str("\r\n");
+			char data[64] = "mogo 1:";
 			AR_cmd_correcte();
-			Send_str_uart1("mogo 1:45 2:45\r\n");
+			my_strcat(data,str_param);
+			my_strcat(data," 2:");
+			my_strcat(data,str_param);
+			my_strcat(data,"\r");
+			Send_str_uart1("\r"); //remet a 0 le serializer
+			Send_str_uart1(data); //evoie du message
 		}
 		else {
 			AR_cmd_incorrecte();
 		}
 	}
+
 	else if (my_strcmp(commande,"S")){ //Stop
-		Send_str("Stop\r\n");
 		AR_cmd_correcte();
-		Send_str_uart1("stop\r\n");
+		Send_str_uart1("\r"); //remet a 0 le serializer
+		Send_str_uart1("stop\r");
 	}
 	else {
 		AR_cmd_incorrecte();
