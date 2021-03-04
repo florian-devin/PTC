@@ -1,9 +1,12 @@
-/******************************************************************************
-; 	FILE NAME  	: TP4_Lib_Config_Globale_8051F020.C
-; 	TARGET MCUs	: C8051F020, 
-; 	DESCRIPTION	: Configurations GLOBALES pour le 8051F020
-*/
-//******************************************************************************
+//------------------------------------------------------
+// Date: <DATE>
+// Heure: <TIME>
+// Nom/PrÃ©nom: Devin florian
+// Email: <florian.devin@cpe.fr>
+// Nom: config_globale.c
+// Destination: 8150F020 Carte Master
+// Description: Fonctions d'initialisation
+//------------------------------------------------------
 
 #include "config_globale.h"
 
@@ -59,7 +62,7 @@ void Port_IO_Init() {
 }
 
 //-----------------------------------------------------------------------------
-// Config oscillateur - SYSCLK = 22,1184MHz - Oscillateur externe à quartz 
+// Config oscillateur - SYSCLK = 22,1184MHz - Oscillateur externe ï¿½ quartz 
 //-----------------------------------------------------------------------------
 void Oscillator_Init_Osc_Quartz(){
 		int i = 0;

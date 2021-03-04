@@ -1,3 +1,13 @@
+//------------------------------------------------------
+// Date: <DATE>
+// Heure: <TIME>
+// Nom/Prénom: Devin florian
+// Email: <florian.devin@cpe.fr>
+// Nom: PTC_convertion.c
+// Destination: 8150F020 Carte Master
+// Description: Fonctions de convertion
+//------------------------------------------------------
+
 #include "PTC_convertion.h"
 #include "PTC_strOperateurs.h"
 

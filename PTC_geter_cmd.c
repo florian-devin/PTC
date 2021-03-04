@@ -1,3 +1,12 @@
+//------------------------------------------------------
+// Date: <DATE>
+// Heure: <TIME>
+// Nom/Prénom: Devin florian
+// Email: <florian.devin@cpe.fr>
+// Nom: PTC_geter_cmd.c
+// Destination: 8150F020 Carte Master
+// Description: Fonctions qui recupere les informations d'une chaine de caractere
+//------------------------------------------------------
 #include "PTC_geter_cmd.h"
 
 //Decoupage de la trame en plusieur commande

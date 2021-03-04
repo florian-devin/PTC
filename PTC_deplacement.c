@@ -3,7 +3,8 @@
 // Heure: <TIME>
 // Nom/Prénom: Devin florian
 // Email: <florian.devin@cpe.fr>
-// Nom Module: PTC_deplacement.c
+// Nom: PTC_deplacement.c
+// Destination: 8150F020 Carte Master
 // Description: Fonctions de deplacement elementaires 
 //------------------------------------------------------
 

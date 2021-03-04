@@ -1,45 +1,37 @@
-// #define FREQ_CLK 22118300
-
-// #define PTC_TIMER
-
-// #ifndef C8051F020_SFR16
-// 	#include "c8051F020_SFR16.h"
-// #endif
-// #ifndef C8051F020s
-// 	#include "c8051F020.h"
-// #endif
-// #ifndef	CONFIG_GLOBALE
-// 	#include "config_globale.h"
-// #endif
-
-// #ifndef PTC_ACCUSEDERECEPTION
-// 	#include "PTC_accuseDeReception.h"
-// #endif
-// #ifndef PTC_CONVERTION
-// 	#include "PTC_convertion.h"
-// #endif
-// #ifndef PTC_GETERCMD
-// 	#include "PTC_geter_cmd.h"
-// #endif
-// #ifndef PTC_STROPERATEURS
-// 	#include "PTC_strOperateurs.h"
-// #endif
-// #ifndef PTC_TIMER
-// 	#include "PTC_timer.h"
-// #endif
-// #ifndef PTC_UART
-// 	#include "PTC_UART.h"
-// #endif
-
-//#ifndef TIME_US
-//	unsigned long int Time_us = 0;
-//	#define TIME_US
-//#endif
+//------------------------------------------------------
+// Date: <DATE>
+// Heure: <TIME>
+// Nom/Prénom: Devin florian
+// Email: <florian.devin@cpe.fr>
+// Nom: PTC_timer.h
+// Destination: 8150F020 Carte Master
+// Description: Fonctions du temps
+//------------------------------------------------------
 
 
+//Retourne le temps en us depuis de debut
+//Fonction a ne pas utiliser
+//@param rien
+//@return le temps en us
 unsigned long int get_time_us(void);
+
+//Retourne le temps en ms depuis de debut
+//@param rien
+//@return le temps en ms
 unsigned long int get_time_ms(void);
 
+//Incremente le temps
+//Fonction appeler par interuption toutes les ms
+//@param rien
+//@return rien
 void Time_increment(void);
+
+//Attend un delay de 1ms
+//@param rien
+//@return rien
 void Delay_1ms(void);
+
+//Attend un delay de 1us
+//@param rien
+//@return rien
 void Delay_1us(void);

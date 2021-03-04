@@ -1,3 +1,12 @@
+//------------------------------------------------------
+// Date: <DATE>
+// Heure: <TIME>
+// Nom/Prénom: Devin florian
+// Email: <florian.devin@cpe.fr>
+// Nom: PTC_strOperateurs.c
+// Destination: 8150F020 Carte Master
+// Description: Fonctions d'operation sur les chaine de caractere
+//------------------------------------------------------
 
 #include "PTC_strOperateurs.h"
 

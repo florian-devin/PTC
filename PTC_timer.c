@@ -1,3 +1,12 @@
+//------------------------------------------------------
+// Date: <DATE>
+// Heure: <TIME>
+// Nom/Prénom: Devin florian
+// Email: <florian.devin@cpe.fr>
+// Nom: PTC_timer.c
+// Destination: 8150F020 Carte Master
+// Description: Fonctions du temps
+//------------------------------------------------------
 
 #include "PTC_timer.h"
 #include "config_globale.h"
