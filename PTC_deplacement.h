@@ -17,3 +17,17 @@ void Avancer(char *str_vitesse);
 //@param rien
 //@return rien
 void Stop(void);
+
+
+/*
+//Effectue un angle a droite (TODO)
+//@param angle en degre
+//@return rien
+void turn_right(int angle);
+
+//Effectue un angle a gauche (TODO)
+//@param angle en degre
+//@return rien
+void turn_left(int angle);
+
+*/
