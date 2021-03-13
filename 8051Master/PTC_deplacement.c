@@ -12,6 +12,7 @@
 #include "PTC_strOperateurs.h"  // pour my_strcat
 #include "PTC_UART.h" // pour Send_str_uart1
 #include "PTC_math.h" //pour go_coordinates
+#include "PTC_detection.h" //pour go_coordinate et bypass_obstacle
 
 
 #define AUTO_SPEED_FAST 30		  //vitesse de depplacement lorsque le robot rejoit automatiquement des coordonnees
