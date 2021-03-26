@@ -54,15 +54,14 @@ void Port_IO_Init(void);
 //@return rien
 void Oscillator_Init_Osc_Quartz(void);
 
+//initialise le Timer1 en baurate generator (19200baud/s)
+void cfg_Clock_UART(void);
+
 //initialise l'UART0 avec le Timer 1 en BaudRate generator (19200baud/s)
-//@param rien
-//@return rien
-void Init_UART0(void);
+void cfg_UART0_mode1(void);
 
 //initialise l'UART1 avec le Timer 1 en BaudRate generator (19200baud/s)
-//@param rien
-//@return rien
-void Init_UART1(void);
+void cfg_UART1_mode1(void);
 
 //initialise la liaison SPI 
 //Fonction pas encore devellope

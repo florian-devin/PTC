@@ -9,6 +9,14 @@
 //------------------------------------------------------
 
 #include "config_globale.h"
+#include "UART1_RingBuffer_lib.h"
+#ifndef CFG_Globale
+   #define CFG_Globale
+   #define SYSCLK 22118400 //approximate SYSCLK frequency in Hz
+   #define BAUDRATE  115200L          // Baud rate of UART in bps
+                                   // Le caractère 'L' force l'évaluation de BAUDRATE en entier long
+#endif
+
 
 extern char Flag_RX1;
 
@@ -74,39 +82,53 @@ void Oscillator_Init_Osc_Quartz(){
 	                     // L'oscillateur n'est pas stopp
 }
 
-//-----------------------------------------------------------------------------
-// Initialisation de UART0
-//-----------------------------------------------------------------------------
-void Init_UART0(){
-    //initialisation du Timer1 en mode 8-bit autoreload
-    TMOD |= (1<<5);  //Mode 2 (8-bit autoreload)
-    TMOD &= ~(1<<4); //Mode 2 (8-bit autoreload)
-    TH1   = 0xFA;    //Reload value (pour avoir 19200 bauds)
-    TR1   = 1;       //Timer1 Enable
+#define Preload_Timer0 (SYSCLK/(BAUDRATE*16))
+#if Preload_Timer0 > 255 
+#error "Valeur Preload Timer0 HORS SPECIFICATIONS"
+#endif 
+void cfg_Clock_UART(void) {
+  CKCON |= 0x10;      // T1M: Timer 1 use the system clock.
+  TMOD |= 0x20;       //  Timer1 CLK = system clock
+	TMOD &= 0x2f;			  // Timer1 configure en timer 8 bit avec auto-reload	
+	TF1 = 0;				  // Flag Timer efface
 
-    //Config Crossbar
-		XBR2 |= (1<<6); //Crossbar enable
-    XBR0 |= (1<<2); //Tx -> P0.0 & Rx -> P0.1
-
-    //Config de UART
-    PCON |= (1<<7);  //Doubleur BaudRate (pour avoir 19200 bauds)
-    //SCON0
-    SM00 = 0; //Mode 1 8bit de data asynchrone
-    SM10 = 1; //Mode 1 8bit de data asynchrone
-    SM20 = 1; //Bit de Stop enable
+	TH1 = -(Preload_Timer0);
+	ET1 = 0;				   // Interruption Timer 1 devalidee
+	TR1 = 1;				   // Timer1 demarre
 }
 
-void Init_UART1(){
+void cfg_UART0_mode1(void) {
+	    //Config Crossbar
+		XBR2 |= (1<<6); //Crossbar enable
+    	XBR0 |= (1<<2); //Tx -> P0.0 & Rx -> P0.1
+		RCLK0 = 0;     // Source clock Timer 1
+		TCLK0 = 0;
+		PCON  |= 0x80; //SMOD0: UART0 Baud Rate Doubler Disabled.
+		PCON &= 0xBF;  // SSTAT0=0
+		SCON0 = 0x70;   // Mode 1 - Check Stop bit - Reception validee
+		TI0 = 1;        // Transmission: octet transmis (pret e recevoir un char
+					          // pour transmettre			
+    ES0 = 1;        // interruption UART0 autorisee	
+}
+
+void cfg_UART1_mode1(void){
 	//crossbar
-	//Tx1 = P0.6  Rx = P0.7
-	XBR2 |= (1<<2);
+  XBR2  |= (1<<6); //Crossbar enable
+	XBR2  |= (1<<2);//Tx1 = P0.6  Rx = P0.7
 	
-	PCON |= (1<<4);
+	PCON  |= (1<<4);
 	//config uart
-	SCON1 |= (0<<7);//Mode 1 8bit de data asynchrone
 	SCON1 |= (1<<6);//Mode 1 8bit de data asynchrone
 	SCON1 |= (1<<5);//Bit de Stop enable
+  SCON1 |= (1<<4);//reception active
+
+ // SCON1 |= (1<<1); //TI1 Transmission: octet transmis (pret a recevoir un char
+					          // pour transmettre	
+  EIE2  |= (1<<6); //ES1 interruption UART1 autorisee	
 }
+
+
+
 
 void Init_SPI(){//fct a developper plus tard
 	//crossbar 
@@ -137,8 +159,9 @@ void Init_Device(void) {
     Reset_Sources_Init();
     Port_IO_Init();
     Oscillator_Init_Osc_Quartz();
-    Init_UART0();
-		Init_UART1();
+    cfg_Clock_UART();
+    cfg_UART0_mode1();
+    cfg_UART1_mode1();
 		Init_SPI();
     //Init_Timer2();
     Init_interrupt();
@@ -157,9 +180,8 @@ void Init_Robot(){
 }
 
 void Robot_restore(){
-  Send_str_uart1("restore\r");
-  while (Flag_RX1 == 0);
-  Flag_RX1 = 0;
+  serOutstring_uart1("restore\r");
+  while (serInchar_uart1()==0);
   Delay(10);
 }
 

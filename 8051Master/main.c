@@ -11,6 +11,8 @@
 #include "c8051F020_SFR16.h"
 #include "c8051F020.h"
 #include "config_globale.h"
+#include "UART0_RingBuffer_lib.h"
+#include "UART1_RingBuffer_lib.h"
 #include "PTC_accuseDeReception.h"
 #include "PTC_convertion.h"
 #include "PTC_geter_cmd.h"
@@ -48,20 +50,19 @@ void loop();
 void main(){
     setup();
     startup();
-	
     while(1) {
         loop();
     }
 }
 
 void setup(){
-    Init_Device(); //fonction de config_globale.c
-	Init_Robot(); //rst de la carte serial etc...
+  Init_Device(); //fonction de config_globale.c
+  Init_Robot(); //rst de la carte serial etc...
 }
 
 
 void startup(){
-
+	serOutstring("go\r");
 	//Send_str("S");
 	//	Send_str_uart1("reset\r");
 	//	for(i=0;i<20000;i++){}
@@ -91,14 +92,17 @@ void startup(){
 //			get_encoder("1");
 	//for(i=0;i<2000;i++){Delay_1ms();}
 	//Stop();
+
 }
 	
 void loop() {
-	i = 0;
-	Delay(100);
-	i = 127;
-	Delay(50);
-
+//	i = 0;
+//	Delay(100);
+//	i = 127;
+//	Delay(50);
+	char c = '\0';
+	while ((c=serInchar())!=0) serOutchar(c);
+	while ((c=serInchar_uart1())!=0) serOutchar_uart1(c);
 //	if (Rx_chaine(chaine_courante) == 1){
 //		decodage_commande(chaine_courante);
 //	}
@@ -150,6 +154,7 @@ void loop() {
 //    Time_increment();
 //}
 
+/*
 void Interrupt_UART0(void) interrupt 4 { //interruption declanch�e par l'UART0
     if (RI0 == 1){//si on vient de recevoir un caractere
 			caractere_recu_fct_uart0(SBUF0);
@@ -176,9 +181,7 @@ void Interrupt_UART1(void) interrupt 20 { //interruption declanch�e par l'UART
 		SCON1 &= ~(1<<0);//Rx flag
 		SCON1 &= ~(1<<1);//Tx flag
 }
-
-
-
+*/
 
 
 

@@ -496,6 +496,26 @@
               <FileType>5</FileType>
               <FilePath>.\PTC_math.h</FilePath>
             </File>
+            <File>
+              <FileName>UART0_RingBuffer_lib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\UART0_RingBuffer_lib.c</FilePath>
+            </File>
+            <File>
+              <FileName>UART1_RingBuffer_lib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\UART1_RingBuffer_lib.c</FilePath>
+            </File>
+            <File>
+              <FileName>UART0_RingBuffer_lib.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\UART0_RingBuffer_lib.h</FilePath>
+            </File>
+            <File>
+              <FileName>UART1_RingBuffer_lib.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\UART1_RingBuffer_lib.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
