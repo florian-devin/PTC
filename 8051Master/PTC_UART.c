@@ -26,19 +26,13 @@ char Flag_RX1 = 0;
 
 char caractere_recu = '\0';    //caractere qui vient d'etre recu
 char interrupt_out = 0;
-//circular buffer
-char bufferLength_uart0 = 0;
-char readIndex_uart0 = 0; 
-char writeIndex_uart0= 0;
+
+
 
 //UART1
 char Flag_TX1 = 0;
 char caractere_recu_uart1 = '\0';    //caractere qui vient d'etre recu
 char interrupt_out_uart1 = 0;
-//circular buffer
-char bufferLength_uart1 = 0;
-char readIndex_uart1 = 0; 
-char writeIndex_uart1= 0;
 
 void Flag_TX0_fct(void){
 	Flag_TX0 = 1;
