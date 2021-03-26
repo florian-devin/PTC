@@ -79,3 +79,15 @@ void Init_interrupt(void);
 //@param rien
 //@return rien
 void Init_Device(void);
+
+
+//initialise le robot en appelant toutes les fonctions d'initialisation
+//@param rien
+//@return rien
+void Init_Robot(void);
+
+//restore les parametres du robot par default
+//@param rien
+//@return rien
+void Robot_restore(void);
+

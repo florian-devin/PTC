@@ -12,6 +12,9 @@
 #include "PTC_UART.h"
 #include "c8051F020_SFR16.h"
 #include "c8051F020.h"
+
+#define SIZE_OF_BUFFER8_UART0 64
+#define SIZE_OF_BUFFER8_UART1 64
 //*****************************************************************************	 
 //*****************************************************************************	 
 // Send_char -- Envoi d'un caractere sur l'UART0
@@ -19,13 +22,23 @@
 
 //UART0
 char Flag_TX0 = 0;
+char Flag_RX1 = 0;
+
 char caractere_recu = '\0';    //caractere qui vient d'etre recu
 char interrupt_out = 0;
+//circular buffer
+char bufferLength_uart0 = 0;
+char readIndex_uart0 = 0; 
+char writeIndex_uart0= 0;
 
 //UART1
 char Flag_TX1 = 0;
 char caractere_recu_uart1 = '\0';    //caractere qui vient d'etre recu
 char interrupt_out_uart1 = 0;
+//circular buffer
+char bufferLength_uart1 = 0;
+char readIndex_uart1 = 0; 
+char writeIndex_uart1= 0;
 
 void Flag_TX0_fct(void){
 	Flag_TX0 = 1;
@@ -97,6 +110,14 @@ void Send_str_uart1(char *str){
 		i++;
 	}
 }
-void Flag_TX1_fct(){
+void Flag_TX1_fct(void){
 	Flag_TX1 = 1;
+}
+
+void Flag_RX1_fct(void){
+	Flag_RX1 = 1;
+}
+
+void Accuse_RX_Robot(void){
+
 }

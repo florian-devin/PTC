@@ -26,12 +26,23 @@ unsigned long int get_time_ms(void);
 //@return rien
 void Time_increment(void);
 
+
+//Attend un delay de time_ms
+//@param time_ms temp en ms
+//@return rien
+void Delay(const unsigned long time_ms);
+
 //Attend un delay de 1ms
 //@param rien
 //@return rien
 void Delay_1ms(void);
 
-//Attend un delay de 1us
+//Attend un delay de 1us !!Tres peu precis!!
 //@param rien
 //@return rien
 void Delay_1us(void);
+
+//Attend un delay de 10us
+//@param rien
+//@return rien
+void Delay_10us(void);

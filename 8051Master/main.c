@@ -28,7 +28,7 @@
 //char caractere_recu = '\0';    //caractere qui vient d'etre recu
 char chaine_courante[64] = {0};//chaine total qui vas contenir le mot recu (20 caractere max)
 
-
+char i = 0;
 
 //En lien avec le temp
 //-----------------------------------------------------------------------------
@@ -56,23 +56,24 @@ void main(){
 
 void setup(){
     Init_Device(); //fonction de config_globale.c
+	Init_Robot(); //rst de la carte serial etc...
 }
 
 
 void startup(){
-	int i;
+
 	//Send_str("S");
-		Send_str_uart1("reset\r");
-		for(i=0;i<20000;i++){}
-		//Send_str_uart1("clrenc 1 2\r");
-		for(i=0;i<20000;i++){}
-		Send_str_uart1("cfg enc 1\r");
-		for(i=0;i<20000;i++){}
-			
-	  
-		for(i=0;i<10000;i++){}
-		Send_str_uart1("digo 1:582:6\r");
-		for(i=0;i<10000;i++){}
+	//	Send_str_uart1("reset\r");
+	//	for(i=0;i<20000;i++){}
+	//	//Send_str_uart1("clrenc 1 2\r");
+	//	for(i=0;i<20000;i++){}
+	//	Send_str_uart1("cfg enc 1\r");
+	//	for(i=0;i<20000;i++){}
+	//		
+	//  
+	//	for(i=0;i<10000;i++){}
+	//	Send_str_uart1("digo 1:582:6\r");
+	//	for(i=0;i<10000;i++){}
 
 //	Send_str_uart1("a");
 //	Send_str_uart1("stop\r");
@@ -93,6 +94,11 @@ void startup(){
 }
 	
 void loop() {
+	i = 0;
+	Delay(100);
+	i = 127;
+	Delay(50);
+
 //	if (Rx_chaine(chaine_courante) == 1){
 //		decodage_commande(chaine_courante);
 //	}
@@ -162,10 +168,11 @@ void Interrupt_UART0(void) interrupt 4 { //interruption declanch�e par l'UART0
 void Interrupt_UART1(void) interrupt 20 { //interruption declanch�e par l'UART0
     if ((SCON1 & 0x01) == 0x01){//si on vient de recevoir un caractere
 			caractere_recu_fct_uart1(SBUF1);
+			Flag_RX1_fct();
     }
-		else {
-			Flag_TX1_fct();
-		}
+	else {
+		Flag_TX1_fct();
+	}
 		SCON1 &= ~(1<<0);//Rx flag
 		SCON1 &= ~(1<<1);//Tx flag
 }

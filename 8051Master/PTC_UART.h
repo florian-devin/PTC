@@ -48,7 +48,12 @@ void Send_char_uart1(const char caractere);
 //@return rien
 void Send_str_uart1(char *str);
 
-//Place Flag_TX0 a 1
+//Place Flag_TX1 a 1
 //@param rien
 //@return rien
 void Flag_TX1_fct(void);
+
+//Place Flag_RX1 a 1
+//@param rien
+//@return rien
+void Flag_RX1_fct(void);

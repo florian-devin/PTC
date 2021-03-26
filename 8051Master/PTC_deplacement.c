@@ -40,7 +40,6 @@ void Avancer(char *str_vitesse){
 
 void Stop(void){
    // Send_str("\r"); //remet a 0 le serializer
-
 	Send_str_uart1("stop\r");
 }
 

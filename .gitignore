@@ -1,0 +1,16 @@
+# Les ligne commençant par '#' sont des commentaires.
+# Ignorer tous les fichiers nommés foo.txt
+foo.txt
+**/8051Master/Objects
+**/8051Master/Listings
+
+# Ignorer tous les fichiers uvision
+*.lst
+*.m51
+*.obj
+*.florian
+*.devin
+# à l'exception de foo.html qui est maintenu à la main
+!foo.html
+# Ignorer les objets et les archives
+*.[oa]

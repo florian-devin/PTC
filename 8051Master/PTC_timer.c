@@ -12,6 +12,7 @@
 #include "config_globale.h"
 
 #define FREQ_CLK 22118400
+#define DELAY_1US 1
 
 unsigned long int Time_us = 0;
 //fonctions de temp
@@ -40,13 +41,22 @@ unsigned long int get_time_ms(void){
     return(Time_us/1000);
 }
 
+void Delay(const unsigned long time_ms){
+	unsigned long i;
+	for (i=0; i < time_ms; i++){
+		Delay_1ms();
+	}
+}
 
 void Delay_1ms(void){ 
 	unsigned int i;
-	for(i=0; i < ((FREQ_CLK/1000)-2);i++){}
+	for(i=0; i < ((FREQ_CLK/65999)-2);i++){}
 }
 void Delay_1us(void){ 
 	unsigned int i;
-	for(i=0; i < ((FREQ_CLK/1000000)-2);i++){}
+	i++;
 }
-
+void Delay_10us(void){
+	unsigned int i;
+	for(i=0; i <20;i++){}
+}
