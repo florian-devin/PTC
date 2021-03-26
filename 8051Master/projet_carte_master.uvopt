@@ -155,7 +155,7 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>chaine_courante</ItemText>
+          <ItemText>chaine_courante,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
@@ -165,7 +165,7 @@
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>interrupt_out</ItemText>
+          <ItemText>interrupt_out,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
@@ -182,7 +182,29 @@
           <WinNumber>1</WinNumber>
           <ItemText>reponse</ItemText>
         </Ww>
+        <Ww>
+          <count>6</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>chaine_courante</ItemText>
+        </Ww>
+        <Ww>
+          <count>7</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>interrupt_out</ItemText>
+        </Ww>
       </WatchWindow1>
+      <WatchWindow2>
+        <Ww>
+          <count>0</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>chaine_courante</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>Pchaine_courante[i]</ItemText>
+        </Ww>
+      </WatchWindow2>
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>

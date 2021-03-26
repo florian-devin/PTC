@@ -63,63 +63,16 @@ void setup(){
 
 
 void startup(){
-	char reponse;
 	serOutstring("go");
-	reponse = Wait_Accuse_RX_Robot();
-	if (reponse == 1){
-		serOutstring("passe avec 1\r");
-	}
-	if (reponse == 0){
-		serOutstring("passe avec 0\r");
-	}
-	if (reponse == -1){
-		serOutstring("passe avec -1\r");
-	}
-	serOutstring("passe\r");
-
-	//Send_str("S");
-	//	Send_str_uart1("reset\r");
-	//	for(i=0;i<20000;i++){}
-	//	//Send_str_uart1("clrenc 1 2\r");
-	//	for(i=0;i<20000;i++){}
-	//	Send_str_uart1("cfg enc 1\r");
-	//	for(i=0;i<20000;i++){}
-	//		
-	//  
-	//	for(i=0;i<10000;i++){}
-	//	Send_str_uart1("digo 1:582:6\r");
-	//	for(i=0;i<10000;i++){}
-
-//	Send_str_uart1("a");
-//	Send_str_uart1("stop\r");
-//	for(i=0;i<10000;i++){}
-//	Send_str_uart1("cfg enc\r");
-//	for(i=0;i<10000;i++){}
-//	Send_str_uart1("clrenc\r");
-//	//Send_str("reset\r");
-//	for(i=0;i<10000;i++){}
-//	get_encoder("1");
-//		for(i=0;i<10000;i++){}
-//		//Send_str("mogo 1:99 2:99\r");
-//	Avancer("6");
-//			for(i=0;i<10000;i++){}
-//			get_encoder("1");
-	//for(i=0;i<2000;i++){Delay_1ms();}
-	//Stop();
-
 }
 	
 void loop() {
-//	i = 0;
-//	Delay(100);
-//	i = 127;
-//	Delay(50);
-	char c = '\0';
-	while ((c=serInchar())!=0) serOutchar(c);
-	while ((c=serInchar_uart1())!=0) serOutchar_uart1(c);
-//	if (Rx_chaine(chaine_courante) == 1){
-//		decodage_commande(chaine_courante);
-//	}
+	if (Rx_chaine(chaine_courante) == 1){
+		serOutstring("Rx_chaine = ");
+		serOutstring(chaine_courante);
+		serOutstring("\n\r");
+		//decodage_commande(chaine_courante);
+	}
 
 }
 

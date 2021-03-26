@@ -64,19 +64,17 @@ void Send_str(char *str){
 // Rx_chaine -- retourne 1 si on recoit un message complet.
 
 int Rx_chaine(char *Pchaine_courante){
-    if(interrupt_out == 1){ //si on vient de recevoir un caractere
-			int i = 0; //cpt position de chaine
-			interrupt_out = 0; //raz flag
-			if(caractere_recu == '\r'){
-					//Pcaractere_recu = '\0';
-					return 1;
-			}
-			while(Pchaine_courante[i] != '\0'){
-		    i++;
-			}
-			Pchaine_courante[i] = caractere_recu; //on complete la chaine de caractere
-			//Pcaractere_recu = '\0';
+	char c;
+	if ((c=serInchar()) != 0){//si on vient de recevoir un caractere
+alut		int i = 0; //cpt position de chaine
+		if(c == '\r'){
+			return 1;
 		}
+		while(Pchaine_courante[i] != '\0'){
+		    i++;
+		}
+		Pchaine_courante[i] = c; //on complete la chaine de caractere
+	}
 	return 0;
 }
 
@@ -120,11 +118,10 @@ char Wait_Accuse_RX_Robot(void){
 	char c,i;
 	char accuse[16] = {0};
 	i = 0;
-	while ((c=serInchar_uart1()) == 00); //attente de la reponse du robot
+	while ((c=serInchar_uart1()) == 0); //attente de la reponse du robot
 	accuse[i] = c;
 	while (c != '>') {//tant qu'on est pas a la fin de la commande...
-		if((c=serInchar_uart1()) != 00){
-			serOutchar(c);
+		if((c=serInchar_uart1()) != 0){
 			i++;
 			accuse[i] = c;
 		}
