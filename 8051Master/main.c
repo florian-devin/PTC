@@ -23,6 +23,7 @@
 #include "PTC_math.h"
 #include "PTC_detection.h"
 
+
 //-----------------------------------------------------------------------------
 //variables globales
 //En lien avec l'UART0
@@ -62,7 +63,20 @@ void setup(){
 
 
 void startup(){
-	serOutstring("go\r");
+	char reponse;
+	serOutstring("go");
+	reponse = Wait_Accuse_RX_Robot();
+	if (reponse == 1){
+		serOutstring("passe avec 1\r");
+	}
+	if (reponse == 0){
+		serOutstring("passe avec 0\r");
+	}
+	if (reponse == -1){
+		serOutstring("passe avec -1\r");
+	}
+	serOutstring("passe\r");
+
 	//Send_str("S");
 	//	Send_str_uart1("reset\r");
 	//	for(i=0;i<20000;i++){}

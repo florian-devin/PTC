@@ -10,6 +10,10 @@
 
 
 #include "PTC_UART.h"
+#include "PTC_strOperateurs.h"
+#include "UART0_RingBuffer_lib.h"
+#include "UART1_RingBuffer_lib.h"
+#include "PTC_strOperateurs.h"
 #include "c8051F020_SFR16.h"
 #include "c8051F020.h"
 
@@ -112,6 +116,32 @@ void Flag_RX1_fct(void){
 	Flag_RX1 = 1;
 }
 
-void Accuse_RX_Robot(void){
-
+char Wait_Accuse_RX_Robot(void){
+	char c,i;
+	char accuse[16] = {0};
+	i = 0;
+	while ((c=serInchar_uart1()) == 00); //attente de la reponse du robot
+	accuse[i] = c;
+	while (c != '>') {//tant qu'on est pas a la fin de la commande...
+		if((c=serInchar_uart1()) != 00){
+			serOutchar(c);
+			i++;
+			accuse[i] = c;
+		}
+	}
+	for(i=0;i<my_strlen(accuse);i++){
+		if(accuse[i] == '>' || accuse[i] == '\r' || accuse[i] == '\n'){
+			char o;
+			for (o=i;o<my_strlen(accuse);o++){
+				accuse[o] = accuse[o+1];
+			}
+			i--;
+		}
+	}
+	if (my_strcmp("ACK",accuse) == 1)
+		return 1;
+	else if (my_strcmp("NACK",accuse) == 1)
+		return 0;
+	else 
+		return -1;
 }

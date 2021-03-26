@@ -57,3 +57,8 @@ void Flag_TX1_fct(void);
 //@param rien
 //@return rien
 void Flag_RX1_fct(void);
+
+
+//attend l'accuse de reception du robot et dit si il est valide
+//@return 1 si ACK 0 si NACK -1 si autre
+char Wait_Accuse_RX_Robot(void);
