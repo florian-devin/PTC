@@ -10,6 +10,6 @@
 
 
 
-int can_go(){return 0;}//TODO
-int can_go_right(){return 0;}//TODO
-int can_go_left(){return 0;}//TODO
+int can_go(int distance){return 0;}//TODO
+int can_go_right(int distance){return 0;}//TODO
+int can_go_left(int distance){return 0;}//TODO

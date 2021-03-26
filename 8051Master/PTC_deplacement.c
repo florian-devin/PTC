@@ -19,38 +19,51 @@
 #define AUTO_SPEED_SLOW 10
 #define DISTANCE_DETECTION 10 //distance de detection des obstacle
 
-void Avancer(char *str_vitesse){
-    char data[64] = "mogo 1:";
-	my_strcat(data,str_vitesse);
-	my_strcat(data," 2:");
-	my_strcat(data,str_vitesse);
-	my_strcat(data,"\r");
-	Send_str_uart1("\r"); //remet a 0 le serializer
-	Send_str_uart1(data); //evoie du message
-}
-
-void Stop(void){
-    Send_str_uart1("\r"); //remet a 0 le serializer
-	Send_str_uart1("stop\r");
-}
-
-
-void turn_right(int angle){
-	angle_robot -= angle; 
-	//TODO
-}
-
-void turn_left(int angle){
-	turn_right(-angle);
-}
-
-
-//variables globales pour cette fonction
+//variables globales pour la fct go_coordinates
 char flag_calcule_angle = 1;
 int x_robot = 0; //position actualle en cm
 int y_robot = 0; //position actualle en cm
 int angle_robot = 0;
 short teta_angle_dest = 0;//angle des coordonnees cible
+
+
+
+void Avancer(char *str_vitesse){
+  char chaine[64] = "mogo 1:";
+	my_strcat(chaine,str_vitesse);
+	my_strcat(chaine," 2:");
+	my_strcat(chaine,str_vitesse);
+	my_strcat(chaine,"\r");
+	//Send_str("\r"); //remet a 0 le serializer
+	Send_str_uart1(chaine); //evoie du message
+}
+
+void Stop(void){
+   // Send_str("\r"); //remet a 0 le serializer
+
+	Send_str_uart1("stop\r");
+}
+
+int get_encoder(char *Id){
+	char chaine[64] = "getenc";
+	my_strcat(chaine, Id);
+	my_strcat(chaine, "\r");
+	Send_str_uart1(chaine); //evoie du message
+	return 0;
+}
+
+
+//void turn_right(int angle){
+//	angle_robot -= angle; 
+//	//TODO
+//}
+
+//void turn_left(int angle){
+//	turn_right(-angle);
+//}
+
+
+
 
 
 
@@ -61,7 +74,7 @@ int go_coordinates(int coord_x, int coord_y){
 			if (teta_angle_dest - angle_robot != 0){ //aligne le robot dans la direction des coordonnee
 				turn_right(teta_angle_dest - angle_robot);
 			}
-			flag_calcule_angle == 0;
+			flag_calcule_angle = 0;
 		} 
 		else {
 			if (can_go(DISTANCE_DETECTION))

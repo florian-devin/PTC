@@ -18,7 +18,7 @@ void Avancer(char *str_vitesse);
 //@return rien
 void Stop(void);
 
-
+int get_encoder(char Id);
 
 //Effectue un angle a droite (TODO)
 //@param angle en degre

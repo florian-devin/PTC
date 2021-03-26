@@ -8,6 +8,6 @@
 // Description: Fonctions de detection d'obstacle
 //------------------------------------------------------
 
-int can_go();
-int can_go_right();
-int can_go_left();
+int can_go(int distance);
+int can_go_right(int distance);
+int can_go_left(int distance);

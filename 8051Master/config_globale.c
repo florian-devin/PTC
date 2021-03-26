@@ -100,8 +100,9 @@ void Init_UART1(){
 	//Tx1 = P0.6  Rx = P0.7
 	XBR2 |= (1<<2);
 	
+	PCON |= (1<<4);
 	//config uart
-	SCON1 |= (1<<7);//Mode 1 8bit de data asynchrone
+	SCON1 |= (0<<7);//Mode 1 8bit de data asynchrone
 	SCON1 |= (1<<6);//Mode 1 8bit de data asynchrone
 	SCON1 |= (1<<5);//Bit de Stop enable
 }

@@ -22,7 +22,7 @@ void RAZ_str(char *str);
 //Taille d'une chaine de caractere
 //@param str chaine de caractere a meusurer
 //@return La taille de la chaine
-size_t my_strlen(char const *str);
+int my_strlen(char const *str);
 
 //Concatene deux chaines
 //@param s1 1er chaine et chaine qui recevra s1+s2

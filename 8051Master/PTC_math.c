@@ -47,7 +47,7 @@ double my_sqrt(double x){
         do{
             A = A * (1.0 + 0.5 * B);
             B = 0.25 * (3.0 + B) * B * B;
-        } while (B > 0.000001);
+        } while (B > 0.00001);
         return (A * M);
     }
 }

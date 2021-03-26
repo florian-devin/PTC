@@ -39,7 +39,7 @@ char *my_strcat(char *s1, const char *s2){
 	int len;
 	int idx;
 
-	len = ft_strlen(s1);
+	len = my_strlen(s1);
 	idx = 0;
 	while (s2[idx])
 	{
@@ -53,7 +53,7 @@ char *my_strcat(char *s1, const char *s2){
 //*****************************************************************************	 
 //*****************************************************************************	 
 // strlen -- retourne la taille d'une chaine de caractere
-size_t my_strlen(char const *str){
+int my_strlen(char const *str){
 	int a;
 
 	a = 0;
