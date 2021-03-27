@@ -34,7 +34,8 @@ void turn_left(int angle);
 //Permet au robot de rejoindre les coordonnees indiques les robot peut eviter les obstacles
 //@param coord_x coordonnee X en cm 
 //@param coord_y coordonnee Y en cm
-void go_coordinates_without_obstacles(int coord_x, int coord_y);
+//@param angle angle de possitionnement du robot par rapport au debut
+void go_coordinates_without_obstacles(int coord_x, int coord_y, int angle);
 
 
 /*
