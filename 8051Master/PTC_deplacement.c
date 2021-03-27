@@ -31,6 +31,7 @@ int y_robot = 0; //position actualle en cm
 int angle_robot = 0;
 short teta_angle_dest = 0;//angle des coordonnees cible
 
+int angle_initial = 0; //l'angle est remi a zero a chanque appelle de go_coordinates_without_obstacles et il permet a la fct de positionner le robot sur un certain angle a la fin du deplacement
 
 
 void Avancer(char *str_vitesse){
@@ -99,12 +100,14 @@ void turn_left(int angle){
 
 
 
-void go_coordinates_without_obstacles(int coord_x, int coord_y){
+void go_coordinates_without_obstacles(int coord_x, int coord_y, int angle){
+	angle_initial = 0;
 	if (coord_x != x_robot && coord_y != y_robot){
 		if (flag_calcule_angle == 1){
 			teta_angle_dest = (int)(180.0 * atan2((coord_x - x_robot),(coord_y - y_robot))/PI);
 			if (teta_angle_dest - angle_robot != 0){ //aligne le robot dans la direction des coordonnee
 				turn_right(teta_angle_dest - angle_robot);
+				angle_initial -= teta_angle_dest - angle_robot;
 			}
 			flag_calcule_angle = 0;
 		} 
@@ -116,6 +119,10 @@ void go_coordinates_without_obstacles(int coord_x, int coord_y){
 			Parcour_dist(str_distance,str_vitesse);
 			x_robot = coord_x;
 			y_robot = coord_y;
+			if (angle != angle_initial) {
+				turn_right(angle - angle_initial);
+			}
+			flag_calcule_angle = 1;
 		}
 	}
 }

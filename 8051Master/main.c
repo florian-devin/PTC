@@ -183,11 +183,44 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 			AR_cmd_incorrecte();
 	}
 
-
 	else if (my_strcmp(commande,"S")){ //Stop
 		AR_cmd_correcte();
 		Stop();
 		my_println("message transmit avec AR !");
+	}
+
+	else if (my_strcmp(commande,"G")) {
+		int xval, yval, angle;
+		char i;
+		for (i = 1; i < 4; i++) {
+			char str_param[32] 	   = {0};
+			char str_name_param[2] = {0};
+			char str_val_param[6]  = {0};
+			get_param(Pchaine_courante, i+1, str_param);
+			get_complex_param(str_param, str_name_param, str_val_param);
+			if (my_strcmp(str_name_param,"X")){
+				xval = 10 * my_atoi(str_val_param);
+				if (xval < -9900 || xval > 9900) {
+					AR_cmd_incorrecte();
+					return;
+				}
+			}
+			else if (my_strcmp(str_name_param,"Y")){
+				yval = 10 * my_atoi(str_val_param);
+				if (yval < -9900 || yval > 9900) {
+					AR_cmd_incorrecte();
+					return;
+				}
+			}
+			else if (my_strcmp(str_name_param,"A")){
+				angle = my_atoi(str_val_param);
+				if (xval < -180 || xval > 180) {
+					AR_cmd_incorrecte();
+					return;
+				}
+			}
+		}
+		go_coordinates_without_obstacles(xval,yval);
 	}
 
 	else {
