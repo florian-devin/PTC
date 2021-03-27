@@ -16,7 +16,9 @@
 #include "PTC_math.h" //pour go_coordinates
 #include "PTC_detection.h" //pour go_coordinate et bypass_obstacle
 #include "PTC_convertion.h"
+#include <math.h>
 
+#define PI        3.141593
 
 #define AUTO_SPEED_FAST 30		  //vitesse de depplacement lorsque le robot rejoit automatiquement des coordonnees
 #define AUTO_SPEED_SLOW 10
@@ -32,7 +34,7 @@ short teta_angle_dest = 0;//angle des coordonnees cible
 
 
 void Avancer(char *str_vitesse){
-  char chaine[64] = "mogo 1:";
+    char chaine[64] = "mogo 1:";
 	my_strcat(chaine,str_vitesse);
 	my_strcat(chaine," 2:");
 	my_strcat(chaine,str_vitesse);
@@ -41,8 +43,22 @@ void Avancer(char *str_vitesse){
 	Wait_Accuse_RX_Robot();     //attend l'accuse de reception du robot
 }
 
+void Parcour_dist(char *str_distance,char *str_vitesse){
+	char chaine[64] = "digo 1:";
+	my_strcat(chaine,str_distance);
+	my_strcat(chaine,":");
+	my_strcat(chaine,str_vitesse);
+	my_strcat(chaine," 2:");
+	my_strcat(chaine,str_distance);
+	my_strcat(chaine,":");
+	my_strcat(chaine,str_vitesse);
+	my_strcat(chaine,"\r");
+	serOutstring_uart1(chaine); //evoie du message
+	Wait_Accuse_RX_Robot();     //attend l'accuse de reception du robot
+}
+
 void Reculer(char *str_vitesse){
-  char chaine[32] = "mogo 1:-";
+    char chaine[32] = "mogo 1:-";
 	my_strcat(chaine,str_vitesse);
 	my_strcat(chaine," 2:-");
 	my_strcat(chaine,str_vitesse);
@@ -83,9 +99,28 @@ void turn_left(int angle){
 
 
 
+void go_coordinates_without_obstacles(int coord_x, int coord_y){
+	if (coord_x != x_robot && coord_y != y_robot){
+		if (flag_calcule_angle == 1){
+			teta_angle_dest = (int)(180.0 * atan2((coord_x - x_robot),(coord_y - y_robot))/PI);
+			if (teta_angle_dest - angle_robot != 0){ //aligne le robot dans la direction des coordonnee
+				turn_right(teta_angle_dest - angle_robot);
+			}
+			flag_calcule_angle = 0;
+		} 
+		if (flag_calcule_angle == 0){
+			char str_vitesse[5] = {0};
+			char str_distance[10] = {0};
+			my_itoa(AUTO_SPEED_FAST,str_vitesse);
+			my_itoa((int)(624*sqrt((coord_x - x_robot)*(coord_x - x_robot) + (coord_y - y_robot)*(coord_y - y_robot))/(PI*60)),str_distance);
+			Parcour_dist(str_distance,str_vitesse);
+			x_robot = coord_x;
+			y_robot = coord_y;
+		}
+	}
+}
 
-
-
+/*
 int go_coordinates(int coord_x, int coord_y){
 	if (coord_x != x_robot || coord_y != y_robot){
 		if (flag_calcule_angle == 1){
@@ -128,4 +163,4 @@ void bypass_obstacle(){
 		Stop();
 		flag_calcule_angle = 1;
 	}
-}
+}*/

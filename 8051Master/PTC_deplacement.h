@@ -34,6 +34,13 @@ void turn_left(int angle);
 //Permet au robot de rejoindre les coordonnees indiques les robot peut eviter les obstacles
 //@param coord_x coordonnee X en cm 
 //@param coord_y coordonnee Y en cm
+void go_coordinates_without_obstacles(int coord_x, int coord_y);
+
+
+/*
+//Permet au robot de rejoindre les coordonnees indiques les robot peut eviter les obstacles
+//@param coord_x coordonnee X en cm 
+//@param coord_y coordonnee Y en cm
 //@return 1 si on est arrive 0 sinon
 int go_coordinates(int coord_x, int coord_y);
 
@@ -41,3 +48,5 @@ int go_coordinates(int coord_x, int coord_y);
 //@param void
 //@return void
 void bypass_obstacle();
+
+*/

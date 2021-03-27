@@ -163,7 +163,7 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 	else if (my_strcmp(commande,"RA")){
 		char str_param[8] = {0};
 		char str_angle[4] = {0};
-		char direction;
+		char direction[2] = {0};
 		my_println("Rotation d'un angle");
 		get_param(Pchaine_courante,1,str_param);
 		get_complex_param(str_param,direction,str_angle);
