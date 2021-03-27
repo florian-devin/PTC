@@ -9,15 +9,16 @@
 //------------------------------------------------------
 #include "PTC_accuseDeReception.h"
 #include "PTC_UART.h"
+#include "UART0_RingBuffer_lib.h"
 
 void AR_cmd_incorrecte(){//envoi de <CR><LF>#
-    Send_char(0x0D);
-    Send_char(0x0A);
-    Send_char(0x23);
+    serOutchar(0x0D);
+    serOutchar(0x0A);
+    serOutchar(0x23);
 }
 
 void AR_cmd_correcte(){ //envoi de <CR><LF>> 
-    Send_char(0x0D);
-    Send_char(0x0A);
-    Send_char(0x3E);
+    serOutchar(0x0D);
+    serOutchar(0x0A);
+    serOutchar(0x3E);
 }

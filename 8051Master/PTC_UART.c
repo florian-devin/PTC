@@ -66,7 +66,7 @@ void Send_str(char *str){
 int Rx_chaine(char *Pchaine_courante){
 	char c;
 	if ((c=serInchar()) != 0){//si on vient de recevoir un caractere
-alut		int i = 0; //cpt position de chaine
+		int i = 0; //cpt position de chaine
 		if(c == '\r'){
 			return 1;
 		}
@@ -142,3 +142,4 @@ char Wait_Accuse_RX_Robot(void){
 	else 
 		return -1;
 }
+

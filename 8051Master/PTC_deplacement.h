@@ -10,12 +10,13 @@
 
 //Demmande au serializer d'avancer a la vitesse str_vitesse
 //@param vitesse sous forme d'un char *
-//@return rien
 void Avancer(char *str_vitesse);
 
+//Demmande au serializer d'avancer a la vitesse str_vitesse
+//@param vitesse sous forme d'un char *
+void Reculer(char *str_vitesse);
+
 //Demmande au serializer darreter les moteurs
-//@param rien
-//@return rien
 void Stop(void);
 
 int get_encoder(char Id);

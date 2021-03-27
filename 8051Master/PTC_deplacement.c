@@ -10,9 +10,12 @@
 
 #include "PTC_deplacement.h"
 #include "PTC_strOperateurs.h"  // pour my_strcat
-#include "PTC_UART.h" // pour Send_str_uart1
+#include "PTC_UART.h" // 
+#include "UART1_RingBuffer_lib.h"
+#include "UART0_RingBuffer_lib.h"
 #include "PTC_math.h" //pour go_coordinates
 #include "PTC_detection.h" //pour go_coordinate et bypass_obstacle
+#include "PTC_convertion.h"
 
 
 #define AUTO_SPEED_FAST 30		  //vitesse de depplacement lorsque le robot rejoit automatiquement des coordonnees
@@ -34,32 +37,49 @@ void Avancer(char *str_vitesse){
 	my_strcat(chaine," 2:");
 	my_strcat(chaine,str_vitesse);
 	my_strcat(chaine,"\r");
-	//Send_str("\r"); //remet a 0 le serializer
-	Send_str_uart1(chaine); //evoie du message
+	serOutstring_uart1(chaine); //evoie du message
+	Wait_Accuse_RX_Robot();     //attend l'accuse de reception du robot
+}
+
+void Reculer(char *str_vitesse){
+  char chaine[32] = "mogo 1:-";
+	my_strcat(chaine,str_vitesse);
+	my_strcat(chaine," 2:-");
+	my_strcat(chaine,str_vitesse);
+	my_strcat(chaine,"\r");
+	serOutstring_uart1(chaine); //evoie du message
+	Wait_Accuse_RX_Robot();     //attend l'accuse de reception du robot
 }
 
 void Stop(void){
-   // Send_str("\r"); //remet a 0 le serializer
-	Send_str_uart1("stop\r");
+	serOutstring_uart1("stop\r");
+	Wait_Accuse_RX_Robot();
 }
 
 int get_encoder(char *Id){
-	char chaine[64] = "getenc";
+	char chaine[32] = "getenc";
 	my_strcat(chaine, Id);
 	my_strcat(chaine, "\r");
-	Send_str_uart1(chaine); //evoie du message
+	serOutstring_uart1(chaine); //evoie du message
 	return 0;
 }
 
 
-//void turn_right(int angle){
-//	angle_robot -= angle; 
-//	//TODO
-//}
+void turn_right(int angle){
+	int ticks       = angle*1165/90;
+	char chaine[32] = "digo 1:";
+	char str[8] = {0};
+	my_strcat(chaine,my_itoa(ticks,str));
+	my_strcat(chaine,":25 2:");
+	my_strcat(chaine,my_itoa(-ticks,str));
+	my_strcat(chaine,":25\r");
+	Wait_Accuse_RX_Robot();
+	angle_robot -= angle; 
+}
 
-//void turn_left(int angle){
-//	turn_right(-angle);
-//}
+void turn_left(int angle){
+	turn_right(-angle);
+}
 
 
 

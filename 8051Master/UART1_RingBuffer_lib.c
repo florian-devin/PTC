@@ -97,7 +97,7 @@ void UART1_ISR(void) interrupt 20 {
   	else {
       TXactive1 = 0;                 /* TX finished, interface inactive */
     }
-	SCON1 &= ~(1<<1);
+	  SCON1 &= ~(1<<1); //TI1 = 0
   }
   else // RI0 a 1 - Donc une donnee a ete reeue
   {
@@ -106,8 +106,9 @@ void UART1_ISR(void) interrupt 20 {
 		  RB_PUSHADVANCE1(&in1);               /* next write location */
     //		  cp_rx++;
 	 }
-   SCON1 &= ~(1<<0);
+   SCON1 &= ~(1<<0); //RI1 = 0
   }
+  SCON1 &= ~(0x02); //TI1 = 0 et RIO = 0
 }
 // **************************************************************************************************
 // init_Serial_Buffer_uart1: Initialisation des structuresde gestion des buffers transmission et reception

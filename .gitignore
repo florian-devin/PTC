@@ -3,6 +3,7 @@
 foo.txt
 **/8051Master/Objects
 **/8051Master/Listings
+**/8051Master/test_fct.c
 
 # Ignorer tous les fichiers uvision
 *.lst
@@ -10,6 +11,7 @@ foo.txt
 *.obj
 *.florian
 *.devin
+*.out
 # à l'exception de foo.html qui est maintenu à la main
 !foo.html
 # Ignorer les objets et les archives

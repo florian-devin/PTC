@@ -12,3 +12,9 @@
 //@param rien
 //@return rien
 int my_atoi(const char *str);
+
+//Converti un integer en chaine de caractere
+//@param n entier a convertir
+//@param dst addresse de la chaine ou sera mis le resultat 
+//@return dst addresse de la chaine ou sera mis le resultat passé en parametre
+char *my_itoa(const int n, char *dst);

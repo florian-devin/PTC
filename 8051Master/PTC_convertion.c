@@ -43,3 +43,25 @@ int my_atoi(const char *str){
     }
 	return (number);
 }
+
+char	*my_itoa(const int n, char *dst) {
+	long int	div;
+	long int	nb;
+	int			i;
+
+	div = 1;
+	i = 0;
+	nb = (n < 0) ? -n : n;
+
+	while (div <= nb)
+		div *= 10;
+	dst[(div % 10) + 1 + ((n < 0) ? 1 : 0)] = '\0';
+	if (n < 0)
+		dst[i++] = '-';
+	if (n == 0)
+		dst[i] = '0';
+	while ((div = div / 10) != 0)
+		dst[i++] = (((nb / div) % 10) + 48);
+    dst[i++] = '\0';
+	return (dst);
+}
