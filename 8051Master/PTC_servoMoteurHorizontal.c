@@ -8,7 +8,7 @@
 // Description: déplacement Horizontal du servo moteur 
 //------------------------------------------------------
 
-#include "servoMoteurHorizontal.h"
+#include "PTC_servoMoteurHorizontal.h"
 
 // variables
 char  Angle_actuel = 90; // Angle actuel du servomoteur
