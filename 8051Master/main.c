@@ -26,7 +26,7 @@
 #include "PTC_servoMoteurHorizontal.h"
 
 
-
+//TODO faire le retour de communication vers la centrale
 //-----------------------------------------------------------------------------
 //variables globales
 //En lien avec l'UART0
@@ -110,6 +110,7 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 			if (type_epreuve > 0 && type_epreuve < 9) {
 				AR_cmd_correcte();
 				epreuve_enable = type_epreuve;
+				serOutstring("I Le robot a demarre l'epreuve !\r\n");
 			}
 			else
 				AR_cmd_incorrecte();
@@ -117,6 +118,7 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 		else {
 			AR_cmd_correcte();
 			epreuve_enable = 1;
+			serOutstring("I Le robot a demarre l'epreuve !\r\n");
 		}
 	}
 
@@ -268,16 +270,35 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 				AR_cmd_incorrecte();
 		}
 
-		else {
-			AR_cmd_incorrecte();
+		else if (my_strcmp(commande,"CS")) {
+			char str_param[2] = {0};
+			get_param(Pchaine_courante,1,str_param);
+			if (my_strcmp(str_param, "V")) {
+				AR_cmd_correcte();
+				//TODO commande cervo vertical
+			}
+			else if (my_strcmp(str_param, "A")) { //cervo par default H
+				char str_param_name[2] = {0};
+				char str_param_value[4] = {0};
+				get_complex_param(Pchaine_courante, str_param_name, str_param_value);
+				if (my_strcmp(str_param_name, "A")) {
+					int angle = my_atoi(str_param_value);
+					if (angle > -91 && angle < 91) {
+						
+					}
+
+				}
+			}
 		}
-	}
-	else {
+
+		else 
 			AR_cmd_incorrecte();
 	}
+	else 
+		AR_cmd_incorrecte();
 	RAZ_str(Pchaine_courante);
 }
-
+ 
 void Interrupt_Time(void) interrupt 16 {//interruption declancher par l'overflow du Timer 0 (toutes les us)
 	T4CON &= ~(1<<7); //interrupt flag
     Time_increment();
