@@ -41,7 +41,8 @@ void Avancer(char *str_vitesse){
 	my_strcat(chaine,str_vitesse);
 	my_strcat(chaine,"\r");
 	serOutstring_uart1(chaine); //evoie du message
-	Wait_Accuse_RX_Robot();     //attend l'accuse de reception du robot
+	//Wait_Accuse_RX_Robot();     //attend l'accuse de reception du robot
+	while (serInchar_uart1()==0); //attend un caractere de retour
 }
 
 void Parcour_dist(char *str_distance,char *str_vitesse){
@@ -55,7 +56,8 @@ void Parcour_dist(char *str_distance,char *str_vitesse){
 	my_strcat(chaine,str_vitesse);
 	my_strcat(chaine,"\r");
 	serOutstring_uart1(chaine); //evoie du message
-	Wait_Accuse_RX_Robot();     //attend l'accuse de reception du robot
+	//Wait_Accuse_RX_Robot();     //attend l'accuse de reception du robot
+	while (serInchar_uart1()==0); //attend un caractere de retour
 }
 
 void Reculer(char *str_vitesse){
@@ -65,12 +67,14 @@ void Reculer(char *str_vitesse){
 	my_strcat(chaine,str_vitesse);
 	my_strcat(chaine,"\r");
 	serOutstring_uart1(chaine); //evoie du message
-	Wait_Accuse_RX_Robot();     //attend l'accuse de reception du robot
+	//Wait_Accuse_RX_Robot();     //attend l'accuse de reception du robot
+	while (serInchar_uart1()==0); //attend un caractere de retour
 }
 
 void Stop(void){
 	serOutstring_uart1("stop\r");
-	Wait_Accuse_RX_Robot();
+	while (serInchar_uart1()==0); //attend un caractere de retour
+	//Wait_Accuse_RX_Robot();
 }
 
 int get_encoder(char *Id){
@@ -91,7 +95,8 @@ void turn_right(int angle){
 	my_strcat(chaine,my_itoa(-ticks,str));
 	my_strcat(chaine,":25\r");
 	serOutstring_uart1(chaine); //evoie du message
-	Wait_Accuse_RX_Robot();
+	//Wait_Accuse_RX_Robot();
+	while (serInchar_uart1()==0); //attend un caractere de retour
 	angle_robot -= angle; 
 }
 
