@@ -23,6 +23,7 @@
 #include "PTC_math.h"
 #include "PTC_detection.h"
 #include "PTC_telemetre.h"
+#include "PTC_servoMoteurHorizontal.h"
 
 
 
