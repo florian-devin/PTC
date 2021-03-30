@@ -78,6 +78,7 @@ void main(){
     }
 }
 
+
 void setup(){
   Init_Device(); //fonction de config_globale.c
   Init_Robot(); //rst de la carte serial etc...
@@ -275,11 +276,11 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 	}
 	RAZ_str(Pchaine_courante);
 }
-/*
-void Interrupt_Time(void) interrupt 1 {//interruption declancher par l'overflow du Timer 0 (toutes les us)
-    TF0 = 0; //interrupt flag
+
+void Interrupt_Time(void) interrupt 16 {//interruption declancher par l'overflow du Timer 0 (toutes les us)
+	T4CON &= ~(1<<7); //interrupt flag
     Time_increment();
-}*/
+}
 
 /*
 Interruption genere par INT6 permettant de mesurer le temps a l'etat haut du signal Echo

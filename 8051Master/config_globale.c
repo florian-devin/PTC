@@ -156,9 +156,13 @@ void Init_SPI(){//fct a developper plus tard
 void Init_Timer4() {
 // autoreload avec 43417 sans division par 12 pour avoir 1ms
 //Mode 1
+T4CON |= 0x04;
+EIE2 |= (1<<2);
+//interrupt 16
 
 //reload value
-RCAP4 = 43417;
+RCAP4 = 0xA99A;// = 43418
+
 }
 //-----------------------------------------------------------------------------
 // Initialisation des interuption
