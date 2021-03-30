@@ -125,7 +125,7 @@
             <Oh166RecLen>16</Oh166RecLen>
           </OPTHX>
           <Simulator>
-            <UseSimulator>0</UseSimulator>
+            <UseSimulator>1</UseSimulator>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -137,7 +137,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
-            <UseTarget>1</UseTarget>
+            <UseTarget>0</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>0</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -149,7 +149,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>12</TargetSelection>
+          <TargetSelection>10</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -515,6 +515,26 @@
               <FileName>UART1_RingBuffer_lib.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\UART1_RingBuffer_lib.h</FilePath>
+            </File>
+            <File>
+              <FileName>PTC_servoMoteurHorizontal.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\PTC_servoMoteurHorizontal.h</FilePath>
+            </File>
+            <File>
+              <FileName>PTC_telemetre.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\PTC_telemetre.h</FilePath>
+            </File>
+            <File>
+              <FileName>PTC_servoMoteurHorizontal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\PTC_servoMoteurHorizontal.c</FilePath>
+            </File>
+            <File>
+              <FileName>PTC_telemetre.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\PTC_telemetre.c</FilePath>
             </File>
           </Files>
         </Group>

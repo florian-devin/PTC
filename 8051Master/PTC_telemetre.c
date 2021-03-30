@@ -1,6 +1,5 @@
-#include "TELEMETRE.h"
-#include "c8051F020_SFR16.h"
-#include "c8051F020.h"
+#include "PTC_telemetre.h"
+
 sbit trig_AV = P3^1;
 int bool_trig_AV = 1;
 int bool_echo1_AV = 0;

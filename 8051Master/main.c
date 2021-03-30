@@ -293,18 +293,19 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 				else
 					AR_cmd_incorrecte();
 			}
-			else if (my_strcmp(commande,"H")) {//cervo horizontal 
-				char str_param[8] = {0};
-				get_param(Pchaine_courante, 2,str_param);
-				if (my_strlen(str_param) > 0) {
+			else if (my_strcmp(str_param,"H")) {//cervo horizontal 
+				char str_param2[8] = {0};
+				get_param(Pchaine_courante, 2,str_param2);
+				if (my_strlen(str_param2) > 0) {
 					char str_param_name[2]  = {0};
 					char str_param_value[4] = {0};
-					get_complex_param(str_param, str_param_name, str_param_value);
+					get_complex_param(str_param2, str_param_name, str_param_value);
 					if (my_strcmp(str_param_name, "A")) {
 						char angle = (char)my_atoi(str_param_value);
 						if (angle > -91 && angle < 91) {
+							unsigned char temp_servo_H;
 							AR_cmd_correcte();
-							CDE_Servo_H(angle);
+							temp_servo_H = CDE_Servo_H(angle);
 						}
 						else
 							AR_cmd_incorrecte();
@@ -313,8 +314,9 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 						AR_cmd_incorrecte();
 				}
 				else {
+					unsigned char temp_servo_H;
 					AR_cmd_correcte();
-					CDE_Servo_H(0);
+					temp_servo_H = CDE_Servo_H(0);
 				}
 			}
 		}
@@ -326,6 +328,7 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 		AR_cmd_incorrecte();
 	RAZ_str(Pchaine_courante);
 }
+ 
  
 void Interrupt_Time(void) interrupt 16 {//interruption declancher par l'overflow du Timer 0 (toutes les us)
 	T4CON &= ~(1<<7); //interrupt flag

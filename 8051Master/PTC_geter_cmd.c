@@ -8,6 +8,7 @@
 // Description: Fonctions qui recupere les informations d'une chaine de caractere
 //------------------------------------------------------
 #include "PTC_geter_cmd.h"
+#include "PTC_strOperateurs.h"
 
 //Decoupage de la trame en plusieur commande
 //      - nom de la commande (D,E,Q,TV,A,B,S,RD,RG,RC,RA,G,ASS,MI,ME,IPO,POS,MOU,MOB,MOS,SD,L,LS,CS,PPH,SPH,AUX) get_commande()
@@ -28,13 +29,18 @@ void get_commande(const char *str, char *commande){
 void get_param(const char *str,const unsigned char position, char *param){
     unsigned char i = 0;
     unsigned char param_courant = 1;
-    while (*str != '\0' && *str != 0x20){
+    while (*str != '\0' && *str != 0x20){ //rien ou un espace
         str++;
     }
     str++;
     for (param_courant = 1; param_courant <= position; param_courant++){
+        char caractere;
+        char len_param = (char)my_strlen(param);
+		for (caractere = 0; caractere <= len_param; caractere++){//RAZ de param
+            param[caractere] = '\0';
+        }
         i=0;
-        while(*str != '\0' && *str != 0x20){
+        while(*str != '\0' && *str != 0x20){ //rien ou espace
             param[i] = *str;
             i++;
             str++;
