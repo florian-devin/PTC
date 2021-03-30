@@ -58,5 +58,6 @@ void Delay_1us(void){
 }
 void Delay_10us(void){
 	unsigned int i;
-	for(i=0; i <20;i++){}
+	// for(i=0; i <20;i++){} Florin's version
+	for(i=0; i <10;i++){}
 }

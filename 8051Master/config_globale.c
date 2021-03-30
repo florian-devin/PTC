@@ -20,6 +20,7 @@
 
 
 extern char Flag_RX1;
+sbit INT6 = P3^6;
 
 void Reset_Sources_Init(){
     //Desactivation du Watchdog
@@ -69,6 +70,12 @@ void Port_IO_Init() {
 
 		P0MDOUT |= (1<<0); //P0.0
 		P0MDOUT |= (1<<6); //P0.6
+    XBR1 |= 0x40; // Validation crossbar T2EX
+    P3MDOUT |= 0x02; //Configuration P3.1 en push-pull
+	  INT6 = 1; // Configuration de P3.6 en input
+	  // Sensibilité de /INT6 initialement mise a front montant
+	  P3IF |= 0x04;
+	  P3IF &= 0xBF;
 }
 
 //-----------------------------------------------------------------------------
@@ -157,15 +164,18 @@ void Init_interrupt(void){
     ES0   = 1;      //UART0
 		EIE2 |= (1<<6); //UART1
     EA    = 1;      //Interuption General
+    EIE2 |= 0x10; // Interruption INT6
+    ET2 = 1; // Interruption overflow Timer2
 }
 
-
-/*
 void Init_Timer2(void){
-  CKCON = CKCON | (1<<5);//T2M a 1 (horloge interne (a 2MHz))
-  TR2 = 1;//activation de Timer2
+    RCLK0 = 0;
+    TCLK0 = 0;
+    CPRL2 = 1;
+    TR2 = 1;
+    EXEN2 = 1;
 }
-*/
+
 
 //-----------------------------------------------------------------------------
 // Initialisation globale du Microcontroleur - 

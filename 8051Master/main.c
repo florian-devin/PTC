@@ -22,6 +22,7 @@
 #include "PTC_deplacement.h"
 #include "PTC_math.h"
 #include "PTC_detection.h"
+#include "PTC_telemetre.h"
 
 
 
@@ -33,6 +34,13 @@
 char chaine_courante[64] = {0};//chaine total qui vas contenir le mot recu (20 caractere max)
 
 char i = 0;
+
+/*
+Variables globales en lien avec le telemetre
+*/
+
+sbit commandCapture = P3^3; // Commande la capture du timer2
+int measureCycle = 1; // Compte le nombre d'overflow du Timer 2
 
 //En lien avec le temp
 //-----------------------------------------------------------------------------
@@ -235,6 +243,55 @@ void Interrupt_Time(void) interrupt 1 {//interruption declancher par l'overflow 
 }
 
 /*
+Interruption genere par INT6 permettant de mesurer le temps a l'etat haut du signal Echo
+*/
+
+void int6 () interrupt 18
+{
+	if ((P3IF & 0x04) == 0x04)
+	{
+		int* bool_echo1;
+		bool_echo1 = get_bool_echo1_AV();
+		TL2 = 0x00;
+		TH2 = 0x00;
+		P3IF |= 0x04;
+		*bool_echo1 = 1;
+		P3IF &= 0xBB;
+	} else 
+	{
+		float* T;
+		int* bool_echo2;
+		commandCapture = 1;
+		commandCapture = 0;
+		T = get_T_AV();
+		bool_echo2 = get_bool_echo2_AV();
+		*T = RCAP2/22.1184;
+		*bool_echo2 = 1;
+
+		P3IF &= 0xBF;
+		EXF2 = 0;
+	}
+}
+
+/*
+Interruprion overflow Timer2
+Permet de rappeler la commande de detection d'obstacle si temps d'acquisition trop long
+*/
+
+void intT2 () interrupt 5
+{
+	int* bool_trig_AV;
+	bool_trig_AV = get_bool_trig_AV();
+	measureCycle += 1;
+	if (measureCycle == 21) // 60.9 ms
+	{
+		*bool_trig_AV = 1;
+		measureCycle = 1;
+	}
+	TF2 = 0;
+}
+
+/*
 void Interrupt_UART0(void) interrupt 4 { //interruption declanch�e par l'UART0
     if (RI0 == 1){//si on vient de recevoir un caractere
 			caractere_recu_fct_uart0(SBUF0);
@@ -262,6 +319,8 @@ void Interrupt_UART1(void) interrupt 20 { //interruption declanch�e par l'UART
 		SCON1 &= ~(1<<1);//Tx flag
 }
 */
+
+
 
 
 
