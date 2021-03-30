@@ -71,6 +71,8 @@ void Port_IO_Init() {
 		P0MDOUT |= (1<<0); //P0.0
 		P0MDOUT |= (1<<6); //P0.6
     XBR1 |= 0x40; // Validation crossbar T2EX
+    XBR2 |= 0x40; //enable le crossbar
+    XBR0 |= 0x08; // route le signal CEX0 sur un port pin (servo) 
     P3MDOUT |= 0x02; //Configuration P3.1 en push-pull
 	  INT6 = 1; // Configuration de P3.6 en input
 	  // Sensibilité de /INT6 initialement mise a front montant
@@ -183,6 +185,19 @@ void Init_Timer2(void){
     EXEN2 = 1;
 }
 
+//PCA pour le servomoteur 
+
+void Init_PCA()
+{
+	PCA0MD = 0x00; //sysclk divided by 12
+	PCA0CN |= 0x41; // on choisit le module 0 ( bit 0 mit à 1) et enable PCA counter timer
+	PCA0CPM0 = 0xC2; // mode PWM 16 bits et on enable le PWM0
+
+	// Registres de rechargement 
+	PCA0CPH0 = 0; //On initialise.Pour déterminer le duty high
+	PCA0CPL0 = 0;
+	
+}
 
 //-----------------------------------------------------------------------------
 // Initialisation globale du Microcontroleur - 
