@@ -32,8 +32,12 @@
 //char caractere_recu = '\0';    //caractere qui vient d'etre recu
 char chaine_courante[64] = {0};//chaine total qui vas contenir le mot recu (20 caractere max)
 
-char i = 0;
+int epreuve_enable = 0; //Flag qui pas a 1 si l'utilisateur a donné le debut de l'epreuve
 
+int vitesse_par_default = 20; //vitesse du robot par default (modifie par la cmd TV vitesse)
+
+
+char test[2] = {0}; //a supprimer 
 //En lien avec le temp
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -43,7 +47,7 @@ void setup();
 void startup();
 void loop();
 void decodage_commande(char *Pchaine_courante);
-
+//ceci est un com
 //---------------------------------------------Fct pour le debug
 void my_println(const char *str){
 	serOutstring(str);
@@ -75,7 +79,6 @@ void startup(){
 	
 void loop() {
 	if (Rx_chaine(chaine_courante) == 1){
-		my_println("Rx_chaine = 1");
 		decodage_commande(chaine_courante);
 	}
 
@@ -83,156 +86,189 @@ void loop() {
 
 void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commades et les applique
 	char commande[7] = {0};
-	my_print("La chaine est :");
-	my_println(Pchaine_courante);
 	get_commande(Pchaine_courante,commande);
-	my_print("La commande est :");
-	my_println(commande);
 
-	if (my_strcmp(commande,"A")){ //Avancer
-		char str_param[12] = {0};
-		int param = 0;
-		my_println("Avancer");
-		get_param(Pchaine_courante,1, str_param);
-		my_print("La vitesse est :");
-		my_println(str_param);
-		param = my_atoi(str_param);
-		if (param <= 100 && param >= 5){
-			my_println("Vitesse valide !");
-			AR_cmd_correcte();
-			Avancer(str_param);
-			my_println("message transmit avec AR !");
+	if (my_strcmp(commande,"D")){
+		char str_type_epreuve[2] = {0};
+		get_param(Pchaine_courante, 1, str_type_epreuve);
+		my_strcat(test, str_type_epreuve);
+		if (my_strlen(str_type_epreuve) > 0) {//il y a un parametre
+			int type_epreuve = my_atoi(str_type_epreuve);
+			if (type_epreuve > 0 && type_epreuve < 9) {
+				AR_cmd_correcte();
+				epreuve_enable = type_epreuve;
+			}
+			else
+				AR_cmd_incorrecte();
 		}
+		else {
+			AR_cmd_correcte();
+			epreuve_enable = 1;
+		}
+	}
+
+	else if (my_strcmp(commande,"E")){
+		char str_type_epreuve[2] = {0};
+		get_param(Pchaine_courante, 1, str_type_epreuve);
+		AR_cmd_correcte();
+		epreuve_enable = 0;
+	}
+
+	else if (epreuve_enable > 0) {
+		if (my_strcmp(commande,"A")){ //Avancer
+			char str_param[12] = {0};
+			int param = 0;
+			get_param(Pchaine_courante,1, str_param);
+			if (my_strlen(str_param) > 0) {
+				param = my_atoi(str_param);
+				if (param <= 100 && param >= 5){
+					AR_cmd_correcte();
+					Avancer(str_param);
+				}
+				else {
+					AR_cmd_incorrecte();
+				}
+			}
+			else {
+				char str_vitesse_par_default[3] = {0};
+				AR_cmd_correcte();
+				Avancer(my_itoa(vitesse_par_default,str_vitesse_par_default));
+			}
+		}
+
+		else if (my_strcmp(commande,"B")){//Reculer
+			char str_param[12] = {0};
+			int param = 0;
+			get_param(Pchaine_courante,1, str_param);
+			if (my_strlen(str_param) > 0) {
+				param = my_atoi(str_param);
+				if (param <= 100 && param >= 5) {
+					AR_cmd_correcte();
+					Reculer(str_param);
+				}
+				else
+					AR_cmd_incorrecte();
+			}
+			else {
+				char str_vitesse_par_default[3] = {0};
+				AR_cmd_correcte();
+				Reculer(my_itoa(vitesse_par_default,str_vitesse_par_default));
+			}
+			
+		}
+
+		else if (my_strcmp(commande,"RG")){ //Rotation gauche
+			AR_cmd_correcte();
+			turn_left(90);
+		}
+
+		else if (my_strcmp(commande,"RD")){ //Rotation droite
+			AR_cmd_correcte();
+			turn_right(90);
+		}
+
+		else if (my_strcmp(commande,"RC")){  //Rotation complete
+			char str_param[12] = {0};
+			get_param(Pchaine_courante,1, str_param);
+			if (my_strcmp(str_param,"D")){
+				AR_cmd_correcte();
+				turn_right(180);
+			}
+			else if (my_strcmp(str_param,"G")){
+				AR_cmd_correcte();
+				turn_left(180);
+			}
+			else 
+				AR_cmd_incorrecte();
+		}
+
+		else if (my_strcmp(commande,"RA")){ //Rotation d'un certain angle
+			char str_param[8] = {0};
+			char str_angle[4] = {0};
+			char direction[2] = {0};
+			get_param(Pchaine_courante,1,str_param);
+			get_complex_param(str_param,direction,str_angle);
+			if (my_strcmp(direction,"D")){
+				AR_cmd_correcte();
+				turn_right(my_atoi(str_angle));
+			}
+			else if (my_strcmp(direction,"G")){
+				AR_cmd_correcte();
+				turn_left(my_atoi(str_angle));
+			}
+			else
+				AR_cmd_incorrecte();
+		}
+
+		else if (my_strcmp(commande,"S")){ //Stop
+			AR_cmd_correcte();
+			Stop();
+		}
+
+		else if (my_strcmp(commande,"G")) { //rejoit des coordonnee
+			int xval, yval, angle;
+			char i;
+			for (i = 1; i < 4; i++) {
+				char str_param[32] 	   = {0};
+				char str_name_param[2] = {0};
+				char str_val_param[6]  = {0};
+				get_param(Pchaine_courante, i+1, str_param);
+				get_complex_param(str_param, str_name_param, str_val_param);
+				if (my_strcmp(str_name_param,"X")){
+					xval = 10 * my_atoi(str_val_param);
+					if (xval < -9900 || xval > 9900) {
+						AR_cmd_incorrecte();
+						return;
+					}
+				}
+				else if (my_strcmp(str_name_param,"Y")){
+					yval = 10 * my_atoi(str_val_param);
+					if (yval < -9900 || yval > 9900) {
+						AR_cmd_incorrecte();
+						return;
+					}
+				}
+				else if (my_strcmp(str_name_param,"A")){
+					angle = my_atoi(str_val_param);
+					if (xval < -180 || xval > 180) {
+						AR_cmd_incorrecte();
+						return;
+					}
+				}
+			}
+			go_coordinates_without_obstacles(xval,yval,angle);
+		}
+
+		else if (my_strcmp(commande,"TV")) {
+			char str_param[4] = {0};
+			get_param(Pchaine_courante,1,str_param);
+			if (my_strlen(str_param) > 0){
+				int param = my_atoi(str_param); 
+				if (param > 6 && param < 101){
+					AR_cmd_correcte();
+					vitesse_par_default = param;
+				}
+				else 
+					AR_cmd_incorrecte();
+			}
+			else 
+				AR_cmd_incorrecte();
+		}
+
 		else {
 			AR_cmd_incorrecte();
 		}
 	}
-
-	else if (my_strcmp(commande,"B")){//Reculer
-		char str_param[12] = {0};
-		int param = 0;
-		my_println("Reculer");
-		get_param(Pchaine_courante,1, str_param);
-		my_print("La vitesse est :");
-		my_println(str_param);
-		param = my_atoi(str_param);
-		if (param <= 100 && param >= 5){
-			my_println("Vitesse valide !");
-			AR_cmd_correcte();
-			Reculer(str_param);
-			my_println("message transmit avec AR !");
-		}
-	}
-
-	else if (my_strcmp(commande,"RG")){
-		my_println("Tourner a gauche");
-		AR_cmd_correcte();
-		turn_left(90);
-		my_println("message transmit avec AR !");
-	}
-
-	else if (my_strcmp(commande,"RD")){
-		my_println("Tourner a droite");
-		AR_cmd_correcte();
-		turn_right(90);
-		my_println("message transmit avec AR !");
-	}
-
-	else if (my_strcmp(commande,"RC")){
-		char str_param[12] = {0};
-		my_println("Rotation complete");
-		get_param(Pchaine_courante,1, str_param);
-		my_print("Le sens de rotation est :");
-		my_println(str_param);
-		if (my_strcmp(str_param,"D")){
-			my_println("Rotation droite");
-			AR_cmd_correcte();
-			turn_right(180);
-			my_println("message transmit avec AR !");
-		}
-		else if (my_strcmp(str_param,"G")){
-			my_println("Rotation gauche");
-			AR_cmd_correcte();
-			turn_left(180);
-			my_println("message transmit avec AR !");
-		}
-		else 
-			AR_cmd_incorrecte();
-	}
-
-	else if (my_strcmp(commande,"RA")){
-		char str_param[8] = {0};
-		char str_angle[4] = {0};
-		char direction[2] = {0};
-		my_println("Rotation d'un angle");
-		get_param(Pchaine_courante,1,str_param);
-		get_complex_param(str_param,direction,str_angle);
-		if (my_strcmp(direction,"D")){
-			my_println("Rotation droite");
-			AR_cmd_correcte();
-			turn_right(my_atoi(str_angle));
-			my_println("message transmit avec AR !");
-		}
-		else if (my_strcmp(direction,"G")){
-		    my_println("Rotation gauche");
-			AR_cmd_correcte();
-			turn_left(my_atoi(str_angle));
-			my_println("message transmit avec AR !");
-		}
-		else
-			AR_cmd_incorrecte();
-	}
-
-	else if (my_strcmp(commande,"S")){ //Stop
-		AR_cmd_correcte();
-		Stop();
-		my_println("message transmit avec AR !");
-	}
-
-	else if (my_strcmp(commande,"G")) {
-		int xval, yval, angle;
-		char i;
-		for (i = 1; i < 4; i++) {
-			char str_param[32] 	   = {0};
-			char str_name_param[2] = {0};
-			char str_val_param[6]  = {0};
-			get_param(Pchaine_courante, i+1, str_param);
-			get_complex_param(str_param, str_name_param, str_val_param);
-			if (my_strcmp(str_name_param,"X")){
-				xval = 10 * my_atoi(str_val_param);
-				if (xval < -9900 || xval > 9900) {
-					AR_cmd_incorrecte();
-					return;
-				}
-			}
-			else if (my_strcmp(str_name_param,"Y")){
-				yval = 10 * my_atoi(str_val_param);
-				if (yval < -9900 || yval > 9900) {
-					AR_cmd_incorrecte();
-					return;
-				}
-			}
-			else if (my_strcmp(str_name_param,"A")){
-				angle = my_atoi(str_val_param);
-				if (xval < -180 || xval > 180) {
-					AR_cmd_incorrecte();
-					return;
-				}
-			}
-		}
-		go_coordinates_without_obstacles(xval,yval,angle);
-	}
-
 	else {
-		AR_cmd_incorrecte();
+			AR_cmd_incorrecte();
 	}
-	
 	RAZ_str(Pchaine_courante);
 }
+/*
 void Interrupt_Time(void) interrupt 1 {//interruption declancher par l'overflow du Timer 0 (toutes les us)
     TF0 = 0; //interrupt flag
     Time_increment();
-}
+}*/
 
 /*
 void Interrupt_UART0(void) interrupt 4 { //interruption declanch�e par l'UART0

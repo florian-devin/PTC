@@ -83,8 +83,7 @@ void Port_IO_Init() {
 	                     // L'oscillateur n'est pas stopp
 }*/
 
-void Oscillator_Init()
-{
+void Oscillator_Init() {
     int i = 0;
     OSCXCN    = 0x67;
     for (i = 0; i < 3000; i++);  // Wait 1ms for initialization
@@ -141,14 +140,18 @@ void cfg_UART1_mode1(void){
   EIE2  |= (1<<6); //ES1 interruption UART1 autorisee	
 }
 
-
-
-
-
 void Init_SPI(){//fct a developper plus tard
 	//crossbar 
 	//P0.2 P0.3 P0.4 P0.5 
 	XBR0 |= (1<<1);
+}
+
+void Init_Timer4() {
+// autoreload avec 43417 sans division par 12 pour avoir 1ms
+//Mode 1
+
+//reload value
+RCAP4 = 43417;
 }
 //-----------------------------------------------------------------------------
 // Initialisation des interuption
