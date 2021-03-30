@@ -129,7 +129,8 @@ char Wait_Accuse_RX_Robot(void){
 	for(i=0;i<my_strlen(accuse);i++){
 		if(accuse[i] == '>' || accuse[i] == '\r' || accuse[i] == '\n'){
 			char o;
-			for (o=i;o<my_strlen(accuse);o++){
+			int len_accuse = my_strlen(accuse);
+			for (o=i;o<len_accuse;o++){
 				accuse[o] = accuse[o+1];
 			}
 			i--;

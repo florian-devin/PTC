@@ -10,10 +10,11 @@
 
 #include "config_globale.h"
 #include "UART1_RingBuffer_lib.h"
+#include "UART0_RingBuffer_lib.h"
 #ifndef CFG_Globale
    #define CFG_Globale
    #define SYSCLK 22118400 //approximate SYSCLK frequency in Hz
-   #define BAUDRATE  115200L          // Baud rate of UART in bps
+   #define BAUDRATE  19200L          // Baud rate of UART in bps
                                    // Le caractère 'L' force l'évaluation de BAUDRATE en entier long
 #endif
 
@@ -73,14 +74,24 @@ void Port_IO_Init() {
 //-----------------------------------------------------------------------------
 // Config oscillateur - SYSCLK = 22,1184MHz - Oscillateur externe � quartz 
 //-----------------------------------------------------------------------------
-void Oscillator_Init_Osc_Quartz(){
+/*void Oscillator_Init_Osc_Quartz(){
 		int i = 0;
     OSCXCN    = 0x67;  // Config de l'horloge externe - Quartz > 6,7 MHz
     for (i = 0; i < 3000; i++){} // attente stabilisation Fosc quartz
     while ((OSCXCN & 0x80) == 0); // validation stabilite du quartz
     OSCICN    = 0x0C;  // Commutation sur oscillateur externe 
 	                     // L'oscillateur n'est pas stopp
+}*/
+
+void Oscillator_Init()
+{
+    int i = 0;
+    OSCXCN    = 0x67;
+    for (i = 0; i < 3000; i++);  // Wait 1ms for initialization
+    while ((OSCXCN & 0x80) == 0);
+    OSCICN    = 0x0C;
 }
+
 
 #define Preload_Timer0 (SYSCLK/(BAUDRATE*16))
 #if Preload_Timer0 > 255 
@@ -88,19 +99,21 @@ void Oscillator_Init_Osc_Quartz(){
 #endif 
 void cfg_Clock_UART(void) {
   CKCON |= 0x10;      // T1M: Timer 1 use the system clock.
-  TMOD |= 0x20;       //  Timer1 CLK = system clock
+  TMOD |= 0x20;       //  Timer1 auto reload
 	TMOD &= 0x2f;			  // Timer1 configure en timer 8 bit avec auto-reload	
 	TF1 = 0;				  // Flag Timer efface
 
-	TH1 = -(Preload_Timer0);
+  TH1 = 0xB8;
+	//TH1 = -(Preload_Timer0);
 	ET1 = 0;				   // Interruption Timer 1 devalidee
 	TR1 = 1;				   // Timer1 demarre
 }
 
 void cfg_UART0_mode1(void) {
+  init_Serial_Buffer();//init des buffers
 	    //Config Crossbar
 		XBR2 |= (1<<6); //Crossbar enable
-    	XBR0 |= (1<<2); //Tx -> P0.0 & Rx -> P0.1
+    XBR0 |= (1<<2); //Tx -> P0.0 & Rx -> P0.1
 		RCLK0 = 0;     // Source clock Timer 1
 		TCLK0 = 0;
 		PCON  |= 0x80; //SMOD0: UART0 Baud Rate Doubler Disabled.
@@ -112,6 +125,7 @@ void cfg_UART0_mode1(void) {
 }
 
 void cfg_UART1_mode1(void){
+  init_Serial_Buffer_uart1();//buffers
 	//crossbar
   XBR2  |= (1<<6); //Crossbar enable
 	XBR2  |= (1<<2);//Tx1 = P0.6  Rx = P0.7
@@ -126,6 +140,7 @@ void cfg_UART1_mode1(void){
 					          // pour transmettre	
   EIE2  |= (1<<6); //ES1 interruption UART1 autorisee	
 }
+
 
 
 
@@ -158,11 +173,13 @@ void Init_Timer2(void){
 void Init_Device(void) {
     Reset_Sources_Init();
     Port_IO_Init();
-    Oscillator_Init_Osc_Quartz();
+    Oscillator_Init();
+    //Oscillator_Init_Osc_Quartz();
+    Init_SPI();
     cfg_Clock_UART();
     cfg_UART0_mode1();
     cfg_UART1_mode1();
-		Init_SPI();
+		
     //Init_Timer2();
     Init_interrupt();
 }

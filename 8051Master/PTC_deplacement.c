@@ -90,6 +90,7 @@ void turn_right(int angle){
 	my_strcat(chaine,":25 2:");
 	my_strcat(chaine,my_itoa(-ticks,str));
 	my_strcat(chaine,":25\r");
+	serOutstring_uart1(chaine); //evoie du message
 	Wait_Accuse_RX_Robot();
 	angle_robot -= angle; 
 }

@@ -220,7 +220,7 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 				}
 			}
 		}
-		go_coordinates_without_obstacles(xval,yval);
+		go_coordinates_without_obstacles(xval,yval,angle);
 	}
 
 	else {
