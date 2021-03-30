@@ -9,11 +9,7 @@
 //------------------------------------------------------
 
 
-//Retourne le temps en us depuis de debut
-//Fonction a ne pas utiliser
-//@param rien
-//@return le temps en us
-unsigned long int get_time_us(void);
+
 
 //Retourne le temps en ms depuis de debut
 //@param rien

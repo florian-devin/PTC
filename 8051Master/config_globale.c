@@ -206,6 +206,7 @@ void Init_Device(void) {
     Reset_Sources_Init();
     Port_IO_Init();
     Oscillator_Init();
+    Init_Timer4();
     //Oscillator_Init_Osc_Quartz();
     Init_SPI();
     cfg_Clock_UART();

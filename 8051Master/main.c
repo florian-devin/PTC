@@ -39,9 +39,14 @@ int epreuve_enable = 0; //Flag qui pas a 1 si l'utilisateur a donné le debut de
 
 int vitesse_par_default = 20; //vitesse du robot par default (modifie par la cmd TV vitesse)
 
+unsigned char temp_servo_H = 0; //temp qu'il reste au cervo H pour rejoindre sa position en ms
+char flag_print_arrive_servo_H =0;//passe a 1 si on doit indiquer l'arrive du cervo
+unsigned long last_time_capture_servo_H =0; //dernier temp capture en ms
 
-char test[2] = {0}; //a supprimer 
 
+int x_robot = 0; //position actualle en cm
+int y_robot = 0; //position actualle en cm
+int angle_robot = 0;
 /*
 Variables globales en lien avec le telemetre
 */
@@ -59,6 +64,7 @@ void setup();
 void startup();
 void loop();
 void decodage_commande(char *Pchaine_courante);
+void envoie_info_confirmation(void);
 //ceci est un com
 //---------------------------------------------Fct pour le debug
 void my_println(const char *str){
@@ -94,6 +100,7 @@ void loop() {
 	if (Rx_chaine(chaine_courante) == 1){
 		decodage_commande(chaine_courante);
 	}
+	envoie_info_confirmation();
 
 }
 
@@ -104,7 +111,7 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 	if (my_strcmp(commande,"D")){
 		char str_type_epreuve[2] = {0};
 		get_param(Pchaine_courante, 1, str_type_epreuve);
-		my_strcat(test, str_type_epreuve);
+		//my_strcat(test, str_type_epreuve);
 		if (my_strlen(str_type_epreuve) > 0) {//il y a un parametre
 			int type_epreuve = my_atoi(str_type_epreuve);
 			if (type_epreuve > 0 && type_epreuve < 9) {
@@ -303,9 +310,9 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 					if (my_strcmp(str_param_name, "A")) {
 						char angle = (char)my_atoi(str_param_value);
 						if (angle > -91 && angle < 91) {
-							unsigned char temp_servo_H;
 							AR_cmd_correcte();
-							temp_servo_H = CDE_Servo_H(angle);
+							temp_servo_H = (char)10*CDE_Servo_H(angle);
+							flag_print_arrive_servo_H =1;
 						}
 						else
 							AR_cmd_incorrecte();
@@ -314,9 +321,9 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 						AR_cmd_incorrecte();
 				}
 				else {
-					unsigned char temp_servo_H;
 					AR_cmd_correcte();
-					temp_servo_H = CDE_Servo_H(0);
+					temp_servo_H = (char)10*CDE_Servo_H(0);
+					flag_print_arrive_servo_H =1;
 				}
 			}
 		}
@@ -329,7 +336,21 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 	RAZ_str(Pchaine_courante);
 }
  
- 
+void envoie_info_confirmation(void){
+	if (flag_print_arrive_servo_H == 1) {
+		if(temp_servo_H - (get_time_ms() - last_time_capture_servo_H) <= 0) {
+			serOutstring("AS H");
+			flag_print_arrive_servo_H = 0;
+		}
+		else {
+			temp_servo_H -= (get_time_ms() - last_time_capture_servo_H);
+			last_time_capture_servo_H = get_time_ms();
+		}
+	}
+}
+
+
+
 void Interrupt_Time(void) interrupt 16 {//interruption declancher par l'overflow du Timer 0 (toutes les us)
 	T4CON &= ~(1<<7); //interrupt flag
     Time_increment();
@@ -338,7 +359,6 @@ void Interrupt_Time(void) interrupt 16 {//interruption declancher par l'overflow
 /*
 Interruption genere par INT6 permettant de mesurer le temps a l'etat haut du signal Echo
 */
-
 void int6 () interrupt 18
 {
 	if ((P3IF & 0x04) == 0x04)
@@ -370,7 +390,6 @@ void int6 () interrupt 18
 Interruprion overflow Timer2
 Permet de rappeler la commande de detection d'obstacle si temps d'acquisition trop long
 */
-
 void intT2 () interrupt 5
 {
 	int* bool_trig_AV;
@@ -383,49 +402,3 @@ void intT2 () interrupt 5
 	}
 	TF2 = 0;
 }
-
-/*
-void Interrupt_UART0(void) interrupt 4 { //interruption declanch�e par l'UART0
-    if (RI0 == 1){//si on vient de recevoir un caractere
-			caractere_recu_fct_uart0(SBUF0);
-      //caractere_recu = SBUF0;
-    }
-		else {
-			Flag_TX0_fct();
-		}
-			
-	  RI0 = 0; //Rx flag
-		TI0 = 0;
-		
-}
-
-
-void Interrupt_UART1(void) interrupt 20 { //interruption declanch�e par l'UART0
-    if ((SCON1 & 0x01) == 0x01){//si on vient de recevoir un caractere
-			caractere_recu_fct_uart1(SBUF1);
-			Flag_RX1_fct();
-    }
-	else {
-		Flag_TX1_fct();
-	}
-		SCON1 &= ~(1<<0);//Rx flag
-		SCON1 &= ~(1<<1);//Tx flag
-}
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

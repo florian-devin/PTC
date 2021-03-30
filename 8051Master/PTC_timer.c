@@ -14,7 +14,7 @@
 #define FREQ_CLK 22118400
 #define DELAY_1US 1
 
-unsigned long int Time_us = 0;
+unsigned long int Time_ms = 0;
 //fonctions de temp
 //necesite une variable globale Time_us
 //necesite l'activation des timer comme tels:
@@ -30,15 +30,12 @@ unsigned long int Time_us = 0;
 
 
 void Time_increment(void){
-	Time_us++;
+	Time_ms++;
 }
 
-unsigned long int get_time_us(void){
-    return Time_us;
-}
 
 unsigned long int get_time_ms(void){
-    return(Time_us/1000);
+    return(Time_ms);
 }
 
 void Delay(const unsigned long time_ms){

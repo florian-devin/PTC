@@ -26,9 +26,9 @@
 
 //variables globales pour la fct go_coordinates
 char flag_calcule_angle = 1;
-int x_robot = 0; //position actualle en cm
-int y_robot = 0; //position actualle en cm
-int angle_robot = 0;
+extern int x_robot; //position actualle en cm
+extern int y_robot; //position actualle en cm
+extern int angle_robot; //angle actualle en deg
 
 short teta_angle_dest = 0;//angle des coordonnees cible
 
