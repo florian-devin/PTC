@@ -29,6 +29,7 @@ char flag_calcule_angle = 1;
 int x_robot = 0; //position actualle en cm
 int y_robot = 0; //position actualle en cm
 int angle_robot = 0;
+
 short teta_angle_dest = 0;//angle des coordonnees cible
 
 int angle_initial = 0; //l'angle est remi a zero a chanque appelle de go_coordinates_without_obstacles et il permet a la fct de positionner le robot sur un certain angle a la fin du deplacement
@@ -87,9 +88,9 @@ int get_encoder(char *Id){
 
 
 void turn_right(int angle){
-	int ticks       = angle*1165/90;
+	long ticks      = (angle*(long)1165)/(long)90;
 	char chaine[32] = "digo 1:";
-	char str[8] = {0};
+	char str[12] = {0};
 	my_strcat(chaine,my_itoa(ticks,str));
 	my_strcat(chaine,":25 2:");
 	my_strcat(chaine,my_itoa(-ticks,str));
