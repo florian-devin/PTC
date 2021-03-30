@@ -273,20 +273,48 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 		else if (my_strcmp(commande,"CS")) {
 			char str_param[2] = {0};
 			get_param(Pchaine_courante,1,str_param);
-			if (my_strcmp(str_param, "V")) {
+			if (my_strcmp(str_param, "V")) { //cervo vertical
 				AR_cmd_correcte();
 				//TODO commande cervo vertical
 			}
-			else if (my_strcmp(str_param, "A")) { //cervo par default H
-				char str_param_name[2] = {0};
+			else if (str_param[0] == 'A') { //cervo par default H
+				char str_param_name[2]  = {0};
 				char str_param_value[4] = {0};
-				get_complex_param(Pchaine_courante, str_param_name, str_param_value);
+				get_complex_param(str_param, str_param_name, str_param_value);
 				if (my_strcmp(str_param_name, "A")) {
-					int angle = my_atoi(str_param_value);
+					char angle = (char)my_atoi(str_param_value);
 					if (angle > -91 && angle < 91) {
-						
+						AR_cmd_correcte();
+						CDE_Servo_H(angle);
 					}
-
+					else
+						AR_cmd_incorrecte();
+				}
+				else
+					AR_cmd_incorrecte();
+			}
+			else if (my_strcmp(commande,"H")) {//cervo horizontal 
+				char str_param[8] = {0};
+				get_param(Pchaine_courante, 2,str_param);
+				if (my_strlen(str_param) > 0) {
+					char str_param_name[2]  = {0};
+					char str_param_value[4] = {0};
+					get_complex_param(str_param, str_param_name, str_param_value);
+					if (my_strcmp(str_param_name, "A")) {
+						char angle = (char)my_atoi(str_param_value);
+						if (angle > -91 && angle < 91) {
+							AR_cmd_correcte();
+							CDE_Servo_H(angle);
+						}
+						else
+							AR_cmd_incorrecte();
+					}
+					else
+						AR_cmd_incorrecte();
+				}
+				else {
+					AR_cmd_correcte();
+					CDE_Servo_H(0);
 				}
 			}
 		}

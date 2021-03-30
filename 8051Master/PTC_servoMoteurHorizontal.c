@@ -7,8 +7,10 @@
 // Destination: 8150F020 Carte Master
 // Description: déplacement Horizontal du servo moteur 
 //------------------------------------------------------
-
+#include "c8051F020_SFR16.h"
+#include "c8051F020.h"
 #include "PTC_servoMoteurHorizontal.h"
+#include <math.h>
 
 // variables
 char  Angle_actuel = 90; // Angle actuel du servomoteur
