@@ -24,7 +24,9 @@
 #include "PTC_detection.h"
 #include "PTC_telemetre.h"
 #include "PTC_servoMoteurHorizontal.h"
+#include <math.h>
 
+#define POURCENTAGE_ERREUR_TICK 10 //pourcentage d'erreur accepter sur le dif des encodeurs
 
 //TODO faire le retour de communication vers la centrale
 //-----------------------------------------------------------------------------
@@ -47,6 +49,11 @@ unsigned long last_time_capture_servo_H =0; //dernier temp capture en ms
 int x_robot = 0; //position actualle en cm
 int y_robot = 0; //position actualle en cm
 int angle_robot = 0;
+char flag_go_coordinates = 0;
+int angle_glob, coord_x_glob, coord_y_glob;//pour retenir les pos demander par l'utilisateur
+char flag_actu_coord_robot = 1; //1 si il faut actualiser ses coord
+long tick_motor_1 = 0; //nb de tick en temp presque reel
+long tick_motor_2 = 0;
 /*
 Variables globales en lien avec le telemetre
 */
@@ -65,6 +72,7 @@ void startup();
 void loop();
 void decodage_commande(char *Pchaine_courante);
 void envoie_info_confirmation(void);
+void actu_coord_robot(void);
 //ceci est un com
 //---------------------------------------------Fct pour le debug
 void my_println(const char *str){
@@ -101,6 +109,7 @@ void loop() {
 		decodage_commande(chaine_courante);
 	}
 	envoie_info_confirmation();
+	actu_coord_robot(); 
 
 }
 
@@ -349,7 +358,27 @@ void envoie_info_confirmation(void){
 	}
 }
 
-
+void actu_coord_robot() {
+	if (flag_go_coordinates == 1) {
+		go_coordinates_without_obstacles(coord_x_glob, coord_y_glob, angle_glob);
+	}
+	if (flag_actu_coord_robot == 1) {
+		long nb_ticks_encoder_1 = get_encoder("1");
+		long nb_ticks_encoder_2 = get_encoder("2");
+		long nb_ticks_mot_1 = nb_ticks_encoder_1-tick_motor_1;
+		long nb_ticks_mot_2 = nb_ticks_encoder_2-tick_motor_2;
+		tick_motor_1 = nb_ticks_encoder_1;
+		tick_motor_2 = nb_ticks_encoder_2;
+		//long nb_ticks_moy   =  (long)(nb_ticks_mot_2 + nb_ticks_mot_1)/ 2;
+		if ((100*(nb_ticks_mot_1 - nb_ticks_mot_2)/nb_ticks_mot_1) > POURCENTAGE_ERREUR_TICK) {//si il ne sont pas egales, le robot a tourne 
+			//TODO on calcule le nouvel angle	
+		}
+		else { //le robot est alé tout droit 
+			x_robot = (long)(cos(angle_robot)*nb_ticks_mot_1)/(long)33;// 33.1 ticks / cm
+			y_robot = (long)(sin(angle_robot)*nb_ticks_mot_1)/(long)33;// 33.1 ticks / cm
+		}
+	}
+}
 
 void Interrupt_Time(void) interrupt 16 {//interruption declancher par l'overflow du Timer 0 (toutes les us)
 	T4CON &= ~(1<<7); //interrupt flag

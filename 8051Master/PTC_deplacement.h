@@ -19,7 +19,7 @@ void Reculer(char *str_vitesse);
 //Demmande au serializer darreter les moteurs
 void Stop(void);
 
-int get_encoder(char Id);
+long get_encoder(char *Id);
 
 //Effectue un angle a droite (TODO)
 //@param angle en degre
