@@ -63,6 +63,9 @@ void cfg_UART0_mode1(void);
 //initialise l'UART1 avec le Timer 1 en BaudRate generator (19200baud/s)
 void cfg_UART1_mode1(void);
 
+//initialise le Timer2 en mode capture
+void Init_Timer2(void);
+
 //initialise la liaison SPI 
 //Fonction pas encore devellope
 //@param rien
