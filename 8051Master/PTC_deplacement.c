@@ -30,7 +30,7 @@ extern char flag_go_coordinates;
 extern int x_robot; //position actualle en cm
 extern int y_robot; //position actualle en cm
 extern int angle_robot; //angle actualle en deg
-int angle_glob, coord_x_glob, coord_y_glob;
+extern int angle_glob, coord_x_glob, coord_y_glob;
 short teta_angle_dest = 0;//angle des coordonnees cible
 
 int angle_initial = 0; //l'angle est remi a zero a chanque appelle de go_coordinates_without_obstacles et il permet a la fct de positionner le robot sur un certain angle a la fin du deplacement
@@ -88,13 +88,15 @@ long get_encoder(char *Id){
 	my_strcat(chaine, "\r");
 	serOutstring_uart1(chaine); //evoie du message
 	while ((c=serInchar_uart1())!='>'){
-		reponse[i] = c;
-		i++;
+		if (c != '\0'){
+			reponse[i] = c;
+			i++;
+		}
 	}
 	len_reponse = (char)my_strlen(reponse);
 	reponse[len_reponse-1] = '\0'; //suppresion de '>'
 	reponse[len_reponse-2] = '\0'; //suppresion de '\r'
-	return((long)my_atoi((int)reponse));
+	return(my_atoi(reponse));
 }
 
 
