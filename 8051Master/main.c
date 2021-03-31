@@ -51,9 +51,9 @@ int y_robot = 0; //position actualle en cm
 int angle_robot = 0;
 char flag_go_coordinates = 0;
 int angle_glob, coord_x_glob, coord_y_glob;//pour retenir les pos demander par l'utilisateur
-char flag_actu_coord_robot = 1; //1 si il faut actualiser ses coord
-long tick_motor_1 = 0; //nb de tick en temp presque reel
-long tick_motor_2 = 0;
+char state_go_coordinates = 0; //machine d'etat pour la fonction go_coordinates_without_obstacles()
+int go_coordinates_x, go_coordinates_y, go_coordinates_angle;
+
 /*
 Variables globales en lien avec le telemetre
 */
@@ -105,11 +105,13 @@ void startup(){
 }
 	
 void loop() {
-	if (Rx_chaine(chaine_courante) == 1){
+	if (Rx_chaine(chaine_courante) == 1) {
 		decodage_commande(chaine_courante);
 	}
+	if (state_go_coordinates > 0) {
+		go_coordinates_without_obstacles(go_coordinates_x, go_coordinates_y, go_coordinates_angle);
+	}
 	envoie_info_confirmation();
-	actu_coord_robot(); 
 
 }
 
@@ -267,6 +269,8 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 					}
 				}
 			}
+			state_go_coordinates = 1; //activation de la machine d'etat pour rejoindre les ccords
+
 			go_coordinates_without_obstacles(xval,yval,angle);
 		}
 
@@ -358,27 +362,7 @@ void envoie_info_confirmation(void){
 	}
 }
 
-void actu_coord_robot() {
-	if (flag_go_coordinates == 1) {
-		go_coordinates_without_obstacles(coord_x_glob, coord_y_glob, angle_glob);
-	}
-	if (flag_actu_coord_robot == 1) {
-		long nb_ticks_encoder_1 = get_encoder("1");
-		long nb_ticks_encoder_2 = get_encoder("2");
-		long nb_ticks_mot_1 = nb_ticks_encoder_1-tick_motor_1;
-		long nb_ticks_mot_2 = nb_ticks_encoder_2-tick_motor_2;
-		tick_motor_1 = nb_ticks_encoder_1;
-		tick_motor_2 = nb_ticks_encoder_2;
-		//long nb_ticks_moy   =  (long)(nb_ticks_mot_2 + nb_ticks_mot_1)/ 2;
-		if ((100*(nb_ticks_mot_1 - nb_ticks_mot_2)/nb_ticks_mot_1) > POURCENTAGE_ERREUR_TICK) {//si il ne sont pas egales, le robot a tourne 
-			//TODO on calcule le nouvel angle	
-		}
-		else { //le robot est alé tout droit 
-			x_robot = (long)(cos(angle_robot)*nb_ticks_mot_1)/(long)33;// 33.1 ticks / cm
-			y_robot = (long)(sin(angle_robot)*nb_ticks_mot_1)/(long)33;// 33.1 ticks / cm
-		}
-	}
-}
+
 
 void Interrupt_Time(void) interrupt 16 {//interruption declancher par l'overflow du Timer 0 (toutes les us)
 	T4CON &= ~(1<<7); //interrupt flag

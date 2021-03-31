@@ -227,6 +227,7 @@ void Init_Device(void) {
 
 void Init_Robot(){
   Robot_restore();
+  //TODO Config l'encoder
 }
 
 void Robot_restore(){

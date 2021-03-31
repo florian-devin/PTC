@@ -19,16 +19,21 @@ void Reculer(char *str_vitesse);
 //Demmande au serializer darreter les moteurs
 void Stop(void);
 
+//Demande au serializer le compteur de l'encoder Id
+//@param Id Id de l'encoder ("1" ou "2")
+//@return le compteur 
 long get_encoder(char *Id);
+
+//Demande au serializer le reinitialiser le compteur de l'encoder Id
+//@param Id Id de l'encoder ("1" ou "2")
+void RAZ_encoder(char *Id);
 
 //Effectue un angle a droite (TODO)
 //@param angle en degre
-//@return rien
 void turn_right(int angle);
 
 //Effectue un angle a gauche (TODO)
 //@param angle en degre
-//@return rien
 void turn_left(int angle);
 
 //Permet au robot de rejoindre les coordonnees indiques les robot peut eviter les obstacles
@@ -38,16 +43,3 @@ void turn_left(int angle);
 void go_coordinates_without_obstacles(int coord_x, int coord_y, int angle);
 
 
-/*
-//Permet au robot de rejoindre les coordonnees indiques les robot peut eviter les obstacles
-//@param coord_x coordonnee X en cm 
-//@param coord_y coordonnee Y en cm
-//@return 1 si on est arrive 0 sinon
-int go_coordinates(int coord_x, int coord_y);
-
-//Contourne l'obstacle (fonction bloquante a ameliorer) //TODO : rendre cette fonction plus blocante
-//@param void
-//@return void
-void bypass_obstacle();
-
-*/
