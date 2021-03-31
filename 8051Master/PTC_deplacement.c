@@ -23,13 +23,14 @@
 #define AUTO_SPEED_FAST 30		  //vitesse de depplacement lorsque le robot rejoit automatiquement des coordonnees
 #define AUTO_SPEED_SLOW 10
 #define DISTANCE_DETECTION 10 //distance de detection des obstacle
+#define POURCENTAGE_ERREUR_POS_ROBOT 5 //en %
 
 //variables globales pour la fct go_coordinates
-char flag_calcule_angle = 1;
+extern char flag_go_coordinates;
 extern int x_robot; //position actualle en cm
 extern int y_robot; //position actualle en cm
 extern int angle_robot; //angle actualle en deg
-
+extern int angle_glob, coord_x_glob, coord_y_glob;
 short teta_angle_dest = 0;//angle des coordonnees cible
 
 int angle_initial = 0; //l'angle est remi a zero a chanque appelle de go_coordinates_without_obstacles et il permet a la fct de positionner le robot sur un certain angle a la fin du deplacement
@@ -78,12 +79,24 @@ void Stop(void){
 	//Wait_Accuse_RX_Robot();
 }
 
-int get_encoder(char *Id){
+long get_encoder(char *Id){
 	char chaine[32] = "getenc";
+	char reponse[16] = {0};
+	char c,i = 0;
+	char len_reponse = 0;
 	my_strcat(chaine, Id);
 	my_strcat(chaine, "\r");
 	serOutstring_uart1(chaine); //evoie du message
-	return 0;
+	while ((c=serInchar_uart1())!='>'){
+		if (c != '\0'){
+			reponse[i] = c;
+			i++;
+		}
+	}
+	len_reponse = (char)my_strlen(reponse);
+	reponse[len_reponse-1] = '\0'; //suppresion de '>'
+	reponse[len_reponse-2] = '\0'; //suppresion de '\r'
+	return(my_atoi(reponse));
 }
 
 
@@ -108,41 +121,45 @@ void turn_left(int angle){
 
 
 void go_coordinates_without_obstacles(int coord_x, int coord_y, int angle){
-	angle_initial = 0;
-	if (coord_x != x_robot && coord_y != y_robot){
-		if (flag_calcule_angle == 1){
+	if ((100*abs(coord_x - x_robot)/coord_x) > POURCENTAGE_ERREUR_POS_ROBOT && (100*abs(coord_y - y_robot)/coord_y) > POURCENTAGE_ERREUR_POS_ROBOT){
+		if (flag_go_coordinates == 1){
+			coord_x_glob = coord_x;
+			coord_y_glob = coord_y;
+			angle_glob   = angle;
+			angle_initial = 0;
 			teta_angle_dest = (int)(180.0 * atan2((coord_x - x_robot),(coord_y - y_robot))/PI);
-			if (teta_angle_dest - angle_robot != 0){ //aligne le robot dans la direction des coordonnee
-				turn_right(teta_angle_dest - angle_robot);
-				angle_initial -= teta_angle_dest - angle_robot;
-			}
-			flag_calcule_angle = 0;
-		} 
-		if (flag_calcule_angle == 0){
+			turn_right(teta_angle_dest - angle_robot);//aligne le robot dans la direction des coordonnee
+			angle_initial -= teta_angle_dest - angle_robot;
+			flag_go_coordinates = 0;
+		}
+		if (flag_go_coordinates == 0){
 			char str_vitesse[5] = {0};
 			char str_distance[10] = {0};
 			my_itoa(AUTO_SPEED_FAST,str_vitesse);
 			my_itoa((int)(624*sqrt((coord_x - x_robot)*(coord_x - x_robot) + (coord_y - y_robot)*(coord_y - y_robot))/(PI*60)),str_distance);
 			Parcour_dist(str_distance,str_vitesse);
-			x_robot = coord_x;
-			y_robot = coord_y;
 			if (angle != angle_initial) {
 				turn_right(angle - angle_initial);
 			}
-			flag_calcule_angle = 1;
+			flag_go_coordinates = 1;
 		}
+	}
+	else {//changer l'angle (on a attient les coords)
+		turn_right(angle - angle_initial);
+		flag_go_coordinates = 0; //raz du flag 
+		serOutchar('B');//arrive a la fin
 	}
 }
 
 /*
 int go_coordinates(int coord_x, int coord_y){
 	if (coord_x != x_robot || coord_y != y_robot){
-		if (flag_calcule_angle == 1){
+		if (flag_go_coordinates == 1){
 			teta_angle_dest = my_atan((coord_x - x_robot)/(coord_y - y_robot));
 			if (teta_angle_dest - angle_robot != 0){ //aligne le robot dans la direction des coordonnee
 				turn_right(teta_angle_dest - angle_robot);
 			}
-			flag_calcule_angle = 0;
+			flag_go_coordinates = 0;
 		} 
 		else {
 			if (can_go(DISTANCE_DETECTION))
@@ -168,13 +185,13 @@ void bypass_obstacle(){
 		while (!can_go_left(DISTANCE_DETECTION))
 			Avancer(AUTO_SPEED_SLOW);
 		Stop();
-		flag_calcule_angle = 1;
+		flag_go_coordinates = 1;
 	}
 	else if (can_go_left(DISTANCE_DETECTION)){
 		turn_left(90);
 		while (!can_go_right(DISTANCE_DETECTION))
 			Avancer(AUTO_SPEED_SLOW);
 		Stop();
-		flag_calcule_angle = 1;
+		flag_go_coordinates = 1;
 	}
 }*/
