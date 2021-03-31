@@ -10,6 +10,7 @@ foo.txt
 *.m51
 *.obj
 *.florian
+*.Thomas
 *.devin
 *.out
 *.mario

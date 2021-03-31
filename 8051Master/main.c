@@ -93,7 +93,6 @@ void main(){
     }
 }
 
-
 void setup(){
   Init_Device(); //fonction de config_globale.c
   Init_Robot(); //rst de la carte serial etc...

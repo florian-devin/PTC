@@ -92,13 +92,15 @@ long get_encoder(char *Id){
 	my_strcat(chaine, "\r");
 	serOutstring_uart1(chaine); //evoie du message
 	while ((c=serInchar_uart1())!='>'){
-		reponse[i] = c;
-		i++;
+		if (c != '\0'){
+			reponse[i] = c;
+			i++;
+		}
 	}
 	len_reponse = (char)my_strlen(reponse);
 	reponse[len_reponse-1] = '\0'; //suppresion de '>'
 	reponse[len_reponse-2] = '\0'; //suppresion de '\r'
-	return((long)my_atoi((int)reponse));
+	return(my_atoi(reponse));
 }
 
 void RAZ_encoder(char *Id) {
@@ -111,13 +113,13 @@ void RAZ_encoder(char *Id) {
 
 
 void turn_right(int angle){
-	long ticks      = (angle*(long)1165)/(long)90;
+	long ticks      = -(angle*(long)1165)/(long)200;
 	char chaine[32] = "digo 1:";
 	char str[12] = {0};
 	my_strcat(chaine,my_itoa(ticks,str));
-	my_strcat(chaine,":25 2:");
+	my_strcat(chaine,":5 2:");
 	my_strcat(chaine,my_itoa(-ticks,str));
-	my_strcat(chaine,":25\r");
+	my_strcat(chaine,":5\r");
 	serOutstring_uart1(chaine); //evoie du message
 	//Wait_Accuse_RX_Robot();
 	while (serInchar_uart1()==0); //attend un caractere de retour
@@ -153,7 +155,7 @@ void go_coordinates_without_obstacles(int coord_x, int coord_y, int angle){
 		state_go_coordinates = 4;
 	}
 	else if (state_go_coordinates == 4){  //on get si on est arrive
-		if (get_encoder("1") > str_distance_go_coord - 10) // 10 est l'erreur sur les ticks
+		if (get_encoder("1") > (str_distance_go_coord - 10)) // 10 est l'erreur sur les ticks
 			state_go_coordinates = 5;
 	}
 

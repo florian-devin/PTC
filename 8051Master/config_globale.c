@@ -39,7 +39,7 @@ void Port_IO_Init() {
     // P0.6  -  Tx1,         Pull-push, Digital
     // P0.7  -  Rx1,         Open-Drain, Digital
 
-    // P1.0  -  Unassigned,  Open-Drain, Digital
+    // P1.0  -  Servo H   ,  Puss_pull, Digital
     // P1.1  -  Unassigned,  Open-Drain, Digital
     // P1.2  -  Unassigned,  Open-Drain, Digital
     // P1.3  -  Unassigned,  Open-Drain, Digital
@@ -70,9 +70,10 @@ void Port_IO_Init() {
 
 		P0MDOUT |= (1<<0); //P0.0
 		P0MDOUT |= (1<<6); //P0.6
+		P1MDOUT |= (1<<0); //P1.0 servo
     XBR1 |= 0x40; // Validation crossbar T2EX
     XBR2 |= 0x40; //enable le crossbar
-    XBR0 |= 0x08; // route le signal CEX0 sur un port pin (servo) 
+    XBR0 |= (1<<3); // route le signal CEX0 sur un port pin (servo) 
     P3MDOUT |= 0x02; //Configuration P3.1 en push-pull
 	  INT6 = 1; // Configuration de P3.6 en input
 	  // Sensibilité de /INT6 initialement mise a front montant
@@ -207,6 +208,7 @@ void Init_Device(void) {
     Port_IO_Init();
     Oscillator_Init();
     Init_Timer4();
+    Init_PCA();
     //Oscillator_Init_Osc_Quartz();
     Init_SPI();
     cfg_Clock_UART();
