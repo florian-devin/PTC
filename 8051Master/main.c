@@ -240,7 +240,7 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 		else if (my_strcmp(commande,"G")) { //rejoit des coordonnee
 			int xval, yval, angle;
 			char i;
-			for (i = 1; i < 4; i++) {
+			for (i = 0; i < 3; i++) {
 				char str_param[32] 	   = {0};
 				char str_name_param[2] = {0};
 				char str_val_param[6]  = {0};
@@ -250,27 +250,31 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 					xval = 10 * my_atoi(str_val_param);
 					if (xval < -9900 || xval > 9900) {
 						AR_cmd_incorrecte();
-						return;
+						return; //on sort de la fonction
 					}
 				}
 				else if (my_strcmp(str_name_param,"Y")){
 					yval = 10 * my_atoi(str_val_param);
 					if (yval < -9900 || yval > 9900) {
 						AR_cmd_incorrecte();
-						return;
+						return; //on sort de la fonction
 					}
 				}
 				else if (my_strcmp(str_name_param,"A")){
 					angle = my_atoi(str_val_param);
-					if (xval < -180 || xval > 180) {
+					if (angle < -180 || angle > 180) {
 						AR_cmd_incorrecte();
-						return;
+						return; //on sort de la fonction
 					}
 				}
+				else 
+					AR_cmd_correcte();
+						
 			}
 			state_go_coordinates = 1; //activation de la machine d'etat pour rejoindre les ccords
-
-			go_coordinates_without_obstacles(xval,yval,angle);
+			go_coordinates_x     = xval;
+			go_coordinates_y     = yval;
+			go_coordinates_angle = angle;
 		}
 
 		else if (my_strcmp(commande,"TV")) {
@@ -339,7 +343,6 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 				}
 			}
 		}
-
 		else 
 			AR_cmd_incorrecte();
 	}

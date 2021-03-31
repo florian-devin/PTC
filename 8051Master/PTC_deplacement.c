@@ -86,20 +86,19 @@ void Stop(void){
 long get_encoder(char *Id){
 	char chaine[32] = "getenc";
 	char reponse[16] = {0};
-	char c,i = 0;
+	char c,i,n,o = 0;
 	char len_reponse = 0;
 	my_strcat(chaine, Id);
 	my_strcat(chaine, "\r");
 	serOutstring_uart1(chaine); //evoie du message
 	while ((c=serInchar_uart1())!='>'){
-		if (c != '\0'){
-			reponse[i] = c;
+		if (c != '\0' || c < 48 || c > 39){
+			reponse[i] = c; //TODO comprendre pourquoi on reste bloquer ici (c= 0)
 			i++;
 		}
 	}
-	len_reponse = (char)my_strlen(reponse);
-	reponse[len_reponse-1] = '\0'; //suppresion de '>'
-	reponse[len_reponse-2] = '\0'; //suppresion de '\r'
+	//TODO mieux gerer la suppresion des characeter speciaux
+	
 	return(my_atoi(reponse));
 }
 
@@ -155,7 +154,7 @@ void go_coordinates_without_obstacles(int coord_x, int coord_y, int angle){
 		state_go_coordinates = 4;
 	}
 	else if (state_go_coordinates == 4){  //on get si on est arrive
-		if (get_encoder("1") > (str_distance_go_coord - 10)) // 10 est l'erreur sur les ticks
+		if (get_encoder("1") > (long)(str_distance_go_coord - 10)) // 10 est l'erreur sur les ticks
 			state_go_coordinates = 5;
 	}
 
