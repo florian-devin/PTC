@@ -205,7 +205,7 @@ Permet de rappeler la commande de detection d'obstacle si temps d'acquisition tr
 */
 void intT2 () interrupt 5
 {
-	int* bool_trig_AV;
+	int *bool_trig_AV;
 	bool_trig_AV = get_bool_trig_AV();
 	measureCycle += 1;
 	if (measureCycle == 21) // 60.9 ms
