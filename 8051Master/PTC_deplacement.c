@@ -93,12 +93,10 @@ long get_encoder(char *Id){
 	serOutstring_uart1(chaine); //evoie du message
 	while ((c=serInchar_uart1())!='>'){
 		if (c != '\0' || c < 48 || c > 39){
-			reponse[i] = c; //TODO comprendre pourquoi on reste bloquer ici (c= 0)
+			reponse[i] = c; 
 			i++;
 		}
 	}
-	//TODO mieux gerer la suppresion des characeter speciaux
-	
 	return(my_atoi(reponse));
 }
 
@@ -148,13 +146,13 @@ void go_coordinates_without_obstacles(int coord_x, int coord_y, int angle){
 		char str_vitesse[5] = {0};
 		RAZ_str(str_distance_go_coord); 
 		my_itoa(AUTO_SPEED_FAST,str_vitesse);
-		my_itoa((int)(624*sqrt((coord_x - x_robot)*(coord_x - x_robot) + (coord_y - y_robot)*(coord_y - y_robot))/(PI*60)),str_distance_go_coord);
+		my_itoa((int)(624*sqrt((coord_x - x_robot)*(coord_x - x_robot) + (coord_y - y_robot)*(coord_y - y_robot))*(PI*60)),str_distance_go_coord);
 		RAZ_encoder("1");
 		Parcour_dist(str_distance_go_coord, str_vitesse);
 		state_go_coordinates = 4;
 	}
 	else if (state_go_coordinates == 4){  //on get si on est arrive
-		if (get_encoder("1") > (long)(str_distance_go_coord - 10)) // 10 est l'erreur sur les ticks
+		if (get_encoder("1") > (long)(my_atoi(str_distance_go_coord) - 10)) // 10 est l'erreur sur les ticks
 			state_go_coordinates = 5;
 	}
 

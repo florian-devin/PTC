@@ -30,7 +30,7 @@ unsigned long int Time_ms = 0;
 
 
 void Time_increment(void){
-	Time_ms++;
+	Time_ms+=10;
 }
 
 
