@@ -28,39 +28,36 @@
 
 #define POURCENTAGE_ERREUR_TICK 10 //pourcentage d'erreur accepter sur le dif des encodeurs
 
-//TODO faire le retour de communication vers la centrale
+
 //-----------------------------------------------------------------------------
-//variables globales
+//-----------------------------------------------------------variables globales
+
 //En lien avec l'UART0
-//char interrupt_out = 0;        //mon flag pour le caractere recu
-//char caractere_recu = '\0';    //caractere qui vient d'etre recu
 char chaine_courante[64] = {0};//chaine total qui vas contenir le mot recu (20 caractere max)
 
-int epreuve_enable = 0; //Flag qui pas a 1 si l'utilisateur a donné le debut de l'epreuve
-
-
+//En lien avec le comportement du robot
+int epreuve_enable 		= 0 ; //Flag qui passe a 1 si l'utilisateur a donné le debut de l'epreuve
 int vitesse_par_default = 20; //vitesse du robot par default (modifie par la cmd TV vitesse)
 
-unsigned char temp_servo_H = 0; //temp qu'il reste au cervo H pour rejoindre sa position en ms
-char flag_print_arrive_servo_H =0;//passe a 1 si on doit indiquer l'arrive du cervo
-unsigned long last_time_capture_servo_H =0; //dernier temp capture en ms
+//En lien avec le cervo-moteur Horizontal
+unsigned char 	temp_servo_H 				= 0; //temp qu'il reste au cervo H pour rejoindre sa position en ms
+char 			flag_print_arrive_servo_H 	= 0; //passe a 1 si on doit indiquer l'arrive du cervo
+unsigned long 	last_time_capture_servo_H 	= 0; //dernier temp capture en ms
 
+//En lien avec la position actuelle du robot
+int x_robot 	= 0; //position actualle en cm
+int y_robot 	= 0; //position actualle en cm
+int angle_robot = 0; //angle du robot en deg
 
-int x_robot = 0; //position actualle en cm
-int y_robot = 0; //position actualle en cm
-int angle_robot = 0;
-char flag_go_coordinates = 0;
-int angle_glob, coord_x_glob, coord_y_glob;//pour retenir les pos demander par l'utilisateur
-char state_go_coordinates = 0; //machine d'etat pour la fonction go_coordinates_without_obstacles()
-int go_coordinates_x, go_coordinates_y, go_coordinates_angle;
+//En lien avec la fonctionnalite FCT_02 (rejoindre des coordonnees)
+char state_go_coordinates 	= 0; //machine d'etat pour la fonction go_coordinates_without_obstacles()
+int go_coordinates_x, go_coordinates_y, go_coordinates_angle;//pour retenir les pos demander par l'utilisateur
 
-/*
-Variables globales en lien avec le telemetre
-*/
-
-sbit commandCapture = P3^3; // Commande la capture du timer2
-int measureCycle = 1; // Compte le nombre d'overflow du Timer 2
-
+//En lien avec le telemetre
+sbit 	commandCapture 	= P3^3; // Commande la capture du timer2
+int 	measureCycle 	= 1	  ; // Compte le nombre d'overflow du Timer 2
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 //En lien avec le temp
 //-----------------------------------------------------------------------------
