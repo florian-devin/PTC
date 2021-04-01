@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\slave.obj",
+".\Objects\SPI_RingBuffer_Slave.obj" 
+TO ".\Objects\test slave SPI" 
+PRINT(".\Listings\test slave SPI.m51") RAMSIZE(256) 

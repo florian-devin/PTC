@@ -1,5 +1,5 @@
 ".\Objects\STARTUP.obj",
 ".\Objects\master.obj",
-".\Objects\SPI_RingBuffer_lib.obj" 
+".\Objects\SPI_RingBuffer_Master.obj" 
 TO ".\Objects\test master SPI" 
 PRINT(".\Listings\test master SPI.m51") RAMSIZE(256) 

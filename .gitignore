@@ -19,3 +19,4 @@ foo.txt
 !foo.html
 # Ignorer les objets et les archives
 *.[oa]
+Documentation/~$Taches.xlsx

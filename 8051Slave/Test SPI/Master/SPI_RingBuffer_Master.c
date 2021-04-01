@@ -3,7 +3,7 @@
 // Heure: <TIME>
 // Nom/Prénom: Devin florian
 // Email: <florian.devin@cpe.fr>
-// Nom: SPI_RingBuffer_lib.c
+// Nom: SPI_RingBuffer_Master.c
 // Destination: 8150F020 Carte Master
 // Description: Fonctions pour l'SPI avec buffer circ
 //------------------------------------------------------
@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <intrins.h>
 #include <string.h>
-#include "SPI_RingBuffer_lib.h"
+#include "SPI_RingBuffer_Master.h"
 
 //*************************************************************************************************
 // Parametresd modifiables

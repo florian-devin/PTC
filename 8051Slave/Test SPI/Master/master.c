@@ -4,7 +4,7 @@
 
 #include "c8051F020_SFR16.h"
 #include "c8051F020.h"
-#include "SPI_RingBuffer_lib.h"
+#include "SPI_RingBuffer_Master.h"
 
 #ifndef CFG_Globale
    #define CFG_Globale
@@ -60,7 +60,7 @@ void Port_IO_Init() {
     // P0.6  -  Unassigned,  Open-Drain, Digital
     // P0.7  -  Unassigned,  Open-Drain, Digital
 
-    // P1.0  -  Unassigned,  Open-Drain, Digital
+    // P1.0  -  SS        ,  Push-Pull , Digital
     // P1.1  -  Unassigned,  Open-Drain, Digital
     // P1.2  -  Unassigned,  Open-Drain, Digital
     // P1.3  -  Unassigned,  Open-Drain, Digital
@@ -88,7 +88,9 @@ void Port_IO_Init() {
     // P3.7  -  Unassigned,  Open-Drain, Digital Input INT7
 		
 	// P4.0 to P7.7   Unassigned,  Open-Drain, Digital
-
+    P0MDOUT |= (1<<0); //SCK
+    P0MDOUT |= (1<<2); //MOSI
+    P1MDOUT |= (1<<0); //SS
 }
 
 void Init_SPI() {
@@ -107,6 +109,8 @@ void Init_SPI() {
 
     //Activation de l'interruption 
     EIE1 |= (1<<0);
+    
+    //TODO Voir si on peut placer SS a 1 en mode push-pull pour eviter d'avoir a le faire en hardware
 }
 //-------------------------------------------
 

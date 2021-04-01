@@ -4,16 +4,18 @@
 
 #include "c8051F020_SFR16.h"
 #include "c8051F020.h"
+#include "SPI_RingBuffer_Slave.h"
+
+#ifndef CFG_Globale
+   #define CFG_Globale
+   #define SYSCLK           22118400 //approximate SYSCLK frequency in Hz
+#endif
 
 
+//-------------------Declaration des ports E/S
+
+//--------------------------------------------
 //------------------------------Configurations
-
-
-
-//-------------------------------------------
-
-
-//-----------------------Programme principale
 
 void Reset_Sources_Init(){
     //Desactivation du Watchdog
@@ -22,11 +24,11 @@ void Reset_Sources_Init(){
 }
 
 void Oscillator_Init() {
-    int i = 0;
-    OSCXCN    = 0x67;
+    int i  = 0;
+    OSCXCN = 0x67;
     for (i = 0; i < 3000; i++);  // Wait 1ms for initialization
     while ((OSCXCN & 0x80) == 0);
-    OSCICN    = 0x0C;
+    OSCICN = 0x0C;
 }
 
 void Init_crossbar() {
@@ -35,10 +37,10 @@ void Init_crossbar() {
 }
 
 void Port_IO_Init() {
-    // P0.0  -  Unassigned,  Open-Drain, Digital
-    // P0.1  -  Unassigned,  Open-Drain, Digital
-    // P0.2  -  Unassigned,  Open-Drain, Digital
-    // P0.3  -  Unassigned,  Open-Drain, Digital
+    // P0.0  -  SCK       ,  Open-Drain, Digital
+    // P0.1  -  MISO      ,  Push-Pull , Digital
+    // P0.2  -  MOSI      ,  Open-Drain, Digital
+    // P0.3  -  NSS       ,  Open-Drain, Digital
     // P0.4  -  Unassigned,  Open-Drain, Digital
     // P0.5  -  Unassigned,  Open-Drain, Digital
     // P0.6  -  Unassigned,  Open-Drain, Digital
@@ -72,21 +74,33 @@ void Port_IO_Init() {
     // P3.7  -  Unassigned,  Open-Drain, Digital Input INT7
 		
 	// P4.0 to P7.7   Unassigned,  Open-Drain, Digital
-
+    P0MDOUT |= (1<<1); //MISO
 }
 
 void Init_SPI() {
     //Config de l'horloge
+    SPI0CFG &= ~(0xC0); //Polarite et etat horloge
 
+    //Actication de SPI
+    SPIEN = 1;
+
+    //Activation de l'interruption 
+    EIE1 |= (1<<0);
 }
+//-------------------------------------------
 
-void setup(){
+
+//-----------------------Programme principale
+
+
+void setup() {
     Reset_Sources_Init();
     Oscillator_Init();
     Init_crossbar();
     Port_IO_Init();
     Init_SPI();
-
+    init_Serial_Buffer_SPI();
+    EA    = 1; //interruption general enable
 }
 
 
@@ -95,11 +109,14 @@ void loop() {
 }
 
 
-
+void startup() {
+    serOutchar_SPI('s');
+} 
 
 
 void main(){
     setup();
+    startup();
     while(1) {
         loop();
     }

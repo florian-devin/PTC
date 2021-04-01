@@ -46,7 +46,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>test master SPI</OutputName>
+          <OutputName>test slave SPI</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -392,19 +392,19 @@
               <FilePath>.\c8051F020_SFR16.h</FilePath>
             </File>
             <File>
-              <FileName>master.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\master.c</FilePath>
-            </File>
-            <File>
-              <FileName>SPI_RingBuffer_Master.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\SPI_RingBuffer_Master.c</FilePath>
-            </File>
-            <File>
-              <FileName>SPI_RingBuffer_Master.h</FileName>
+              <FileName>SPI_RingBuffer_Slave.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\SPI_RingBuffer_Master.h</FilePath>
+              <FilePath>.\SPI_RingBuffer_Slave.h</FilePath>
+            </File>
+            <File>
+              <FileName>slave.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\slave.c</FilePath>
+            </File>
+            <File>
+              <FileName>SPI_RingBuffer_Slave.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SPI_RingBuffer_Slave.c</FilePath>
             </File>
           </Files>
         </Group>

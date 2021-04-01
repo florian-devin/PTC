@@ -3,7 +3,7 @@
 // Heure: <TIME>
 // Nom/Prénom: Devin florian
 // Email: <florian.devin@cpe.fr>
-// Nom: SPI_RingBuffer_lib.h
+// Nom: SPI_RingBuffer_Slave.h
 // Destination: 8150F020 Carte Master
 // Description: Fonctions pour l'SPI avec buffer circ
 //------------------------------------------------------
