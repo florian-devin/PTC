@@ -50,7 +50,7 @@ void main (void) {
  
 	  Init_Device();  // Appel des configurations globales
 	  
-// Début Insertion Code Configuration des périphériques ***********************
+// Dï¿½but Insertion Code Configuration des pï¿½riphï¿½riques ***********************
 		EA=1;
 		IE|=0x20;
 	/*
@@ -75,22 +75,27 @@ void main (void) {
 // Fin Code Initialisations ***************************************************
 	
 	
-// Début Insertion Code Phase Démarrage ***************************************	
+// Dï¿½but Insertion Code Phase Dï¿½marrage ***************************************	
     
-// Fin Code phase Démarrage	***************************************************
+// Fin Code phase Dï¿½marrage	***************************************************
 	
 	
 	while(1)
-        {
-        }				               	
+    {
+    }				               	
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-// Fonctions de configuration des divers périphériques
+// Fonctions de configuration des divers pï¿½riphï¿½riques
 //-----------------------------------------------------------------------------
-// Insérez vos fonctions de configuration ici
-
+// Insï¿½rez vos fonctions de configuration ici
+//Allume le pointeur lunineux en clignotant
+//@param Intensite intensite de la lumiere (signal PWM)
+//@param Lum_ON Temps durant lequelle la lumiere reste alume
+//@param Lum_OFF Temps durant la led est eteinte
+//@param Lum_Nbre Nomble de cycle d'allumage 
+void Lumiere (unsigned char Intensite,unsigned char Lum_ON, unsigned char Lum_OFF, unsigned char Lum_Nbre);
 
 void Lumiere (unsigned char Intensite,unsigned char Lum_ON, unsigned char Lum_OFF, unsigned char Lum_Nbre) {
 	unsigned int i;
@@ -121,7 +126,7 @@ void Lumiere_Stop (void){
 /*
 void interrupt_time(void)  1{
 	T2CON&=0x80;
-	Time_increment(); //incrémentation toutes les dms
+	Time_increment(); //incrï¿½mentation toutes les dms
 }
 */
 void interrupt_mli(void) interrupt 5{
@@ -131,15 +136,13 @@ void interrupt_mli(void) interrupt 5{
 
 		if(cpt==0){
 			reg=65536.0-2212.0*intensite/100.0;
-			RCAP2L=reg;
-			RCAP2H=reg>>8;
+			RCAP2=reg;
 			cpt+=1;
 			LED=1;
 		}
 		else{
 			reg=65536.0-2212.0*(100.0-intensite)/100.0;
-			RCAP2L=reg;
-			RCAP2H=reg>>8;		
+			RCAP2=reg;		
 			cpt=0;
 			LED=0;
 		}
@@ -151,8 +154,8 @@ void interrupt_mli(void) interrupt 5{
 void interrupt_time(void) interrupt 16{
 	T4CON&=0x7F;
 	TEST=!TEST;
-	Time_increment(); //incrémentation toutes les ms
+	Time_increment(); //incrï¿½mentation toutes les ms
 }
 
 //-----------------------------------------------------------------------------
-// Insérez vos fonctions d'interruption ici
+// Insï¿½rez vos fonctions d'interruption ici

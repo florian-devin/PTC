@@ -20,10 +20,10 @@
 
 
 extern char Flag_RX1;
-sbit INT6 = P3^6;
+sbit        INT6 = P3^6;
 
 void Reset_Sources_Init(){
-    //Desactivation du Watchdog
+  //Desactivation du Watchdog
 	 WDTCN = 0xDE;
 	 WDTCN = 0XAD;
 }

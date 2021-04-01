@@ -172,7 +172,7 @@ void Interrupt_Time(void) interrupt 16 {//interruption declancher par l'overflow
 /*
 Interruption genere par INT6 permettant de mesurer le temps a l'etat haut du signal Echo
 */
-void int6 () interrupt 18
+void int6 (void) interrupt 18
 {
 	if ((P3IF & 0x04) == 0x04)
 	{
