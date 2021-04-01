@@ -86,7 +86,7 @@ void Stop(void){
 long get_encoder(char *Id){
 	char chaine[32] = "getenc";
 	char reponse[16] = {0};
-	char c,i,n,o = 0;
+	char c,i = 0;
 	char len_reponse = 0;
 	my_strcat(chaine, Id);
 	my_strcat(chaine, "\r");

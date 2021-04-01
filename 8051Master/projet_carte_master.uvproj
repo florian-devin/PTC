@@ -536,6 +536,16 @@
               <FileType>1</FileType>
               <FilePath>.\PTC_telemetre.c</FilePath>
             </File>
+            <File>
+              <FileName>PTC_decodeCmd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\PTC_decodeCmd.c</FilePath>
+            </File>
+            <File>
+              <FileName>PTC_decodeCmd.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\PTC_decodeCmd.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
