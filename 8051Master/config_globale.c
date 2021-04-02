@@ -20,6 +20,7 @@
 
 
 extern char Flag_RX1;
+
 sbit        INT6 = P3^6;
 
 void Reset_Sources_Init(){

@@ -153,7 +153,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>SPI_RINGBUFFER_SLAVE.C</Filename>
+          <Filename>C:\Users\florian\Desktop\PTC_src\PTC\8051Slave\Test SPI\Slave\SPI_RINGBUFFER_SLAVE.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\test slave SPI\SPI_RINGBUFFER_SLAVE\91</Expression>
         </Bp>

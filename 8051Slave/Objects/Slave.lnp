@@ -1,0 +1,8 @@
+".\Objects\STARTUP.obj",
+".\Objects\config_globale.obj",
+".\Objects\main.obj",
+".\Objects\PTC_pointeurLumineux.obj",
+".\Objects\PTC_timer.obj",
+".\Objects\PTC_PWM.obj" 
+TO ".\Objects\Slave" 
+PRINT(".\Listings\Slave.m51") RAMSIZE(256) 

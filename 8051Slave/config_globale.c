@@ -26,7 +26,7 @@ void Oscillator_Init() {
 
 
 void Port_IO_Init() {
-    // P0.0  -  LED       ,  Push-pull , Digital  PWM
+    // P0.0  -  Unassigned,  Open-Drain, Digital
     // P0.1  -  Unassigned,  Open-Drain, Digital
     // P0.2  -  Unassigned,  Open-Drain, Digital
     // P0.3  -  Unassigned,  Open-Drain, Digital
@@ -63,8 +63,6 @@ void Port_IO_Init() {
     // P3.7  -  Unassigned,  Open-Drain, Digital Input INT7
 		
 	// P4.0 to P7.7   Unassigned,  Open-Drain, Digital
-
-		P0MDOUT |= (1<<0); //P0.0
 }
 
 void Init_interrupt(void){
@@ -76,22 +74,28 @@ void Init_SPI(void) {
 }
 
 void Init_PCA(void) {
-  
+	//sysclk divided by 12
+
+	//CEX0
+	PCA0CPM0 |= (1<<1); //PWM Enable
+	
+	//Crossbar
+	XBR0 |= (1<<3);
 }
 
-void Init_timer2(void){
-	RCAP2H=0xF7;
-	RCAP2L=0x5C;
-  T2CON |= 0x04;//activation de Timer2
-}
 
-void Init_timer4(void){
-	EIE2|=0x04;
-	RCAP4H=0xA9;
-	RCAP4L=0x9A;
-  T4CON |= 0x04;//activation de Timer4
-}
 
+void Init_timer4() {
+// autoreload avec 43417 sans division par 12 pour avoir 1ms
+//Mode 1
+T4CON |= 0x04;
+EIE2 |= (1<<2);
+//interrupt 16
+
+//reload value
+RCAP4 = 0xA99A;// = 43418
+
+}
 
 //-----------------------------------------------------------------------------
 // Initialisation globale du Microcontroleur - 
@@ -100,7 +104,6 @@ void Init_Device(void) {
     Reset_Sources_Init();
     Oscillator_Init();
     Port_IO_Init();
-    Init_timer2();
 		Init_timer4();
     Init_interrupt();
 }
