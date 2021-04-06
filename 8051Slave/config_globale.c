@@ -76,11 +76,13 @@ void Init_SPI(void) {
 void Init_PCA(void) {
 	//sysclk divided by 12
 
-	//CEX0
-	PCA0CPM0 |= (1<<1); //PWM Enable
-	
-	//Crossbar
-	XBR0 |= (1<<3);
+    //Pour la lumiere : CEX0
+	PCA0CPM0    |= (1<<1);  //PWM Enable
+	XBR0        |= (1<<3);  //Crossbar
+
+    //Pour le cervo-moteur : CEX1
+    PCA0CPM1    |= (1<<1); //PWM Enable
+    XBR0        |= (1<<4); //Crossbar 
 }
 
 

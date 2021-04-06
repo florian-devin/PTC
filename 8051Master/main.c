@@ -98,7 +98,10 @@ void setup(){
 
 
 void startup(){
+	unsigned char temp_init_cervo = CDE_Servo_H(0); //positionnement du cervo a 0deg
+	Delay(temp_init_cervo*10); 
 	my_println("go");
+	
 }
 	
 void loop() {
@@ -189,7 +192,7 @@ void int6 (void) interrupt 18
 		int* bool_echo2;
 		commandCapture = 1;
 		commandCapture = 0;
-		T = get_T_AV();
+		T = get_T_AV(); 
 		bool_echo2 = get_bool_echo2_AV();
 		*T = RCAP2/22.1184;
 		*bool_echo2 = 1;

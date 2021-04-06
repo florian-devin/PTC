@@ -8,7 +8,10 @@
 // Description: Fonctions de generation de signaux pwm
 //------------------------------------------------------
 
-//Genere un signal PWM sur CEX0 avec un duty de value (la max est 255) le min est 0
-//@param value valeur du duty cycle (0 - 255)
+//Set le PWM 8bits CEX0 (ici le pointeur lumineux)
+//@param value rapport cyclique de 0 a 255
 void analogWrite_CEX0(const unsigned char value);
 
+//Set le PWM 8bits CEX1 (ici le cervo moteur verticale)
+//@param value rapport cyclique de 0 a 255
+void analogWrite_CEX0(const unsigned char value);

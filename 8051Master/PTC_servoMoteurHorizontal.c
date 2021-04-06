@@ -14,14 +14,14 @@
 
 // variables
 char  Angle_actuel = 90; // Angle actuel du servomoteur
-unsigned char time_move; //temps mis pour se d�placer 
+unsigned char time_move; //temps mis pour se deplacer 
 
 // Prototypes de Fonctions
 
 // Cette fonction calcule et retourne le temps en fonction de Angle donne en argument
 // Penser a adapter au servo moteur
 unsigned char Duree(char Angle) {
-	time_move=(abs(Angle-Angle_actuel)*22)/60 ; //temps en centi�me de secondes HS-485HB
+	time_move=(abs(Angle-Angle_actuel)*22)/60 ; //temps en centieme de secondes HS-485HB
 	return time_move;
 }
 // Cette fonction prend Angle en argument et modifie les valeurs des PCA0CPH0.
