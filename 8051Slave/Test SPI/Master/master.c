@@ -9,8 +9,8 @@
 #ifndef CFG_Globale
    #define CFG_Globale
    #define SYSCLK           22118400 //approximate SYSCLK frequency in Hz
-   #define SCK              50000    // Frequence de la liaison SPI
-   #define SPACE_TRAME      100      //espacement tres trames (en nb de trame exemple si SPACE_TRAME = 100, il y a un trame toutes les 100 periode de trame)
+   #define SCK              200000    // Frequence de la liaison SPI
+   #define SPACE_TRAME      50       //espacement tres trames (en nb de trame exemple si SPACE_TRAME = 100, il y a un trame toutes les X periode de trame)
    #define T_TRAME_SPI      (8*(1/SCK))
    #define T_RECURRENCE_SPI (SPACE_TRAME*T_TRAME_SPI)
    #define T_T3             (T_RECURRENCE_SPI*SYSCLK)
@@ -38,7 +38,7 @@ void Oscillator_Init() {
 
 void Init_Timer3(void) {
     //TMR3RL  = 0xFFFF - T_T3; //valeur de reload
-    TMR3RL  = 0xFFFF - 353894; //valeur de reload
+    TMR3RL  = 0xFFFF - 22118; //valeur de reload
     TMR3CN |= (1<<2); //Timer 3 enable
     TMR3CN |= (1<<1); //SYSCLK/1
 
