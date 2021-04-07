@@ -5,16 +5,18 @@
 #include "c8051F020_SFR16.h"
 #include "c8051F020.h"
 #include "SPI_RingBuffer_Master.h"
+#include "PTC_strOperateurs.h"
 
 #ifndef CFG_Globale
    #define CFG_Globale
    #define SYSCLK           22118400 //approximate SYSCLK frequency in Hz
-   #define SCK              50000    // Frequence de la liaison SPI
+   #define SCK              200000    // Frequence de la liaison SPI
    #define SPACE_TRAME      100      //espacement tres trames (en nb de trame exemple si SPACE_TRAME = 100, il y a un trame toutes les 100 periode de trame)
    #define T_TRAME_SPI      (8*(1/SCK))
    #define T_RECURRENCE_SPI (SPACE_TRAME*T_TRAME_SPI)
    #define T_T3             (T_RECURRENCE_SPI*SYSCLK)
 #endif
+
 
 
 //-------------------Declaration des ports E/S
@@ -109,10 +111,9 @@ void Init_SPI() {
 
     //Activation de l'interruption 
     EIE1 |= (1<<0);
-    
-    //TODO Voir si on peut placer SS a 1 en mode push-pull pour eviter d'avoir a le faire en hardware
 }
 //-------------------------------------------
+
 
 
 //-----------------------Programme principale
@@ -132,16 +133,13 @@ void setup() {
 
 
 void loop() {
-//	char i = 0;
-//	
-//for (i='a'; i< 'y';i++){
-//	serOutchar_SPI(i);
-//}
+	char caractere = 0;
+    if ((caractere=serInchar_SPI())!=0) serOutchar_SPI(caractere);
 }
 
 
 void startup() {
-serOutchar_SPI(0xFF);
+serOutstring_SPI("   ");
 serOutstring_SPI("La liaison SPI fonctionne !");
 
 } 

@@ -13,7 +13,7 @@
 #endif
 
 //--------------------------Variables Globales
-char caractere = 0;
+
 //-------------------Declaration des ports E/S
 
 //--------------------------------------------
@@ -135,13 +135,21 @@ void setup() {
     cfg_UART0_mode1();
     Init_SPI();
     init_Serial_Buffer_SPI();
+	  init_Serial_Buffer();//UART0
     EA    = 1; //interruption general enable
 }
 
 
 void loop() {
+	char caractere = serInchar_SPI();
+	char caractere1 = 0;
+    if (caractere!=0 && ~(caractere) != 0) {
+			serOutchar(caractere);
+		}
 	
-    while ((caractere=serInchar_SPI())!=0) serOutchar(caractere);
+    if ((caractere1=serInchar())!=0) {
+			serOutchar_SPI(caractere1);
+		}
 }
 
 

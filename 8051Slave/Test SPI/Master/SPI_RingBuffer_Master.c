@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <intrins.h>
 #include <string.h>
+#include "PTC_strOperateurs.h"
 #include "SPI_RingBuffer_Master.h"
 
 //*************************************************************************************************
@@ -55,10 +56,13 @@
 // Test: Buffer plein?
 #define RB_FULL(rb)  ( RB_SLOT(rb, (rb)->rb_in+1)==(rb)->rb_out )
 
-// Incrementation du pointeur dur la case e ecrire
+// Incrementation du pointeur dur la case a ecrire
 #define RB_PUSHADVANCE(rb) ( (rb)->rb_in= RB_SLOT((rb), (rb)->rb_in+1) )
 
-// Incrementation du pointeur sur la case e lire
+// Decrementation du pointeur sur la case a lire
+#define RB_POPBACK(rb)  ( (rb)->rb_out= RB_SLOT((rb), (rb)->rb_out-1) )
+
+// Incrementation du pointeur sur la case a lire
 #define RB_POPADVANCE(rb)  ( (rb)->rb_out= RB_SLOT((rb), (rb)->rb_out+1) )
 
 // Pointeur pour stocker une valeur dans le buffer
@@ -87,7 +91,9 @@ static RB_CREATE(in, unsigned char xdata);            /* static struct { ... } i
 
 sbit SS = P1^0; //Slave-Select pour le SPI
 
- void SPI_ISR(void) interrupt 6 {
+char trame_principale[68] = {0}; //trame qui sera envoyer sur SPI
+
+void SPI_ISR(void) interrupt 6 {
     if(SPIF){ //fin de la transmission
         if(!TX_in_progress){ 
             if(!RB_EMPTY(&out)) { //si il y a un caractere dans le buffer circulaire
@@ -125,8 +131,57 @@ sbit SS = P1^0; //Slave-Select pour le SPI
         RXOVRN = 0;
     }
 }
+
+
+void Detect_Trame(){ //detection d'une commande dans le buffer circ
+	if (trame_principale[0] == 0x00){ //la trame precedente a bien ete envoye
+   		if(!RB_EMPTY(&out)) {
+			char commande[64] = {0};
+			char cpt = 0;
+			char len_cmd = 0;
+			char i;
+			while (!RB_EMPTY(&out)) {//tant que le buffer n'est pas vide 
+				char c = *RB_POPSLOT(&out);
+				RB_POPADVANCE(&out);  
+				cpt++;
+
+				if (c == 0xFF) { //caracter de fin de commande donc il y a une commande complete dans le buffer
+					len_cmd = cpt;
+					while (cpt-- != 0)
+						RB_POPBACK(&out); //on recule le pointeur de ce qu'on a avancer 
+					for (i=0; i < len_cmd; i++) {
+						commande[i] = *RB_POPSLOT(&out);
+						RB_POPADVANCE(&out); 
+					}
+					trame_principale[0] = 0xFF;
+					trame_principale[1] = my_strlen(commande); 
+					my_strcat(trame_principale,commande); //trame construite
+				}
+
+			}
+			while (cpt-- != 0)
+				RB_POPBACK(&out); //on recule le pointeur de ce qu'on a avancer 
+			Trame_vide();
+   		} 
+		else  { //Envoi des deux Byte
+			Trame_vide();
+		}
+		Send_trame(); //Envoie de la trame
+	}
+}
+
+void Trame_vide(void) {
+	trame_principale[0] = 0xFF;
+	trame_principale[1] = 0xFF; //0xFF = trame vide
+}
+
+void Send_trame(void) {
+	
+}
+
+
 // **************************************************************************************************
-// init_Serial_Buffer: Initialisation des structuresde gestion des buffers transmission et reception
+// init_Serial_Buffer: Initialisation des structures de gestion des buffers transmission et reception
 // *************************************************************************************************
 //**************************************************************************************************
 void init_Serial_Buffer_SPI(void) {
