@@ -3,6 +3,7 @@
 ".\Objects\main.obj",
 ".\Objects\PTC_pointeurLumineux.obj",
 ".\Objects\PTC_timer.obj",
-".\Objects\PTC_PWM.obj" 
+".\Objects\PTC_PWM.obj",
+".\Objects\PTC_servoMoteurVertical.obj" 
 TO ".\Objects\Slave" 
 PRINT(".\Listings\Slave.m51") RAMSIZE(256) 

@@ -26,8 +26,8 @@ void Oscillator_Init() {
 
 
 void Port_IO_Init() {
-    // P0.0  -  Unassigned,  Open-Drain, Digital
-    // P0.1  -  Unassigned,  Open-Drain, Digital
+    // P0.0  -  LED       ,  Push-Pull , PWM
+    // P0.1  -  CERVO V   ,  Push-Pull , PWM
     // P0.2  -  Unassigned,  Open-Drain, Digital
     // P0.3  -  Unassigned,  Open-Drain, Digital
     // P0.4  -  Unassigned,  Open-Drain, Digital
@@ -63,6 +63,8 @@ void Port_IO_Init() {
     // P3.7  -  Unassigned,  Open-Drain, Digital Input INT7
 		
 	// P4.0 to P7.7   Unassigned,  Open-Drain, Digital
+    P0MDOUT |= (1<<0);
+    P0MDOUT |= (1<<1);
 }
 
 void Init_interrupt(void){
@@ -75,13 +77,14 @@ void Init_SPI(void) {
 
 void Init_PCA(void) {
 	//sysclk divided by 12
-
+    PCA0CN |= (1<<6);
     //Pour la lumiere : CEX0
 	PCA0CPM0    |= (1<<1);  //PWM Enable
-	XBR0        |= (1<<3);  //Crossbar
 
+   // PCA0CN = 0x40;
     //Pour le cervo-moteur : CEX1
     PCA0CPM1    |= (1<<1); //PWM Enable
+	
     XBR0        |= (1<<4); //Crossbar 
 }
 
@@ -103,9 +106,11 @@ RCAP4 = 0xA99A;// = 43418
 // Initialisation globale du Microcontroleur - 
 //-----------------------------------------------------------------------------
 void Init_Device(void) {
+    XBR2  |= (1<<6); //Crossbar enable
     Reset_Sources_Init();
     Oscillator_Init();
     Port_IO_Init();
+	 Init_PCA();
 		Init_timer4();
     Init_interrupt();
 }

@@ -26,4 +26,5 @@ void Lumiere_Stop (void);
 //@param *Lum_ON adresse de Temps durant lequelle la lumiere reste alume en ms
 //@param *Lum_OFF adresse de Temps durant la led est eteinte en ms
 //@param *Lum_Nbre adresse de Nomble de cycle d'allumage (decrementé au fils du temps)
-void Lumiere_loop (const unsigned char Intensite, const unsigned int Lum_ON, const unsigned int Lum_OFF, unsigned char *Lum_Nbre);
+//void Lumiere_loop (const unsigned char Intensite, const unsigned int Lum_ON, const unsigned int Lum_OFF, unsigned char *Lum_Nbre);
+void Lumiere_loop (void);

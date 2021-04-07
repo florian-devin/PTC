@@ -16,8 +16,8 @@
 #include "PTC_PWM.h"
 
 
-sbit            LED = P0^0;
-bit             Lumiere_loop_Enable = 0; //1 si il faut faire Lumiere_loop 0 sinon
+
+char            Lumiere_loop_Enable = 0; //1 si il faut faire Lumiere_loop 0 sinon
 unsigned char   Lumiere_Intensite, Lumiere_Lum_Nbre;
 unsigned int    Lumiere_Lum_ON, Lumiere_Lum_OFF;
 
@@ -25,6 +25,8 @@ unsigned int    Lumiere_Lum_ON, Lumiere_Lum_OFF;
 
 void setup(void) {
     Init_Device();
+		Lumiere(90,1000,1000,10);
+
 }
 
 void loop(void) {
@@ -36,17 +38,20 @@ void loop(void) {
    //}
    ////---------------------------------
 
+
     if (Lumiere_loop_Enable) //Routine alumage lumiere
-        Lumiere_loop(Lumiere_Intensite, Lumiere_Lum_ON, Lumiere_Lum_OFF, &Lumiere_Lum_Nbre);
+        Lumiere_loop();
 
     
 }
 
 void main(void) {
 setup();
-while(1)
+while(1){
     loop();
 }
+}
+
 
 
 

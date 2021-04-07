@@ -20,8 +20,8 @@ extern unsigned char    Lumiere_Lum_Nbre;
 extern unsigned int     Lumiere_Lum_OFF;
 extern unsigned int     Lumiere_Lum_ON;
 extern unsigned char    Lumiere_Intensite;
-extern bit              Lumiere_loop_Enable;    //1 si il faut faire Lumiere_loop 0 sinon
-bit                     Etat_LED            = 0;//Etat de la LED pour Lumiere_loop
+extern char              Lumiere_loop_Enable;    //1 si il faut faire Lumiere_loop 0 sinon
+char                     Etat_LED            = 0;//Etat de la LED pour Lumiere_loop
 unsigned int            Temp_init;              //Temps de reference pour Lumiere_loop
 
 
@@ -38,7 +38,7 @@ void Lumiere_Stop (void) {
     analogWrite_CEX0(0); //On eteind la LED
     Lumiere_loop_Enable = 0; //on arrete le processus de clignautement
 }
-
+/*
 void Lumiere_loop (const unsigned char Intensite, const unsigned int Lum_ON, const unsigned int Lum_OFF, unsigned char *Lum_Nbre) {
     if (Lum_Nbre != 0) {
         if (Etat_LED) { //si la led est allume 
@@ -49,12 +49,34 @@ void Lumiere_loop (const unsigned char Intensite, const unsigned int Lum_ON, con
             }
         }
         else {
-            if ((get_time_ms() - Temp_init) < Lum_OFF) {
+            if ((get_time_ms() - Temp_init) > Lum_OFF) {
                 analogWrite_CEX0(0); //On eteind la LED
                 Etat_LED = 1; //on signal l'etat de la LED
                 Temp_init = get_time_ms(); //Nouvelle reference de temps
                 Lum_Nbre--; //On decremente le nombre de cycle
                 if (Lum_Nbre == 0)
+                    Lumiere_loop_Enable = 0;
+            }
+        }
+    }
+}*/
+
+void Lumiere_loop (void) {
+    if (Lumiere_Lum_Nbre != 0) {
+        if (!Etat_LED) { //si la led est allume 
+            if ((get_time_ms() - Temp_init) > Lumiere_Lum_ON) {
+                analogWrite_CEX0(Lumiere_Intensite); //On alume la LED
+                Etat_LED = 1; //on signal l'etat de la LED
+                Temp_init = get_time_ms(); //Nouvelle reference de temps
+            }
+        }
+        else {
+            if ((get_time_ms() - Temp_init) > Lumiere_Lum_OFF) {
+                analogWrite_CEX0(0); //On eteind la LED
+                Etat_LED = 0; //on signal l'etat de la LED
+                Temp_init = get_time_ms(); //Nouvelle reference de temps
+                Lumiere_Lum_Nbre--; //On decremente le nombre de cycle
+                if (Lumiere_Lum_Nbre == 0)
                     Lumiere_loop_Enable = 0;
             }
         }

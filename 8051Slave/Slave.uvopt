@@ -91,8 +91,8 @@
         </Book>
       </Books>
       <DebugOpt>
-        <uSim>1</uSim>
-        <uTrg>0</uTrg>
+        <uSim>0</uSim>
+        <uTrg>1</uTrg>
         <sLdApp>1</sLdApp>
         <sGomain>1</sGomain>
         <sRbreak>1</sRbreak>
@@ -115,7 +115,7 @@
         <bEvRecOn>1</bEvRecOn>
         <bSchkAxf>0</bSchkAxf>
         <bTchkAxf>0</bTchkAxf>
-        <nTsel>-1</nTsel>
+        <nTsel>12</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
         <sDlgDll></sDlgDll>
@@ -126,13 +126,23 @@
         <tDlgDll></tDlgDll>
         <tDlgPa></tDlgPa>
         <tIfile></tIfile>
-        <pMon></pMon>
+        <pMon>BIN\SiC8051F.dll</pMon>
       </DebugOpt>
       <TargetDriverDllRegistry>
         <SetRegEntry>
           <Number>0</Number>
+          <Key>DLGTCYG</Key>
+          <Name>(98=-1,-1,-1,-1,0)(3004=894,185,1248,569,0)(3003=-1,-1,-1,-1,0)(3006=-1,-1,-1,-1,0)(3007=-1,-1,-1,-1,0)(3008=-1,-1,-1,-1,0)(3011=-1,-1,-1,-1,0)(3012=-1,-1,-1,-1,0)(3013=-1,-1,-1,-1,0)(3014=-1,-1,-1,-1,0)(99=-1,-1,-1,-1,0)(5068=-1,-1,-1,-1,0)(91=-1,-1,-1,-1,0)(92=-1,-1,-1,-1,0)(93=-1,-1,-1,-1,0)(3010=-1,-1,-1,-1,0)(3009=-1,-1,-1,-1,0)(5092=-1,-1,-1,-1,0)(95=1366,527,1612,732,0)(100=1441,199,1741,488,0)(5057=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(5047=-1,-1,-1,-1,0)(5093=-1,-1,-1,-1,0)(1002=180,121,477,534,0)(5094=-1,-1,-1,-1,0)(5096=-1,-1,-1,-1,0)(5061=-1,-1,-1,-1,0)(5067=-1,-1,-1,-1,0)(5095=-1,-1,-1,-1,0)</Name>
+        </SetRegEntry>
+        <SetRegEntry>
+          <Number>0</Number>
+          <Key>SiC8051F</Key>
+          <Name>-S1 -B115200 -O1793 -J0 -K0 -L0 -M0 -A3 -P1 -T0 -UEC3004BA631</Name>
+        </SetRegEntry>
+        <SetRegEntry>
+          <Number>0</Number>
           <Key>DLGDCYG</Key>
-          <Name>(98=3590,104,3968,401,0)(3004=-1,-1,-1,-1,0)(3003=3887,310,4128,455,0)(3006=-1,-1,-1,-1,0)(3007=-1,-1,-1,-1,0)(3008=-1,-1,-1,-1,0)(3011=-1,-1,-1,-1,0)(3012=-1,-1,-1,-1,0)(3013=-1,-1,-1,-1,0)(3014=-1,-1,-1,-1,0)(99=-1,-1,-1,-1,0)(5068=-1,-1,-1,-1,0)(91=-1,-1,-1,-1,0)(92=-1,-1,-1,-1,0)(93=-1,-1,-1,-1,0)(3010=-1,-1,-1,-1,0)(3009=-1,-1,-1,-1,0)(5092=-1,-1,-1,-1,0)(95=-1,-1,-1,-1,0)(100=-1,-1,-1,-1,0)(5057=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(5047=-1,-1,-1,-1,0)(5093=-1,-1,-1,-1,0)(1002=-1,-1,-1,-1,0)(5094=3620,121,3920,415,0)(5096=-1,-1,-1,-1,0)(5061=-1,-1,-1,-1,0)(5067=-1,-1,-1,-1,0)(5095=-1,-1,-1,-1,0)</Name>
+          <Name>(98=1542,104,1920,401,0)(3004=-1,-1,-1,-1,0)(3003=1679,310,1920,455,0)(3006=-1,-1,-1,-1,0)(3007=-1,-1,-1,-1,0)(3008=-1,-1,-1,-1,0)(3011=-1,-1,-1,-1,0)(3012=-1,-1,-1,-1,0)(3013=-1,-1,-1,-1,0)(3014=-1,-1,-1,-1,0)(99=-1,-1,-1,-1,0)(5068=-1,-1,-1,-1,0)(91=-1,-1,-1,-1,0)(92=-1,-1,-1,-1,0)(93=-1,-1,-1,-1,0)(3010=-1,-1,-1,-1,0)(3009=-1,-1,-1,-1,0)(5092=-1,-1,-1,-1,0)(95=-1,-1,-1,-1,0)(100=-1,-1,-1,-1,0)(5057=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(5047=-1,-1,-1,-1,0)(5093=-1,-1,-1,-1,0)(1002=-1,-1,-1,-1,0)(5094=1620,121,1920,415,0)(5096=-1,-1,-1,-1,0)(5061=-1,-1,-1,-1,0)(5067=-1,-1,-1,-1,0)(5095=-1,-1,-1,-1,0)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -140,7 +150,88 @@
           <Name>200,50,700</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint/>
+      <Breakpoint>
+        <Bp>
+          <Number>0</Number>
+          <Type>0</Type>
+          <LineNumber>53</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>0</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>PTC_POINTEURLUMINEUX.C</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>46</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>0</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>PTC_POINTEURLUMINEUX.C</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>45</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>0</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>main.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+        </Bp>
+      </Breakpoint>
+      <WatchWindow1>
+        <Ww>
+          <count>0</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Lumiere_Intensite,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Lumiere_Lum_Nbre,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>2</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Lumiere_Lum_ON,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Lumiere_Lum_OFF,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Lumiere_loop_Enable,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Etat_LED,0x0A</ItemText>
+        </Ww>
+      </WatchWindow1>
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>
@@ -333,6 +424,30 @@
       <bDave2>0</bDave2>
       <PathWithFileName>.\PTC_PWM.c</PathWithFileName>
       <FilenameWithoutPath>PTC_PWM.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>1</GroupNumber>
+      <FileNumber>13</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\PTC_servoMoteurVertical.c</PathWithFileName>
+      <FilenameWithoutPath>PTC_servoMoteurVertical.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>1</GroupNumber>
+      <FileNumber>14</FileNumber>
+      <FileType>5</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\PTC_servoMoteurVertical.h</PathWithFileName>
+      <FilenameWithoutPath>PTC_servoMoteurVertical.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

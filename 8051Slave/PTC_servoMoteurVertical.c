@@ -8,6 +8,7 @@
 // Description: Fonctions de commande du cervo-moteur vertical
 //------------------------------------------------------
 #include "PTC_PWM.h"
+#include <math.h>
 #include "PTC_servoMoteurVertical.h"
 
 // variables
