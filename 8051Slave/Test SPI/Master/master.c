@@ -132,17 +132,17 @@ void setup() {
 
 
 void loop() {
-	char i = 0;
-	
-for (i=0; i< 30000;i++){}
+//	char i = 0;
+//	
+//for (i='a'; i< 'y';i++){
+//	serOutchar_SPI(i);
+//}
 }
 
 
 void startup() {
-	char i = 0;
-	serOutchar_SPI('s');
-	for (i=0; i< 30;i++){}
-		 //serOutchar_SPI('s');
+serOutchar_SPI(0xFF);
+serOutstring_SPI("La liaison SPI fonctionne !");
 
 } 
 
