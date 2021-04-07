@@ -119,6 +119,7 @@ void Init_SPI() {
 
 
 void setup() {
+	XBR2  |= (1<<6); //Crossbar enable
     Reset_Sources_Init();
     Oscillator_Init();
     Init_crossbar();
@@ -131,12 +132,18 @@ void setup() {
 
 
 void loop() {
-
+	char i = 0;
+	
+for (i=0; i< 30000;i++){}
 }
 
 
 void startup() {
-    serOutchar_SPI('s');
+	char i = 0;
+	serOutchar_SPI('s');
+	for (i=0; i< 30;i++){}
+		 //serOutchar_SPI('s');
+
 } 
 
 
