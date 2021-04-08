@@ -87,7 +87,7 @@ static RB_CREATE(in, unsigned char xdata);            /* static struct { ... } i
 
 sbit SS = P1^0; //Slave-Select pour le SPI
 
- void SPI_ISR(void) interrupt 6 {
+void SPI_ISR(void) interrupt 6 {
     if(SPIF){ //fin de la transmission
         if(!TX_in_progress){ 
             if(!RB_EMPTY(&out)) { //si il y a un caractere dans le buffer circulaire
@@ -103,10 +103,11 @@ sbit SS = P1^0; //Slave-Select pour le SPI
             }   
         }
         else {
-            char c;
+            char c = 0;
             SS = 1; //fin de la selection d'esclave
 			TX_in_progress = 0;
-            if((c=SPI0DAT)){
+			c = (char) SPI0DAT;
+            if(c != 0x00 && c != 0xFF){
                 if(!RB_FULL(&in)) {                   // si le buffer est plein, la donnee reeue est perdue
      	       		*RB_PUSHSLOT(&in) = c;        /* store new data in the buffer */
 		        	RB_PUSHADVANCE(&in);               /* next write location */

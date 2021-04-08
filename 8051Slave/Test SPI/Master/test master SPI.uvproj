@@ -186,7 +186,7 @@
         </Utilities>
         <Target51>
           <Target51Misc>
-            <MemoryModel>0</MemoryModel>
+            <MemoryModel>2</MemoryModel>
             <RTOS>0</RTOS>
             <RomSize>2</RomSize>
             <DataHold>0</DataHold>
@@ -405,6 +405,36 @@
               <FileName>SPI_RingBuffer_Master.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\SPI_RingBuffer_Master.h</FilePath>
+            </File>
+            <File>
+              <FileName>PTC_strOperateurs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\PTC_strOperateurs.c</FilePath>
+            </File>
+            <File>
+              <FileName>PTC_strOperateurs.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\PTC_strOperateurs.h</FilePath>
+            </File>
+            <File>
+              <FileName>PTC_geter_cmd.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\PTC_geter_cmd.h</FilePath>
+            </File>
+            <File>
+              <FileName>PTC_SPI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\PTC_SPI.h</FilePath>
+            </File>
+            <File>
+              <FileName>PTC_geter_cmd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\PTC_geter_cmd.c</FilePath>
+            </File>
+            <File>
+              <FileName>PTC_SPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\PTC_SPI.c</FilePath>
             </File>
           </Files>
         </Group>

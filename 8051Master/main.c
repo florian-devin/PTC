@@ -34,7 +34,7 @@
 //-----------------------------------------------------------variables globales
 
 //En lien avec l'UART0
-char chaine_courante[64] = {0};//chaine total qui vas contenir le mot recu (20 caractere max)
+char chaine_courante[64] = {0};//chaine total qui vas contenir le mot recu
 
 //En lien avec le comportement du robot
 int epreuve_enable 		= 0 ; //Flag qui passe a 1 si l'utilisateur a donné le debut de l'epreuve

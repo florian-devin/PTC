@@ -5,18 +5,21 @@
 #include "c8051F020_SFR16.h"
 #include "c8051F020.h"
 #include "SPI_RingBuffer_Master.h"
+#include "PTC_geter_cmd.h"
+#include "PTC_SPI.h"
 
 #ifndef CFG_Globale
    #define CFG_Globale
    #define SYSCLK           22118400 //approximate SYSCLK frequency in Hz
    #define SCK              200000    // Frequence de la liaison SPI
-   #define SPACE_TRAME      50       //espacement tres trames (en nb de trame exemple si SPACE_TRAME = 100, il y a un trame toutes les X periode de trame)
+   #define SPACE_TRAME      25       //espacement tres trames (en nb de trame exemple si SPACE_TRAME = 100, il y a un trame toutes les X periode de trame)
    #define T_TRAME_SPI      (8*(1/SCK))
    #define T_RECURRENCE_SPI (SPACE_TRAME*T_TRAME_SPI)
    #define T_T3             (T_RECURRENCE_SPI*SYSCLK)
 #endif
-
-
+//--------------------------Variables globales
+//En lien avec SPI
+char chaine_courante_SPI[64] = {0};//chaine total qui vas contenir le mot recu 
 //-------------------Declaration des ports E/S
 
 //--------------------------------------------
@@ -132,11 +135,13 @@ void setup() {
 
 
 void loop() {
-//	char i = 0;
-//	
-//for (i='a'; i< 'y';i++){
-//	serOutchar_SPI(i);
-//}
+    if (Rx_chaine(chaine_courante_SPI) == 1) {
+        //une commande complete a ete recu
+        if (chaine_courante_SPI == "Test") {
+            char i = 0; //pour placer un point d'arret
+        }
+
+    }
 }
 
 

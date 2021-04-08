@@ -13,7 +13,7 @@
 #endif
 
 //--------------------------Variables Globales
-char caractere = 0;
+
 //-------------------Declaration des ports E/S
 
 //--------------------------------------------
@@ -126,7 +126,6 @@ void Init_SPI() {
 
 
 void setup() {
-    
     Reset_Sources_Init();
     Oscillator_Init();
     Init_crossbar();
@@ -140,8 +139,10 @@ void setup() {
 
 
 void loop() {
-	
+	char caractere = 0;
+    char caractere1 = 0;
     while ((caractere=serInchar_SPI())!=0) serOutchar(caractere);
+    //while ((caractere1=serInchar())!=0) serOutchar_SPI(caractere1);
 }
 
 
