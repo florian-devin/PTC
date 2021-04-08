@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "PTC_Aquisition.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,6 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -48,6 +49,8 @@ SD_HandleTypeDef hsd;
 
 SPI_HandleTypeDef hspi1;
 
+TIM_HandleTypeDef htim4;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -59,12 +62,51 @@ static void MX_ADC1_Init(void);
 static void MX_DAC_Init(void);
 static void MX_SDIO_SD_Init(void);
 static void MX_SPI1_Init(void);
+static void MX_TIM4_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+//Signaux sonore :
+typedef struct Music_note Music_note;
+struct Music_note {
+  uint8_t code ;
+  float   freq ;
+};
+
+
+
+/*
+
+Music_note DO3  ; DO3.code  = 1 ; DO3.freq  = 261.6    ;       
+Music_note RE3  ; RE3.code  = 2 ; RE3.freq  = 293.7    ;       
+Music_note MI3  ; MI3.code  = 3 ; MI3.freq  = 329.7    ;       
+Music_note FA3  ; FA3.code  = 4 ; FA3.freq  = 349.2    ;       
+Music_note SOL3 ; SOL3.code = 5 ; SOL3.freq = 392.0    ;       
+Music_note LA3  ; LA3.code  = 6 ; LA3.freq  = 440.0    ;       
+Music_note SI3  ; SI3.code  = 7 ; SI3.freq  = 493.9    ;
+
+Music_note DO4  ; DO4.code  = 8 ; DO4.freq  = 2.0*261.6;    
+Music_note RE4  ; RE4.code  = 9 ; RE4.freq  = 2.0*293.7;    
+Music_note MI4  ; MI4.code  = 10; MI4.freq  = 2.0*329.7;    
+Music_note FA4  ; FA4.code  = 11; FA4.freq  = 2.0*349.2;    
+Music_note SOL4 ; SOL4.code = 12; SOL4.freq = 2.0*392.0;    
+Music_note LA4  ; LA4.code  = 13; LA4.freq  = 2.0*440.0;    
+Music_note SI4  ; SI4.code  = 14; SI4.freq  = 2.0*493.9;    
+
+Music_note DO5  ; DO5.code  = 15; DO5.freq  = 4.0*261.6;    
+Music_note RE5  ; RE5.code  = 16; RE5.freq  = 4.0*293.7;    
+Music_note MI5  ; MI5.code  = 17; MI5.freq  = 4.0*329.7;    
+Music_note FA5  ; FA5.code  = 18; FA5.freq  = 4.0*349.2;    
+Music_note SOL5 ; SOL5.code = 19; SOL5.freq = 4.0*392.0;    
+Music_note LA5  ; LA5.code  = 20; LA5.freq  = 4.0*440.0;    
+Music_note SI5  ; SI5.code  = 21; SI5.freq  = 4.0*493.9;           
+*/
+uint8_t Audio_Data_IN[255] = {0};
+uint8_t position_Audio_Data_IN = 0; 
+
 
 /* USER CODE END 0 */
 
@@ -100,6 +142,7 @@ int main(void)
   MX_DAC_Init();
   MX_SDIO_SD_Init();
   MX_SPI1_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -108,9 +151,15 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  if (isFull_RingBuffer_Data_IN()) {
+		   getFull_RingBuffer_Data_IN(Audio_Data_IN);
+	  }
+	  HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+
   }
   /* USER CODE END 3 */
 }
@@ -179,7 +228,7 @@ static void MX_ADC1_Init(void)
   */
   hadc1.Instance = ADC1;
   hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
-  hadc1.Init.Resolution = ADC_RESOLUTION_12B;
+  hadc1.Init.Resolution = ADC_RESOLUTION_8B;
   hadc1.Init.ScanConvMode = DISABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
@@ -327,6 +376,51 @@ static void MX_SPI1_Init(void)
 }
 
 /**
+  * @brief TIM4 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM4_Init(void)
+{
+
+  /* USER CODE BEGIN TIM4_Init 0 */
+
+  /* USER CODE END TIM4_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM4_Init 1 */
+
+  /* USER CODE END TIM4_Init 1 */
+  htim4.Instance = TIM4;
+  htim4.Init.Prescaler = 2-1;
+  htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim4.Init.Period = 1751-1;
+  htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim4, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM4_Init 2 */
+
+  /* USER CODE END TIM4_Init 2 */
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -372,7 +466,7 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
+   __disable_irq();
   while (1)
   {
   }

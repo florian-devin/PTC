@@ -146,9 +146,8 @@ void loop() {
 
 
 void startup() {
-serOutchar_SPI(0xFF);
-serOutstring_SPI("La liaison SPI fonctionne !");
-
+    serOutchar_SPI(0xFF);
+    serOutstring_SPI("La liaison SPI fonctionne !");
 } 
 
 

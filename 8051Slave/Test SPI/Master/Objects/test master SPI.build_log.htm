@@ -28,6 +28,7 @@ Project File Date:  04/07/2021
 Rebuild target 'Target 1'
 assembling STARTUP.A51...
 compiling master.c...
+master.c(140): warning C185: '==': different memory space
 compiling SPI_RingBuffer_Master.c...
 compiling PTC_strOperateurs.c...
 compiling PTC_geter_cmd.c...
@@ -36,7 +37,7 @@ linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?SERINCHAR_BIN_SPI?SPI_RINGBUFFER_MASTER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SEROUTSTRING_SPI?SPI_RINGBUFFER_MASTER
+    SEGMENT: ?PR?_MY_STRCMP?PTC_STROPERATEURS
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_MY_STRCAT?PTC_STROPERATEURS
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
@@ -47,9 +48,9 @@ linking...
     SEGMENT: ?PR?_GET_PARAM?PTC_GETER_CMD
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_GET_COMPLEX_PARAM?PTC_GETER_CMD
-Program Size: data=9.2 xdata=262 code=2395
-".\Objects\test master SPI" - 0 Error(s), 7 Warning(s).
-Build Time Elapsed:  00:00:00
+Program Size: data=9.2 xdata=262 code=2429
+".\Objects\test master SPI" - 0 Error(s), 8 Warning(s).
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>
