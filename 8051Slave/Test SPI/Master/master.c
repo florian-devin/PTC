@@ -7,6 +7,7 @@
 #include "SPI_RingBuffer_Master.h"
 #include "PTC_geter_cmd.h"
 #include "PTC_SPI.h"
+#include "PTC_strOperateurs.h"
 
 #ifndef CFG_Globale
    #define CFG_Globale
@@ -135,10 +136,13 @@ void setup() {
 
 
 void loop() {
+	
     if (Rx_chaine(chaine_courante_SPI) == 1) {
         //une commande complete a ete recu
-        if (chaine_courante_SPI == "Test") {
+         if (my_strcmp(chaine_courante_SPI, "Test")) {
             char i = 0; //pour placer un point d'arret
+					 RAZ_str(chaine_courante_SPI);
+					 serOutstring_SPI("OUI");
         }
 
     }
@@ -148,6 +152,7 @@ void loop() {
 void startup() {
     serOutchar_SPI(0xFF);
     serOutstring_SPI("La liaison SPI fonctionne !");
+		RAZ_str(chaine_courante_SPI);
 } 
 
 

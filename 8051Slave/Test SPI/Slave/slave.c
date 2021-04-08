@@ -142,7 +142,7 @@ void loop() {
 	char caractere = 0;
     char caractere1 = 0;
     while ((caractere=serInchar_SPI())!=0) serOutchar(caractere);
-    //while ((caractere1=serInchar())!=0) serOutchar_SPI(caractere1);
+    while ((caractere1=serInchar())!=0) serOutchar_SPI(caractere1);
 }
 
 

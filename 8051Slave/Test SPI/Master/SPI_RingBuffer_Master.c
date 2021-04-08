@@ -104,12 +104,14 @@ void SPI_ISR(void) interrupt 6 {
         }
         else {
             char c = 0;
+						char c2;
             SS = 1; //fin de la selection d'esclave
-			TX_in_progress = 0;
-			c = (char) SPI0DAT;
-            if(c != 0x00 && c != 0xFF){
+						TX_in_progress = 0;
+						c =  SPI0DAT;
+						c2  = c;
+            if(c2 > 0x00 && c2 < 0xFF){
                 if(!RB_FULL(&in)) {                   // si le buffer est plein, la donnee reeue est perdue
-     	       		*RB_PUSHSLOT(&in) = c;        /* store new data in the buffer */
+     	       		*RB_PUSHSLOT(&in) = c2;        /* store new data in the buffer */
 		        	RB_PUSHADVANCE(&in);               /* next write location */
 	            }
             }
@@ -164,7 +166,7 @@ char c;
   {                 /* wait for data */
 
   	c = *RB_POPSLOT(&in);                 /* get character off the buffer */
- 	  RB_POPADVANCE(&in);                   /* adjust read position */
+  	  RB_POPADVANCE(&in);                   /* adjust read position */
   	return c;
   }
   else return 0;
