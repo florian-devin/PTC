@@ -16,6 +16,11 @@
    #define SYSCLK 22118400 //approximate SYSCLK frequency in Hz
    #define BAUDRATE  19200L          // Baud rate of UART in bps
                                    // Le caractère 'L' force l'évaluation de BAUDRATE en entier long
+   #define SCK              200000    // Frequence de la liaison SPI
+   #define SPACE_TRAME      25       //espacement tres trames (en nb de trame exemple si SPACE_TRAME = 100, il y a un trame toutes les X periode de trame)
+   #define T_TRAME_SPI      (8*(1/SCK))
+   #define T_RECURRENCE_SPI (SPACE_TRAME*T_TRAME_SPI)
+   #define T_T3             (T_RECURRENCE_SPI*SYSCLK)
 #endif
 
 
@@ -33,10 +38,10 @@ void Reset_Sources_Init(){
 void Port_IO_Init() {
     // P0.0  -  Tx, 				 Pull-push, Digital
     // P0.1  -  Rx, 				 Open-Drain, Digital
-    // P0.2  -  Unassigned,  Open-Drain, Digital
-    // P0.3  -  Unassigned,  Open-Drain, Digital
-    // P0.4  -  Unassigned,  Open-Drain, Digital
-    // P0.5  -  Unassigned,  Open-Drain, Digital
+    // P0.2  -  SCK       ,  Push-Pull , Digital
+    // P0.3  -  MISO      ,  Open-Drain, Digital
+    // P0.4  -  MOSI      ,  Push-Pull , Digital
+    // P0.5  -  NSS       ,  Open-Drain, Digital
     // P0.6  -  Tx1,         Pull-push, Digital
     // P0.7  -  Rx1,         Open-Drain, Digital
 
@@ -49,7 +54,7 @@ void Port_IO_Init() {
     // P1.6  -  Unassigned,  Open-Drain, Digital
     // P1.7  -  Unassigned,  Open-Drain, Digital
 
-    // P2.0  -  Unassigned,  Open-Drain, Digital
+    // P2.0  -  SS        ,  Pull-push , Digital
     // P2.1  -  Unassigned,  Open-Drain, Digital
     // P2.2  -  Unassigned,  Open-Drain, Digital
     // P2.3  -  Unassigned,  Open-Drain, Digital
@@ -69,6 +74,10 @@ void Port_IO_Init() {
 		
 	// P4.0 to P7.7   Unassigned,  Open-Drain, Digital
 
+     P0MDOUT |= (1<<2); //SCK
+     P0MDOUT |= (1<<4); //MOSI
+     P2MDOUT |= (1<<0); //SS
+
 		P0MDOUT |= (1<<0); //P0.0
 		P0MDOUT |= (1<<6); //P0.6
 		P1MDOUT |= (1<<0); //P1.0 servo
@@ -80,7 +89,10 @@ void Port_IO_Init() {
 	  // Sensibilité de /INT6 initialement mise a front montant
 	  P3IF |= 0x04;
 	  P3IF &= 0xBF;
+    //SPI
+    XBR0 |= (1<<1); //SCK -> P0.0 | MISO -> P0.1 | MOSI -> P0.2 | NSS -> P0.3
 }
+
 
 //-----------------------------------------------------------------------------
 // Config oscillateur - SYSCLK = 22,1184MHz - Oscillateur externe � quartz 
@@ -151,10 +163,33 @@ void cfg_UART1_mode1(void){
   EIE2  |= (1<<6); //ES1 interruption UART1 autorisee	
 }
 
-void Init_SPI(){//fct a developper plus tard
-	//crossbar 
-	//P0.2 P0.3 P0.4 P0.5 
-	XBR0 |= (1<<1);
+void Init_SPI() {
+    //Config de l'horloge
+    SPI0CFG &= ~(0xC0); //Polarite et etat horloge
+    SPI0CKR = SYSCLK / (2 * SCK) - 1; //fixe la frequence de SCK
+
+    //Actication de master
+    MSTEN = 1;
+
+    //nb de bit de shift
+    SPI0CFG |= 0x07; //8bits
+
+    //Actication de SPI
+    SPIEN = 1;
+
+    //Activation de l'interruption 
+    EIE1 |= (1<<0);
+    
+    //TODO Voir si on peut placer SS a 1 en mode push-pull pour eviter d'avoir a le faire en hardware
+}
+
+void Init_Timer3(void) { //Utiliser pour la SPI
+    //TMR3RL  = 0xFFFF - T_T3; //valeur de reload
+    TMR3RL  = 0xFFFF - 22118; //valeur de reload
+    TMR3CN |= (1<<2); //Timer 3 enable
+    TMR3CN |= (1<<1); //SYSCLK/1
+
+    EIE2   |= (1<<0); //ISR enable
 }
 
 void Init_Timer4() {

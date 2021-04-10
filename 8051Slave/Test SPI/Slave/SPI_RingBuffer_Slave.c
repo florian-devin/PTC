@@ -96,7 +96,9 @@ void SPI_ISR(void) interrupt 6 {
      	        *RB_PUSHSLOT(&in) = c;        /* store new data in the buffer */
 		        RB_PUSHADVANCE(&in);               /* next write location */
 	        }
+			SPI0DAT = 0x00; //remise a zero du registre
         }
+
 		//2eme etape : on place dans le buffer SPI le prochain caractere a envoyer
         if(!RB_EMPTY(&out)) { //si il y a un caractere dans le buffer circulaire
             SPI0DAT = *RB_POPSLOT(&out);      /* start transmission of next byte */

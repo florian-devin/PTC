@@ -14,7 +14,7 @@
 #include "PTC_servoMoteurHorizontal.h"
 #include "PTC_strOperateurs.h"
 #include "UART0_RingBuffer_lib.h"
-
+#include "SPI_RingBuffer_Master.h"
 //------------------------------------------------------
 //------------------------------------Variables Globales
 extern int              epreuve_enable;
@@ -265,4 +265,41 @@ void Cmd_epreuve_CS(const char *Pchaine_courante) {
 			flag_print_arrive_servo_H =1;
 		}
 	}
+}
+
+void Cmd_epreuve_L(const char *Pchaine_courante) { //Commande pour la carte esclave
+	char str_param[2] = {0};
+
+	get_param(Pchaine_courante,1,str_param);
+	//TODO mettre un do while pour tous les parametres
+	if (my_strlen(str_param) != 0){
+		char str_value[4] = {0};
+		char str_name[2]  = {0};
+		get_complex_param(str_param,str_name,str_value);
+		if (my_strcmp(str_name, "I")){
+			char value = my_atoi(str_value);
+			if (!(value > 0 && value < 101)) {
+				AR_cmd_incorrecte();
+				return;
+			}
+		}
+		else if  (my_strcmp(str_name, "D") || my_strcmp(str_name, "E") || my_strcmp(str_name, "N")) {
+			char value = my_atoi(str_value);
+			if (!(value >= 0 && value < 100)) {
+				AR_cmd_incorrecte();
+				return;
+			}
+		}
+		else {
+			AR_cmd_incorrecte();
+			return;
+		}
+		
+	}
+	else {//parametre par default
+		AR_cmd_correcte();
+		my_strcat(Pchaine_courante,"\r");
+		serOutstring_SPI(Pchaine_courante);
+	}
+	
 }

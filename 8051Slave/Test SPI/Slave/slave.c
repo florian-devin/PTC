@@ -156,6 +156,7 @@ void main(){
     startup();
     while(1) {
         loop();
+       
     }
 }
 

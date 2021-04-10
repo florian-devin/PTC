@@ -13,6 +13,7 @@
 #include "config_globale.h"
 #include "UART0_RingBuffer_lib.h"
 #include "UART1_RingBuffer_lib.h"
+#include "SPI_RingBuffer_Master.h"
 #include "PTC_accuseDeReception.h"
 #include "PTC_convertion.h"
 #include "PTC_geter_cmd.h"
@@ -32,7 +33,8 @@
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------variables globales
-
+//En lien avec SPI
+char chaine_courante_SPI[64] = {0};//chaine total qui vas contenir le mot recu 
 //En lien avec l'UART0
 char chaine_courante[64] = {0};//chaine total qui vas contenir le mot recu
 
@@ -144,6 +146,12 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 			Cmd_epreuve_TV(Pchaine_courante);
 		else if (my_strcmp(commande,"CS")) 
 			Cmd_epreuve_CS(Pchaine_courante);
+		else if (my_strcmp(commande,"L"))
+			Cmd_epreuve_L(Pchaine_courante); 
+		else if (my_strcmp(commande,"SPI")) {
+			serOutstring_SPI(Pchaine_courante);
+			AR_cmd_correcte();
+		} 
 		else 
 			AR_cmd_incorrecte();
 	}
@@ -171,6 +179,13 @@ void Interrupt_Time(void) interrupt 16 {//interruption declancher par l'overflow
 	T4CON &= ~(1<<7); //interrupt flag
     Time_increment();
 }
+
+//Interrupt du timer3 pour declancher une com SPI
+void Timer3_ISR(void) interrupt 14 {
+    TMR3CN &= ~(1<<7); //flag 
+    SPIF = 1; //declanchement de l'ISR de SPI pour envoyer un caractere si il y en a dans le buffer 
+}
+
 
 /*
 Interruption genere par INT6 permettant de mesurer le temps a l'etat haut du signal Echo

@@ -169,9 +169,5 @@ void main(){
 
 //-----------------------Fonction d'interruption
 
-void Timer3_ISR(void) interrupt 14 {
-    TMR3CN &= ~(1<<7); //flag 
-    SPIF = 1; //declanchement de l'ISR de SPI pour envoyer un caractere si il y en a dans le buffer 
-}
 
 //----------------------------------------------

@@ -125,7 +125,7 @@
             <Oh166RecLen>16</Oh166RecLen>
           </OPTHX>
           <Simulator>
-            <UseSimulator>1</UseSimulator>
+            <UseSimulator>0</UseSimulator>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -137,7 +137,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
-            <UseTarget>0</UseTarget>
+            <UseTarget>1</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>0</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -545,6 +545,16 @@
               <FileName>PTC_decodeCmd.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\PTC_decodeCmd.h</FilePath>
+            </File>
+            <File>
+              <FileName>SPI_RingBuffer_Master.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SPI_RingBuffer_Master.c</FilePath>
+            </File>
+            <File>
+              <FileName>SPI_RingBuffer_Master.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\SPI_RingBuffer_Master.h</FilePath>
             </File>
           </Files>
         </Group>
