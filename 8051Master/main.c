@@ -30,6 +30,7 @@
 
 #define POURCENTAGE_ERREUR_TICK 10 //pourcentage d'erreur accepter sur le dif des encodeurs
 
+//TODO : gerer la reception d'info de la part de la carte Slave 
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------variables globales
@@ -152,8 +153,8 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 			Cmd_epreuve_LS(Pchaine_courante); 
 		else if (my_strcmp(commande,"MI"))
 			Cmd_epreuve_MI(Pchaine_courante);
-		else if (my_strcmp(commande,"MI"))
-			Cmd_epreuve_MI(Pchaine_courante);
+		else if (my_strcmp(commande,"ME"))
+			Cmd_epreuve_ME(Pchaine_courante);
 		else if (my_strcmp(commande,"MOU"))
 			Cmd_epreuve_MOU(Pchaine_courante);
 		else if (my_strcmp(commande,"MOB"))

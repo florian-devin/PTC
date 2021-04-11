@@ -68,10 +68,11 @@ void Init_crossbar() {
 
 void Port_IO_Init() {
 
+
     // P0.0  -  Tx        ,  Pull-push , Digital
     // P0.1  -  Rx        ,  Open-Drain, Digital
     // P0.2  -  SCK       ,  Open-Drain, Digital
-    // P0.3  -  MISO      ,  Pull-push, Digital
+    // P0.3  -  MISO      ,  Pull-push , Digital
     // P0.4  -  MOSI      ,  Open-Drain, Digital
     // P0.5  -  NSS       ,  Open-Drain, Digital
     // P0.6  -  Unassigned,  Open-Drain, Digital

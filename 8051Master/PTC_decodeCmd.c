@@ -219,7 +219,8 @@ void Cmd_epreuve_CS(const char *Pchaine_courante) {
 	get_param(Pchaine_courante,1,str_param);
 	if (my_strcmp(str_param, "V")) { //cervo vertical
 		AR_cmd_correcte();
-		//TODO commande cervo vertical
+		my_strcat(Pchaine_courante,"\r");
+		serOutstring_SPI(Pchaine_courante);
 	}
 
 	else if (str_param[0] == 'A') { //cervo par default H
@@ -230,7 +231,8 @@ void Cmd_epreuve_CS(const char *Pchaine_courante) {
 			char angle = (char)my_atoi(str_param_value);
 			if (angle > -91 && angle < 91) {
 				AR_cmd_correcte();
-				CDE_Servo_H(angle);
+				temp_servo_H = (char)10*CDE_Servo_H(angle);
+				flag_print_arrive_servo_H =1;
 			}
 			else
 				AR_cmd_incorrecte();

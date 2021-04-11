@@ -2,10 +2,19 @@
 
 
 void Reset_Sources_Init();
+
+void Oscillator_Init();
+
 void Port_IO_Init();
-void Oscillator_Init_Osc_Quartz();
-void Init_UART0();
+
+void Init_crossbar() ;
+
 void Init_interrupt(void);
-void Init_Device(void);
-//void Init_timer0(void);
-void Init_timer2(void);
+
+void Init_SPI() ;
+
+void Init_PCA(void);
+
+void Init_timer4();
+
+void Init_Device(void)
