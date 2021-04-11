@@ -58,3 +58,36 @@ void Cmd_epreuve_CS(const char *Pchaine_courante);
 //Fonction qui analise et traite la commande L (commande du pointeur lumineux)
 //@param Pchaine_courante la chaine complete du message recu
 void Cmd_epreuve_L(const char *Pchaine_courante);
+
+//Fonction qui analise et traite la commande LS (commande extinction du pointeur lumineux)
+//@param Pchaine_courante la chaine complete du message recu
+void Cmd_epreuve_LS(const char *Pchaine_courante);
+
+//Fonction qui analise et traite la commande MI (meusure de courant instantane)
+//@param Pchaine_courante la chaine complete du message recu
+void Cmd_epreuve_MI(const char *Pchaine_courante);
+
+//Fonction qui analise et traite la commande ME (meusure de l'energie consommé depuis le debut de l'epreve)
+//@param Pchaine_courante la chaine complete du message recu
+void Cmd_epreuve_ME(const char *Pchaine_courante);
+
+//Fonction qui analise et traite la commande MOU (Detection d'obstacle unique)
+//@param Pchaine_courante la chaine complete du message recu
+void Cmd_epreuve_MOU(const char *Pchaine_courante);
+
+//Fonction qui analise et traite la commande MOU (Detection d'obstacle par balayage)
+//@param Pchaine_courante la chaine complete du message recu
+void Cmd_epreuve_MOB(const char *Pchaine_courante);
+
+//Fonction qui analise et traite la commande MOU (Detection d'obstacle le plus proche par balayage)
+//@param Pchaine_courante la chaine complete du message recu
+void Cmd_epreuve_MOS(const char *Pchaine_courante);
+
+//Fonction qui analise et traite la commande ASS (Aquisition de signaux sonores)
+//@param Pchaine_courante la chaine complete du message recu
+void Cmd_epreuve_ASS(const char *Pchaine_courante);
+
+//Fonction qui analise et traite la commande ASS (Generation de signaux sonore)
+//@param Pchaine_courante la chaine complete du message recu
+void Cmd_epreuve_SD(const char *Pchaine_courante);
+

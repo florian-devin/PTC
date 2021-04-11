@@ -304,4 +304,184 @@ void Cmd_epreuve_L(const char *Pchaine_courante) { //Commande pour la carte escl
 		my_strcat(Pchaine_courante,"\r");
 		serOutstring_SPI(Pchaine_courante);
 	}
+	else {
+		AR_cmd_correcte();
+		my_strcat(Pchaine_courante,"\r");
+		serOutstring_SPI(Pchaine_courante);
+	}
 }
+
+void Cmd_epreuve_LS(const char *Pchaine_courante) {//Commande pour la carte esclave
+	char str_param[2] = {0};
+	get_param(Pchaine_courante,1,str_param);
+	if (my_strlen(str_param) > 0)
+		AR_cmd_incorrecte();
+	else {
+		AR_cmd_correcte();
+		my_strcat(Pchaine_courante,"\r");
+		serOutstring_SPI(Pchaine_courante);
+	}
+}
+
+void Cmd_epreuve_MI(const char *Pchaine_courante) {
+	char str_param[2] = {0};
+	get_param(Pchaine_courante,1,str_param);
+	if (my_strlen(str_param) > 0) {
+		AR_cmd_incorrecte();
+	}
+	else {
+		AR_cmd_correcte();
+		//TODO : Ajouter la fonction de meusure du courrant instantane
+	}
+}
+
+void Cmd_epreuve_ME(const char *Pchaine_courante) {
+	char str_param[2] = {0};
+	get_param(Pchaine_courante,1,str_param);
+	if (my_strlen(str_param) > 0) {
+		AR_cmd_incorrecte();
+	}
+	else {
+		AR_cmd_correcte();
+		//TODO : Envoyer la consomation totale du robot (depuis le debut de l'epreuve)
+	}
+}
+
+void Cmd_epreuve_MOU(const char *Pchaine_courante) {
+	char str_param[2] = {0};
+	get_param(Pchaine_courante,1,str_param);
+	if (my_strlen(str_param) > 0 && my_strcmp(str_param,"D")) {
+		//TODO : meusure avant et arriere
+		AR_cmd_correcte();
+	}
+	else if(my_strlen(str_param) == 0){
+		//TODO : Meusure avant uniquement 
+		AR_cmd_correcte();
+	}
+	else 
+		AR_cmd_incorrecte();
+}
+
+void Cmd_epreuve_MOB(const char *Pchaine_courante) {
+	char str_param[2] = {0};
+	char num_param = 1;
+	do {
+		get_param(Pchaine_courante,num_param++,str_param);
+		if (my_strcmp(str_param,"D")) {
+			//TODO : detection angulaire de 180 deg
+		}
+		else if (my_strlen(str_param) > 0) {
+			char str_name[2] = {0};
+			char str_value[3] = {0};
+			get_complex_param(str_param,str_name,str_value);
+			if (my_strcmp(str_name,"A")){
+				char angle = my_atoi(str_value);
+				if (angle <= 45 && angle >= 5 && angle%5 == 0){
+					//TODO : detection avec un pas de angle
+					//TODO : a faire avec des variables et appeler qu'une seul fois la fonction
+				}
+				else {
+					AR_cmd_incorrecte();
+					return;
+				}
+			}
+		}
+	} while (my_strlen(str_param) != 0);
+}
+
+void Cmd_epreuve_MOS(const char *Pchaine_courante) {
+	char str_param[2] = {0};
+	char num_param = 1;
+	do {
+		get_param(Pchaine_courante,num_param++,str_param);
+		if (my_strcmp(str_param,"D")) {
+			//TODO : detection angulaire de 180 deg
+		}
+		else if (my_strlen(str_param) > 0) {
+			char str_name[2] = {0};
+			char str_value[3] = {0};
+			get_complex_param(str_param,str_name,str_value);
+			if (my_strcmp(str_name,"A")){
+				char angle = my_atoi(str_value);
+				if (angle <= 45 && angle >= 5 && angle%5 == 0){
+					//TODO : detection avec un pas de angle
+					//TODO : a faire avec des variables et appeler qu'une seul fois la fonction
+				}
+				else {
+					AR_cmd_incorrecte();
+					return;
+				}
+			}
+		}
+	} while (my_strlen(str_param) != 0);
+}
+
+void Cmd_epreuve_ASS(const char *Pchaine_courante) {
+	char str_param[3] = {0};
+	get_param(Pchaine_courante,1,str_param);
+	if (my_strlen(str_param) != 0){
+		char duree = my_atoi(str_param);
+		if (duree > 0 && duree < 100) {
+			AR_cmd_correcte();
+			//TODO transmetre a la carte slave
+		}
+		else {
+			AR_cmd_incorrecte();
+			return;
+		}
+	}
+	else {
+		AR_cmd_correcte();
+		//TODO transmetre a la carte slave avec la duree par default 
+	}
+}
+
+void Cmd_epreuve_SD(const char *Pchaine_courante) {
+	char str_param[2] = {0};
+	char num_param = 1;
+	do {
+		get_param(Pchaine_courante,num_param,str_param);
+		if (my_strlen(str_param) != 0){
+			char str_value[4] = {0};
+			char str_name[2]  = {0};
+			num_param++;
+			get_complex_param(str_param,str_name,str_value);
+			if  (my_strcmp(str_name, "F") || my_strcmp(str_name, "P") || my_strcmp(str_name, "W") || my_strcmp(str_name, "B")) {
+				char value = my_atoi(str_value);
+				if (!(value >= 0 && value < 100)) {
+					AR_cmd_incorrecte();
+					return;
+				}
+			}
+			else {
+				AR_cmd_incorrecte();
+				return;
+			}
+		} 
+	} while (my_strlen(str_param) != 0);
+	
+	if (num_param < 2) {//parametre par default
+		//TODO : mettre des paramettre par default avant d'envoyer a l'esclave
+		AR_cmd_correcte();
+		my_strcat(Pchaine_courante,"\r");
+		serOutstring_SPI(Pchaine_courante);
+	}
+	else {
+		AR_cmd_correcte();
+		my_strcat(Pchaine_courante,"\r");
+		serOutstring_SPI(Pchaine_courante);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

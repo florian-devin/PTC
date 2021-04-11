@@ -147,13 +147,24 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 		else if (my_strcmp(commande,"CS")) 
 			Cmd_epreuve_CS(Pchaine_courante);
 		else if (my_strcmp(commande,"L"))
-			Cmd_epreuve_L(Pchaine_courante); 
+			Cmd_epreuve_L(Pchaine_courante);
+		else if (my_strcmp(commande,"LS"))
+			Cmd_epreuve_LS(Pchaine_courante); 
 		else if (my_strcmp(commande,"MI"))
-			Cmd_epreuve_MI(Pchaine_courante);//TODO
+			Cmd_epreuve_MI(Pchaine_courante);
 		else if (my_strcmp(commande,"MI"))
-			Cmd_epreuve_MI(Pchaine_courante);//TODO
-		
-		else if (my_strcmp(commande,"SPI")) {
+			Cmd_epreuve_MI(Pchaine_courante);
+		else if (my_strcmp(commande,"MOU"))
+			Cmd_epreuve_MOU(Pchaine_courante);
+		else if (my_strcmp(commande,"MOB"))
+			Cmd_epreuve_MOB(Pchaine_courante);
+		else if (my_strcmp(commande,"MOS"))
+			Cmd_epreuve_MOS(Pchaine_courante);
+		else if (my_strcmp(commande,"ASS"))
+			Cmd_epreuve_ASS(Pchaine_courante);
+		else if (my_strcmp(commande,"SD"))
+			Cmd_epreuve_SD(Pchaine_courante);
+		else if (my_strcmp(commande,"SPI")) { //Pour le test de la liaison SPI
 			serOutstring_SPI(Pchaine_courante);
 			AR_cmd_correcte();
 		} 
