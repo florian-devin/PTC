@@ -148,6 +148,11 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 			Cmd_epreuve_CS(Pchaine_courante);
 		else if (my_strcmp(commande,"L"))
 			Cmd_epreuve_L(Pchaine_courante); 
+		else if (my_strcmp(commande,"MI"))
+			Cmd_epreuve_MI(Pchaine_courante);//TODO
+		else if (my_strcmp(commande,"MI"))
+			Cmd_epreuve_MI(Pchaine_courante);//TODO
+		
 		else if (my_strcmp(commande,"SPI")) {
 			serOutstring_SPI(Pchaine_courante);
 			AR_cmd_correcte();

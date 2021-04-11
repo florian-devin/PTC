@@ -269,37 +269,39 @@ void Cmd_epreuve_CS(const char *Pchaine_courante) {
 
 void Cmd_epreuve_L(const char *Pchaine_courante) { //Commande pour la carte esclave
 	char str_param[2] = {0};
-
-	get_param(Pchaine_courante,1,str_param);
-	//TODO mettre un do while pour tous les parametres
-	if (my_strlen(str_param) != 0){
-		char str_value[4] = {0};
-		char str_name[2]  = {0};
-		get_complex_param(str_param,str_name,str_value);
-		if (my_strcmp(str_name, "I")){
-			char value = my_atoi(str_value);
-			if (!(value > 0 && value < 101)) {
+	char num_param = 1;
+	do {
+		get_param(Pchaine_courante,num_param,str_param);
+		if (my_strlen(str_param) != 0){
+			char str_value[4] = {0};
+			char str_name[2]  = {0};
+			num_param++;
+			get_complex_param(str_param,str_name,str_value);
+			if (my_strcmp(str_name, "I")){
+				char value = my_atoi(str_value);
+				if (!(value > 0 && value < 101)) {
+					AR_cmd_incorrecte();
+					return;
+				}
+			}
+			else if  (my_strcmp(str_name, "D") || my_strcmp(str_name, "E") || my_strcmp(str_name, "N")) {
+				char value = my_atoi(str_value);
+				if (!(value >= 0 && value < 100)) {
+					AR_cmd_incorrecte();
+					return;
+				}
+			}
+			else {
 				AR_cmd_incorrecte();
 				return;
 			}
-		}
-		else if  (my_strcmp(str_name, "D") || my_strcmp(str_name, "E") || my_strcmp(str_name, "N")) {
-			char value = my_atoi(str_value);
-			if (!(value >= 0 && value < 100)) {
-				AR_cmd_incorrecte();
-				return;
-			}
-		}
-		else {
-			AR_cmd_incorrecte();
-			return;
-		}
-		
-	}
-	else {//parametre par default
+		} 
+	} while (my_strlen(str_param) != 0);
+	
+	if (num_param < 2) {//parametre par default
+		//TODO : mettre des paramettre par default avant d'envoyer a l'esclave
 		AR_cmd_correcte();
 		my_strcat(Pchaine_courante,"\r");
 		serOutstring_SPI(Pchaine_courante);
 	}
-	
 }

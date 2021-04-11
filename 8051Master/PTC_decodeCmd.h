@@ -54,3 +54,7 @@ void Cmd_epreuve_TV(const char *Pchaine_courante);
 //Fonction qui analise et traite la commande CS (Positionnement des cervos-moteurs)
 //@param Pchaine_courante la chaine complete du message recu
 void Cmd_epreuve_CS(const char *Pchaine_courante);
+
+//Fonction qui analise et traite la commande L (commande du pointeur lumineux)
+//@param Pchaine_courante la chaine complete du message recu
+void Cmd_epreuve_L(const char *Pchaine_courante);
