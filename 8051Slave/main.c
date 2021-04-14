@@ -8,6 +8,7 @@
 // Description: Programme principal de la carte slave
 //------------------------------------------------------
 
+
 #include "C8051F020.h"
 #include "c8051F020_SFR16.h"
 #include "config_globale.h"
@@ -15,11 +16,16 @@
 #include "PTC_pointeurLumineux.h"
 #include "PTC_PWM.h"
 #include "PTC_SPI.h"
+#include "PTC_geter_cmd.h"
 #include "PTC_strOperateurs.h"
+#include "PTC_accuseDeReception_SPI.h"
+
+#include "PTC_decodeCmd.h"
+
+
 #include "UART0_RingBuffer_lib.h"
 #include "UART1_RingBuffer_lib.h"
 #include "SPI_RingBuffer_Slave.h"
-
 
 //En lien avec le pointeur lumineu
 char            Lumiere_loop_Enable = 0; //1 si il faut faire Lumiere_loop 0 sinon
@@ -32,7 +38,7 @@ char chaine_courante_SPI[64] = {0};//chaine total qui vas contenir le mot recu
 //En lien avec le cervo moteur vertical
 unsigned char    temp_servo_V;
 char             flag_print_arrive_servo_V = 0;
-
+unsigned long 	last_time_capture_servo_V 	= 0; //dernier temp capture en ms
 //Headers
 void setup();
 void startup();
@@ -42,9 +48,12 @@ void envoie_info_confirmation(void);
 
 
 void setup(void) {
-    Init_Device();
-	//Lumiere(90,1000,1000,10);
-
+	char c;
+  Init_Device();
+	
+	while(c=serInchar_SPI() == 0);
+	serOutstring("Slave ready \r");
+	RAZ_str(chaine_courante_SPI);
 }
 
 void loop(void) {
@@ -74,7 +83,7 @@ void decodage_commande(char *Pchaine_courante_SPI){ //fonction qui decode les co
 	else if (my_strcmp(commande,"L"))
 		Cmd_epreuve_L_Slave(Pchaine_courante_SPI);
 	else if (my_strcmp(commande,"LS"))
-		Cmd_epreuve_LS_Slave(Pchaine_courante_SPI); 
+		Cmd_epreuve_LS_Slave(); 
 	else if (my_strcmp(commande,"ASS"))
 		Cmd_epreuve_ASS_Slave(Pchaine_courante_SPI);
 	else if (my_strcmp(commande,"SD"))
@@ -83,7 +92,7 @@ void decodage_commande(char *Pchaine_courante_SPI){ //fonction qui decode les co
 		//TODO vecteur de test de spi
 	} 
 	else 
-		AR_cmd_incorrecte_SPI_Slave();
+		AR_cmd_incorrecte_SPI();
 
 	RAZ_str(Pchaine_courante_SPI);
 }

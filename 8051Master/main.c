@@ -108,8 +108,14 @@ void setup(){
 
 void startup(){
 	unsigned char temp_init_cervo = CDE_Servo_H(0); //positionnement du cervo a 0deg
+	char c;
 	Delay(temp_init_cervo*10); 
-	my_println("go");
+	serOutstring("go\r\n");
+	while(1)
+		serOutchar_SPI('\r');
+	while(c=serInchar_SPI() == 0);
+	serOutstring("Slave Ready\r\n");
+	RAZ_str(chaine_courante_SPI);
 	
 }
 	
@@ -217,16 +223,26 @@ void int6 (void) interrupt 18
 {
 	if ((P3IF & 0x04) == 0x04)
 	{
+		int* bool_echo1;
+		bool_echo1 = get_bool_echo1_AV();
 		TL2 = 0x00;
 		TH2 = 0x00;
 		P3IF |= 0x04;
-		bool_echo1 = 1;
+		*bool_echo1 = 1;
 		P3IF &= 0xBB;
 	} else 
 	{
+		float* T;
+		int* bool_echo2;
 		commandCapture = 1;
 		commandCapture = 0;
+		T = get_T_AV(); 
+		bool_echo2 = get_bool_echo2_AV();
+		*T = RCAP2/22.1184;
+		*bool_echo2 = 1;
+
 		P3IF &= 0xBF;
+		EXF2 = 0;
 	}
 }
 
@@ -236,21 +252,13 @@ Permet de rappeler la commande de detection d'obstacle si temps d'acquisition tr
 */
 void intT2 () interrupt 5
 {
-	if (TF2 != 0)
+	int *bool_trig_AV;
+	bool_trig_AV = get_bool_trig_AV();
+	measureCycle += 1;
+	if (measureCycle == 21) // 60.9 ms
 	{
-		measureCycle += 1;
-		if (measureCycle == 21) // 60.9 ms
-		{
-			bool_out_distance = 1;
-			measureCycle = 1;
-		}
-		TF2 = 0;
+		*bool_trig_AV = 1;
+		measureCycle = 1;
 	}
-	if (EXF2 != 0)
-	{
-		T = RCAP2/22.1184;
-		bool_echo2 = 1;
-		P3IF |= 0x04;
-		EXF2 = 0;
-	}
+	TF2 = 0;
 }

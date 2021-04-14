@@ -81,12 +81,18 @@ void Port_IO_Init() {
 		P0MDOUT |= (1<<0); //P0.0
 		P0MDOUT |= (1<<6); //P0.6
 		P1MDOUT |= (1<<0); //P1.0 servo
-    XBR2 |= 0x40; //enable le crossbar
-    XBR1 |= 0x40; // Validation crossbar T2EX
-    XBR0 |= (1<<3); // route le signal CEX0 sur un port pin (servo) 
+
     P3MDOUT |= 0x06; //Configuration P3.1 et P3.2 en push-pull
 	  P3 |= 0x40; // Configuration de P3.6 en input
 	  // Sensibilite de /INT6 initialement mise a front montant
+
+
+    XBR1 |= 0x40; // Validation crossbar T2EX
+    XBR2 |= 0x40; //enable le crossbar
+    XBR0 |= (1<<3); // route le signal CEX0 sur un port pin (servo) 
+    P3MDOUT |= 0x02; //Configuration P3.1 en push-pull
+	  INT6 = 1; // Configuration de P3.6 en input
+	  // Sensibilité de /INT6 initialement mise a front montant
 	  P3IF |= 0x04;
 	  P3IF &= 0xBF;
     //SPI
@@ -211,7 +217,6 @@ void Init_interrupt(void){
 		EIE2 |= (1<<6); //UART1
     EA    = 1;      //Interuption General
     EIE2 |= 0x10; // Interruption INT6
-    EIP2 |= 0x10; // Priorite haute pour INT6
     ET2 = 1; // Interruption overflow Timer2
 }
 
@@ -221,7 +226,6 @@ void Init_Timer2(void){
     CPRL2 = 1;
     TR2 = 1;
     EXEN2 = 1;
-    T2CON |= 0x08; // Autorise les captures sur le timer2
 }
 
 //PCA pour le servomoteur 
@@ -246,6 +250,7 @@ void Init_Device(void) {
     Port_IO_Init();
     Oscillator_Init();
     Init_Timer4();
+		Init_Timer3();
     Init_PCA();
     //Oscillator_Init_Osc_Quartz();
     Init_SPI();
