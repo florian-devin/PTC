@@ -58,8 +58,14 @@ char state_go_coordinates 	= 0; //machine d'etat pour la fonction go_coordinates
 int go_coordinates_x, go_coordinates_y, go_coordinates_angle;//pour retenir les pos demander par l'utilisateur
 
 //En lien avec le telemetre
-sbit 	commandCapture 	= P3^3; // Commande la capture du timer2
-int 	measureCycle 	= 1	  ; // Compte le nombre d'overflow du Timer 2
+sbit commandCapture = P3^3;
+int measureCycle = 1; // Compte le nombre d'overflow du Timer 2
+extern int bool_trig;
+extern int bool_trig;
+extern int bool_echo1;
+extern int bool_echo2;
+extern int bool_out_distance;
+extern float T;
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
@@ -211,26 +217,16 @@ void int6 (void) interrupt 18
 {
 	if ((P3IF & 0x04) == 0x04)
 	{
-		int* bool_echo1;
-		bool_echo1 = get_bool_echo1_AV();
 		TL2 = 0x00;
 		TH2 = 0x00;
 		P3IF |= 0x04;
-		*bool_echo1 = 1;
+		bool_echo1 = 1;
 		P3IF &= 0xBB;
 	} else 
 	{
-		float* T;
-		int* bool_echo2;
 		commandCapture = 1;
 		commandCapture = 0;
-		T = get_T_AV(); 
-		bool_echo2 = get_bool_echo2_AV();
-		*T = RCAP2/22.1184;
-		*bool_echo2 = 1;
-
 		P3IF &= 0xBF;
-		EXF2 = 0;
 	}
 }
 
@@ -240,13 +236,21 @@ Permet de rappeler la commande de detection d'obstacle si temps d'acquisition tr
 */
 void intT2 () interrupt 5
 {
-	int *bool_trig_AV;
-	bool_trig_AV = get_bool_trig_AV();
-	measureCycle += 1;
-	if (measureCycle == 21) // 60.9 ms
+	if (TF2 != 0)
 	{
-		*bool_trig_AV = 1;
-		measureCycle = 1;
+		measureCycle += 1;
+		if (measureCycle == 21) // 60.9 ms
+		{
+			bool_out_distance = 1;
+			measureCycle = 1;
+		}
+		TF2 = 0;
 	}
-	TF2 = 0;
+	if (EXF2 != 0)
+	{
+		T = RCAP2/22.1184;
+		bool_echo2 = 1;
+		P3IF |= 0x04;
+		EXF2 = 0;
+	}
 }

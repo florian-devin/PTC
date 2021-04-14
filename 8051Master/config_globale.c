@@ -46,7 +46,7 @@ void Port_IO_Init() {
     // P0.7  -  Rx1,         Open-Drain, Digital
 
     // P1.0  -  Servo H   ,  Puss_pull, Digital
-    // P1.1  -  Unassigned,  Open-Drain, Digital
+    // P1.1  -  T2EX,  Open-Drain, crossbar, Digital
     // P1.2  -  Unassigned,  Open-Drain, Digital
     // P1.3  -  Unassigned,  Open-Drain, Digital
     // P1.4  -  Unassigned,  Open-Drain, Digital
@@ -64,12 +64,12 @@ void Port_IO_Init() {
     // P2.7  -  Unassigned,  Open-Drain, Digital
 
     // P3.0  -  Unassigned,  Open-Drain, Digital
-    // P3.1  -  Unassigned,  Open-Drain, Digital
-    // P3.2  -  Unassigned,  Open-Drain, Digital
-    // P3.3  -  Unassigned,  Open-Drain, Digital
+    // P3.1  -  Triger AV,  Push-Pull, Digital
+    // P3.2  -  Triger AR,  Push-Pull, Digital
+    // P3.3  -  Commande Capture Timer 2,  Push-Pull, Digital
     // P3.4  -  Unassigned,  Open-Drain, Digital
     // P3.5  -  Unassigned,  Open-Drain, Digital
-    // P3.6  -  Unassigned,  Open-Drain, Digital Input INT6
+    // P3.6  -  Echo,  Open-Drain, Digital Input INT6
     // P3.7  -  Unassigned,  Open-Drain, Digital Input INT7
 		
 	// P4.0 to P7.7   Unassigned,  Open-Drain, Digital
@@ -81,12 +81,12 @@ void Port_IO_Init() {
 		P0MDOUT |= (1<<0); //P0.0
 		P0MDOUT |= (1<<6); //P0.6
 		P1MDOUT |= (1<<0); //P1.0 servo
-    XBR1 |= 0x40; // Validation crossbar T2EX
     XBR2 |= 0x40; //enable le crossbar
+    XBR1 |= 0x40; // Validation crossbar T2EX
     XBR0 |= (1<<3); // route le signal CEX0 sur un port pin (servo) 
-    P3MDOUT |= 0x02; //Configuration P3.1 en push-pull
-	  INT6 = 1; // Configuration de P3.6 en input
-	  // Sensibilité de /INT6 initialement mise a front montant
+    P3MDOUT |= 0x06; //Configuration P3.1 et P3.2 en push-pull
+	  P3 |= 0x40; // Configuration de P3.6 en input
+	  // Sensibilite de /INT6 initialement mise a front montant
 	  P3IF |= 0x04;
 	  P3IF &= 0xBF;
     //SPI
@@ -211,6 +211,7 @@ void Init_interrupt(void){
 		EIE2 |= (1<<6); //UART1
     EA    = 1;      //Interuption General
     EIE2 |= 0x10; // Interruption INT6
+    EIP2 |= 0x10; // Priorite haute pour INT6
     ET2 = 1; // Interruption overflow Timer2
 }
 
@@ -220,6 +221,7 @@ void Init_Timer2(void){
     CPRL2 = 1;
     TR2 = 1;
     EXEN2 = 1;
+    T2CON |= 0x08; // Autorise les captures sur le timer2
 }
 
 //PCA pour le servomoteur 
