@@ -8,9 +8,13 @@
 // Description: Fonctions d'initialisation
 //------------------------------------------------------
 
+///Pour le debug sans le robot 
+//#define WAIT_RX_ROBOT
+
 #include "config_globale.h"
 #include "UART1_RingBuffer_lib.h"
 #include "UART0_RingBuffer_lib.h"
+#include "SPI_RingBuffer_Master.h"
 #ifndef CFG_Globale
    #define CFG_Globale
    #define SYSCLK 22118400 //approximate SYSCLK frequency in Hz
@@ -33,7 +37,7 @@ void Reset_Sources_Init(){
 	 WDTCN = 0xDE;
 	 WDTCN = 0XAD;
 }
-
+//test com
 
 void Port_IO_Init() {
     // P0.0  -  Tx, 				 Pull-push, Digital
@@ -164,6 +168,7 @@ void cfg_UART1_mode1(void){
 }
 
 void Init_SPI() {
+  init_Serial_Buffer_SPI();
     //Config de l'horloge
     SPI0CFG &= ~(0xC0); //Polarite et etat horloge
     SPI0CKR = SYSCLK / (2 * SCK) - 1; //fixe la frequence de SCK
@@ -271,7 +276,9 @@ void Init_Robot(){
 
 void Robot_restore(){
   serOutstring_uart1("restore\r");
-  while (serInchar_uart1()==0);
-  Delay(10);
+  #ifdef WAIT_RX_ROBOT
+    while (serInchar_uart1()==0);
+    Delay(10);
+  #endif
 }
 

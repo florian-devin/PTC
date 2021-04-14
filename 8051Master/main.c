@@ -111,8 +111,7 @@ void startup(){
 	char c;
 	Delay(temp_init_cervo*10); 
 	serOutstring("go\r\n");
-	while(1)
-		serOutchar_SPI('\r');
+	serOutchar_SPI('\r');
 	while(c=serInchar_SPI() == 0);
 	serOutstring("Slave Ready\r\n");
 	RAZ_str(chaine_courante_SPI);
