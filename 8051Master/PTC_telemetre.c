@@ -1,5 +1,3 @@
-#include "PTC_telemetre.h"
-
 sbit trig_AV = P3^1;
 sbit trig_AR = P3^2;
 int bool_trig = 1;
