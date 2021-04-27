@@ -1,7 +1,7 @@
 TODO : tester la liaison SPI (poser des questions sur le protocole de communication) 
 TODO : tester le pilotage du pointeur lumineux
-TODO : Develloper le pilatage du cervo Vertical
+TODO : Developper le pilatage du cervo Vertical
 TODO : Etablir un protocole de communication entre la carte Master et la carte Slave
 TODO : tester le deplacement evolué degradé
-TODO : Develloper le programme sur le stm32 (rappoert avec la son)
+TODO : Developper le programme sur le stm32 (rappoert avec la son)
 TODO : demander comment est etablie la communication entre la carte stm32 et le reste (carte Slave)
