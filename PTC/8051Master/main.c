@@ -114,8 +114,8 @@ void startup(){
 	unsigned char temp_init_cervo = CDE_Servo_H(0); //positionnement du cervo a 0deg
 	Delay(temp_init_cervo*10); 
 	serOutstring("go\r\n");
-	serOutchar_SPI(0x0D);
-	while(serInchar_SPI() != 0x02);
+	
+	while(serInchar_SPI() != 0x02){serOutchar_SPI(0x01);Delay(1);}
 	serOutstring("Slave Ready\r\n");
 	
 }
@@ -124,6 +124,7 @@ void loop() {
 	if (Rx_chaine(chaine_courante) == 1) {
 		decodage_commande(chaine_courante);
 	}
+	//while(1) {Delay(10);serOutstring_SPI("LS\r");}
 	if (state_go_coordinates > 0) {
 		go_coordinates_without_obstacles(go_coordinates_x, go_coordinates_y, go_coordinates_angle);
 	}

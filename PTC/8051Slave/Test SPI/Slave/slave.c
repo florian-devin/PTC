@@ -149,6 +149,9 @@ void loop() {
 
 void startup() {
     serOutstring("UART0 Ready !");
+		while(serInchar_SPI() != 0x01);
+		serOutchar_SPI(0x02);
+		serOutstring("Slave ready \r");
 } 
 
 

@@ -190,7 +190,8 @@ void Init_SPI() {
 
 void Init_Timer3(void) { //Utiliser pour la SPI
     //TMR3RL  = 0xFFFF - T_T3; //valeur de reload
-    TMR3RL  = 0xFFFF - 22118; //valeur de reload
+		TMR3RL  = 0xFFFF - 12118; //valeur de reload
+    //TMR3RL  = 0xFFFF - 22118; //valeur de reload
     TMR3CN |= (1<<2); //Timer 3 enable
     TMR3CN |= (1<<1); //SYSCLK/1
 

@@ -49,8 +49,11 @@ void envoie_info_confirmation(void);
 
 void setup(void) {
   Init_Device();
-	while(serInchar_SPI() != 0x02);
+	while(serInchar_SPI() != 0x01);
+	serOutchar_SPI(0x02);
 	serOutstring("Slave ready \r");
+	Delay(10);
+	RAZ_str(chaine_courante_SPI);
 }
 
 void loop(void) {
