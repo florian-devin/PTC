@@ -115,7 +115,10 @@ void startup(){
 	Delay(temp_init_cervo*10); 
 	serOutstring("go\r\n");
 	
-	while(serInchar_SPI() != 0x02){serOutchar_SPI(0x01);Delay(1);}
+	while(serInchar_SPI() != 0x02){
+		serOutchar_SPI(0x01);
+		Delay(1);
+	}
 	serOutstring("Slave Ready\r\n");
 	
 }
@@ -180,6 +183,7 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 		else if (my_strcmp(commande,"SD"))
 			Cmd_epreuve_SD(Pchaine_courante);
 		else if (my_strcmp(commande,"SPI")) { //Pour le test de la liaison SPI
+			my_strcat(Pchaine_courante,"\r");
 			serOutstring_SPI(Pchaine_courante);
 			AR_cmd_correcte();
 		} 

@@ -7,7 +7,10 @@
 // Destination: 8150F020 Carte Master
 // Description: Fonctions qui recupere les informations d'une chaine de caractere
 //------------------------------------------------------
-#include "PTC_geter_cmd.h"
+#ifndef PTC_geter_cmd
+	#include "PTC_geter_cmd.h"
+   #define PTC_geter_cmd
+#endif
 #include "PTC_strOperateurs.h"
 
 //Decoupage de la trame en plusieur commande

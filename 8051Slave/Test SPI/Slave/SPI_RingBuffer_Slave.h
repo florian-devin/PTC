@@ -7,7 +7,7 @@
 // Destination: 8150F020 Carte Master
 // Description: Fonctions pour l'SPI avec buffer circ
 //------------------------------------------------------
-sbit SS = P1^0; //Slave-Select pour le SPI
+
 //Initialisation des structuresde gestion des buffers transmission et reception
 void init_Serial_Buffer_SPI(void);
 
