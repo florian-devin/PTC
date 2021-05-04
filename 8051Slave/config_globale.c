@@ -35,15 +35,13 @@ void Port_IO_Init() {
     //UART 1 pour communication avec le module radio (FPGA)
     //SPI pour communication avec 8051Master
 
-    // GND                                      B-1
-    //VDD                                       A-1
-    // P0.0  -  Tx0       ,  Pull-push , Digital 
+    // P0.0  -  Tx0       ,  Pull-push , Digital
     // P0.1  -  Rx0       ,  Open-Drain, Digital
 
-    // P0.2  -  SCK       ,  Open-Drain, Digital A-12
-    // P0.3  -  MISO      ,  Pull-push , Digital C-11
-    // P0.4  -  MOSI      ,  Open-Drain, Digital B-11
-    // P0.5  -  NSS       ,  Open-Drain, Digital A-11
+    // P0.2  -  SCK       ,  Open-Drain, Digital
+    // P0.3  -  MISO      ,  Pull-push , Digital
+    // P0.4  -  MOSI      ,  Open-Drain, Digital
+    // P0.5  -  NSS       ,  Open-Drain, Digital
 
     // P0.6  -  Tx1       ,  Pull-push , Digital
     // P0.7  -  Rx1       ,  Open-Drain, Digital

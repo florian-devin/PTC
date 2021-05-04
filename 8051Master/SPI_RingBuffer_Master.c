@@ -91,7 +91,7 @@ void SPI_ISR(void) interrupt 6 {
         if(!TX_in_progress){ 
             if(!RB_EMPTY(&out_SPI)) { //si il y a un caractere dans le buffer circulaire
                 SS = 0; //Selection de l'esclave
-                SPI0DAT = 0x00;//*RB_POPSLOT(&out_SPI);      /* start transmission of next byte */
+                SPI0DAT = *RB_POPSLOT(&out_SPI); 
                 RB_POPADVANCE(&out_SPI);            /* remove the sent byte from buffer */
                 TX_in_progress = 1;
   	        }

@@ -55,16 +55,16 @@ void Init_crossbar() {
 }
 
 void Port_IO_Init() {
-    // P0.0  -  SCK       ,  Push-Pull , Digital
-    // P0.1  -  MISO      ,  Open-Drain, Digital
-    // P0.2  -  MOSI      ,  Push-Pull , Digital
-    // P0.3  -  NSS       ,  Open-Drain, Digital
-    // P0.4  -  Unassigned,  Open-Drain, Digital
-    // P0.5  -  Unassigned,  Open-Drain, Digital
+    // P0.0  -  Tx, 				 Pull-push, Digital
+    // P0.1  -  Rx, 				 Open-Drain, Digital
+    // P0.2  -  SCK       ,  Push-Pull , Digital
+    // P0.3  -  MISO      ,  Open-Drain, Digital
+    // P0.4  -  MOSI      ,  Push-Pull , Digital
+    // P0.5  -  NSS       ,  Open-Drain, Digital
     // P0.6  -  Unassigned,  Open-Drain, Digital
     // P0.7  -  Unassigned,  Open-Drain, Digital
 
-    // P1.0  -  SS        ,  Push-Pull , Digital
+    // P1.0  -  Unassigned,  Open-Drain, Digital
     // P1.1  -  Unassigned,  Open-Drain, Digital
     // P1.2  -  Unassigned,  Open-Drain, Digital
     // P1.3  -  Unassigned,  Open-Drain, Digital
@@ -73,7 +73,7 @@ void Port_IO_Init() {
     // P1.6  -  Unassigned,  Open-Drain, Digital
     // P1.7  -  Unassigned,  Open-Drain, Digital
 
-    // P2.0  -  Unassigned,  Open-Drain, Digital
+    // P2.0  -  SS        ,  Pull-push , Digital
     // P2.1  -  Unassigned,  Open-Drain, Digital
     // P2.2  -  Unassigned,  Open-Drain, Digital
     // P2.3  -  Unassigned,  Open-Drain, Digital
@@ -92,9 +92,12 @@ void Port_IO_Init() {
     // P3.7  -  Unassigned,  Open-Drain, Digital Input INT7
 		
 	// P4.0 to P7.7   Unassigned,  Open-Drain, Digital
-    P0MDOUT |= (1<<0); //SCK
-    P0MDOUT |= (1<<2); //MOSI
-    P1MDOUT |= (1<<0); //SS
+     P0MDOUT |= (1<<2); //SCK
+     P0MDOUT |= (1<<4); //MOSI
+     P2MDOUT |= (1<<0); //SS
+		 XBR2 |= 0x40; //enable le crossbar
+		 XBR0 |= (1<<1); //SPI
+		 XBR0 |= (1<<2); //Tx -> P0.0 & Rx -> P0.1
 }
 
 void Init_SPI() {
@@ -150,6 +153,8 @@ void loop() {
 
 
 void startup() {
+		while(1)
+			serOutchar_SPI(0x0D);
     serOutchar_SPI(0xFF);
     serOutstring_SPI("La liaison SPI fonctionne !");
 		RAZ_str(chaine_courante_SPI);
@@ -168,6 +173,11 @@ void main(){
 //----------------------------------------------
 
 //-----------------------Fonction d'interruption
-
+//Interrupt du timer3 pour declancher une com SPI
+void Timer3_ISR(void) interrupt 14 {
+    TMR3CN &= ~(1<<7); //flag 
+    SPIF = 1; //declanchement de l'ISR de SPI pour envoyer un caractere si il y en a dans le buffer 
+	
+}
 
 //----------------------------------------------

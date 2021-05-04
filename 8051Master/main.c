@@ -8,6 +8,11 @@
 // Description: Fonctions main
 //------------------------------------------------------
 
+
+///Pour le debug sans le robot 
+//#define WAIT_RX_ROBOT
+
+
 #include "c8051F020_SFR16.h"
 #include "c8051F020.h"
 #include "config_globale.h"
@@ -27,6 +32,10 @@
 #include "PTC_servoMoteurHorizontal.h"
 #include "PTC_decodeCmd.h"
 #include <math.h>
+
+
+
+
 
 #define POURCENTAGE_ERREUR_TICK 10 //pourcentage d'erreur accepter sur le dif des encodeurs
 
@@ -58,14 +67,8 @@ char state_go_coordinates 	= 0; //machine d'etat pour la fonction go_coordinates
 int go_coordinates_x, go_coordinates_y, go_coordinates_angle;//pour retenir les pos demander par l'utilisateur
 
 //En lien avec le telemetre
-sbit commandCapture = P3^3;
-int measureCycle = 1; // Compte le nombre d'overflow du Timer 2
-extern int bool_trig;
-extern int bool_trig;
-extern int bool_echo1;
-extern int bool_echo2;
-extern int bool_out_distance;
-extern float T;
+sbit 	commandCapture 	= P3^3; // Commande la capture du timer2
+int 	measureCycle 	= 1	  ; // Compte le nombre d'overflow du Timer 2
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
@@ -103,18 +106,17 @@ void main(){
 void setup(){
   Init_Device(); //fonction de config_globale.c
   Init_Robot(); //rst de la carte serial etc...
+  
 }
 
 
 void startup(){
 	unsigned char temp_init_cervo = CDE_Servo_H(0); //positionnement du cervo a 0deg
-	char c;
 	Delay(temp_init_cervo*10); 
 	serOutstring("go\r\n");
-	serOutchar_SPI('\r');
-	while(c=serInchar_SPI() == 0);
+	
+	while(serInchar_SPI() != 0x02){serOutchar_SPI(0x01);Delay(1);}
 	serOutstring("Slave Ready\r\n");
-	RAZ_str(chaine_courante_SPI);
 	
 }
 	
@@ -122,6 +124,7 @@ void loop() {
 	if (Rx_chaine(chaine_courante) == 1) {
 		decodage_commande(chaine_courante);
 	}
+	//while(1) {Delay(10);serOutstring_SPI("LS\r");}
 	if (state_go_coordinates > 0) {
 		go_coordinates_without_obstacles(go_coordinates_x, go_coordinates_y, go_coordinates_angle);
 	}
@@ -212,6 +215,7 @@ void Interrupt_Time(void) interrupt 16 {//interruption declancher par l'overflow
 void Timer3_ISR(void) interrupt 14 {
     TMR3CN &= ~(1<<7); //flag 
     SPIF = 1; //declanchement de l'ISR de SPI pour envoyer un caractere si il y en a dans le buffer 
+	
 }
 
 

@@ -1,8 +1,0 @@
-".\Objects\STARTUP.obj",
-".\Objects\master.obj",
-".\Objects\SPI_RingBuffer_Master.obj",
-".\Objects\PTC_strOperateurs.obj",
-".\Objects\PTC_geter_cmd.obj",
-".\Objects\PTC_SPI.obj" 
-TO ".\Objects\test master SPI" 
-PRINT(".\Listings\test master SPI.m51") RAMSIZE(256) 

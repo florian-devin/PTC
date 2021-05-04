@@ -19,8 +19,8 @@
 
 // Rx_chaine -- retourne 1 si on recoit un message complet.
 int Rx_chaine_SPI(char *Pchaine_courante){
-	char c;
-	if ((c=serInchar_SPI()) != 0){//si on vient de recevoir un caractere
+	char c = serInchar_SPI();
+	if (c != 0 && c!=0x01){//si on vient de recevoir un caractere
 		int i = 0; //cpt position de chaine
 		if(c == '\r'){
 			return 1;
