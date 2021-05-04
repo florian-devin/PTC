@@ -5,6 +5,7 @@
 ".\Objects\PTC_geter_cmd.obj",
 ".\Objects\PTC_SPI.obj",
 ".\Objects\PTC_strOperateurs.obj",
-".\Objects\PTC_convertion.obj" 
+".\Objects\PTC_convertion.obj",
+".\Objects\slave_config_globale.obj" 
 TO ".\Objects\test slave SPI" 
 PRINT(".\Listings\test slave SPI.m51") RAMSIZE(256) 

@@ -456,6 +456,16 @@
               <FileType>1</FileType>
               <FilePath>.\PTC_convertion.c</FilePath>
             </File>
+            <File>
+              <FileName>slave_config_globale.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\slave_config_globale.h</FilePath>
+            </File>
+            <File>
+              <FileName>slave_config_globale.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\slave_config_globale.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

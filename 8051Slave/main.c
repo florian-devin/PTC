@@ -89,7 +89,8 @@ void decodage_commande(char *Pchaine_courante_SPI){ //fonction qui decode les co
 	else if (my_strcmp(commande,"SD"))
 		Cmd_epreuve_SD_Slave(Pchaine_courante_SPI);
 	else if (my_strcmp(commande,"SPI")) { //Pour le test de la liaison SPI
-		//TODO vecteur de test de spi
+		serOutstring("Commande SPI bien recu !\r\n");
+        serOutstring_SPI("Cmd SPI ok");
 	} 
 	else 
 		AR_cmd_incorrecte_SPI();
