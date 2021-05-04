@@ -31,6 +31,7 @@
 #include "PTC_telemetre.h"
 #include "PTC_servoMoteurHorizontal.h"
 #include "PTC_decodeCmd.h"
+#include "PTC_SPI.h"
 #include <math.h>
 
 
@@ -81,6 +82,7 @@ void setup();
 void startup();
 void loop();
 void decodage_commande(char *Pchaine_courante);
+void decodage_commande_SPI(char *Pchaine_courante);
 void envoie_info_confirmation(void);
 void actu_coord_robot(void);
 //ceci est un com
@@ -126,6 +128,9 @@ void startup(){
 void loop() {
 	if (Rx_chaine(chaine_courante) == 1) {
 		decodage_commande(chaine_courante);
+	}
+	if (Rx_chaine_SPI(chaine_courante_SPI) == 1) {
+		decodage_commande_SPI(chaine_courante_SPI);
 	}
 	//while(1) {Delay(10);serOutstring_SPI("LS\r");}
 	if (state_go_coordinates > 0) {
@@ -195,6 +200,16 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 	RAZ_str(Pchaine_courante);
 }
  
+
+void decodage_commande_SPI(char *Pchaine_courante){
+	char commande[10] = {0};
+
+	get_commande(Pchaine_courante,commande);
+	if (my_strcmp(commande,"SPICSV"))
+		Cmd_epreuve_SPICSV();
+	
+	RAZ_str(Pchaine_courante);
+}
 void envoie_info_confirmation(void){
 	if (flag_print_arrive_servo_H == 1) {
 		if(temp_servo_H - (get_time_ms() - last_time_capture_servo_H) <= 0) {

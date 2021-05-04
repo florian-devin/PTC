@@ -18,3 +18,12 @@ int my_atoi(const char *str);
 //@param dst addresse de la chaine ou sera mis le resultat 
 //@return dst addresse de la chaine ou sera mis le resultat passé en parametre
 char *my_itoa(const int n, char *dst);
+
+//Adapte l'echelle d'un nombre en un autre (convetion d'unitée) (fonction arduino) 
+//@param x entier a convertir
+//@param in_min minimum du nombre d'entree
+//@param in_max maximum du nombre d'entree
+//@param out_min minimum du nombre de sortie
+//@param out_max maximum du nombre de sortie
+//@return le resultat de la convertion
+long map(long x, long in_min, long in_max, long out_min, long out_max) ;

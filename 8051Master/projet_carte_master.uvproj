@@ -556,6 +556,16 @@
               <FileType>5</FileType>
               <FilePath>.\SPI_RingBuffer_Master.h</FilePath>
             </File>
+            <File>
+              <FileName>PTC_SPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\PTC_SPI.c</FilePath>
+            </File>
+            <File>
+              <FileName>PTC_SPI.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\PTC_SPI.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

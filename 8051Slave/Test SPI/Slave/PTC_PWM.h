@@ -14,4 +14,4 @@ void analogWrite_CEX0(const unsigned char value);
 
 //Set le PWM 8bits CEX1 (ici le cervo moteur verticale)
 //@param value rapport cyclique de 0 a 255
-void analogWrite_CEX1(const unsigned char value);
+void analogWrite_CEX1(const unsigned int value);

@@ -23,11 +23,12 @@ void analogWrite_CEX0(const unsigned char value) {
 }
 
 
-void analogWrite_CEX1(const unsigned char value) {
+void analogWrite_CEX1(const unsigned int value) {
     if (!value)
         PCA0CPM1 &= ~(1<<6); //ECOM0 = 0 pour desactiver le PWM
     else {
         PCA0CPM1 |= (1<<6); //ECOM0 = 1 pour activer le PWM
-        PCA0CPH1 = 0xFF - value;
+        PCA0CPL1 = 0xFFFF - value;
+        PCA0CPH1 = (0xFFFF - value) >> 8;
     }
 }

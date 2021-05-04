@@ -10,6 +10,7 @@
 #include "PTC_PWM.h"
 #include <math.h>
 #include "PTC_servoMoteurVertical.h"
+#include "PTC_convertion.h"
 
 // variables
 char  Angle_actuel = 90; // Angle actuel du servomoteur
@@ -24,7 +25,8 @@ unsigned char Time_deplacement_cervoV(char Angle) {
 
 
 unsigned char CDE_Servo_V(char Angle) {
-    analogWrite_CEX1(Angle); //TODO calibrer ce mouvement  
+	int value = map(Angle,-90,90,1846,3692);
+    analogWrite_CEX1(value); 
 	Angle_actuel = Angle;
 	return Time_deplacement_cervoV(Angle);
 }

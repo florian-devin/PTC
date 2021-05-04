@@ -23,6 +23,7 @@
 
 
 void decodage_commande(char *Pchaine_courante_SPI);
+void envoie_info_confirmation(void);
 //--------------------------Variables Globales
 //En lien avec la SPI
 char chaine_courante_SPI[64] = {0};//chaine total qui vas contenir le mot recu
@@ -65,6 +66,7 @@ void loop() {
     if (Lumiere_loop_Enable) {//Routine alumage lumiere
         Lumiere_loop();
     }
+    envoie_info_confirmation();
 }
 
 void decodage_commande(char *Pchaine_courante_SPI){ //fonction qui decode les commades et les applique
@@ -89,12 +91,27 @@ void decodage_commande(char *Pchaine_courante_SPI){ //fonction qui decode les co
 	RAZ_str(Pchaine_courante_SPI);
 }
 
+void envoie_info_confirmation(void){
+	if (flag_print_arrive_servo_V == 1) {
+		int tmp = temp_servo_V - (get_time_ms() - last_time_capture_servo_V); //TODO: remouve this variable
+		if(temp_servo_V - (get_time_ms() - last_time_capture_servo_V) <= 0) {
+			serOutstring_SPI("SPICSV\r");
+			flag_print_arrive_servo_V = 0;
+		}
+		else {
+			temp_servo_V -= (get_time_ms() - last_time_capture_servo_V);
+			last_time_capture_servo_V = get_time_ms();
+		}
+	}
+}
+
+
 void startup() {
     serOutstring("UART Slave Ready \r\n");
  	while(serInchar_SPI() != 0x01);
 	serOutchar_SPI(0x02);
 	serOutstring("SPI Slave Ready \r\n");
-	
+	analogWrite_CEX1(3692);
 } 
 
 

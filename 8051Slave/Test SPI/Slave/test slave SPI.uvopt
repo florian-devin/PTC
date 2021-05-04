@@ -132,7 +132,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGTCYG</Key>
-          <Name>(98=-1,-1,-1,-1,0)(3004=4626,14,4980,398,0)(3003=-1,-1,-1,-1,0)(3006=3665,6,3908,152,0)(3007=-1,-1,-1,-1,0)(3008=-1,-1,-1,-1,0)(3011=-1,-1,-1,-1,0)(3012=-1,-1,-1,-1,0)(3013=-1,-1,-1,-1,0)(3014=-1,-1,-1,-1,0)(99=-1,-1,-1,-1,0)(5068=-1,-1,-1,-1,0)(91=-1,-1,-1,-1,0)(92=-1,-1,-1,-1,0)(93=-1,-1,-1,-1,0)(3010=-1,-1,-1,-1,0)(3009=-1,-1,-1,-1,0)(5092=-1,-1,-1,-1,0)(95=4380,7,4626,212,1)(100=4044,-43,4344,246,1)(5057=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(5047=-1,-1,-1,-1,0)(5093=-1,-1,-1,-1,0)(1002=-1,-1,-1,-1,0)(5094=-1,-1,-1,-1,0)(5096=-1,-1,-1,-1,0)(5061=-1,-1,-1,-1,0)(5067=-1,-1,-1,-1,0)(5095=-1,-1,-1,-1,0)</Name>
+          <Name>(98=930,151,1308,448,1)(3004=4626,14,4980,398,0)(3003=-1,-1,-1,-1,0)(3006=3665,6,3908,152,0)(3007=-1,-1,-1,-1,0)(3008=-1,-1,-1,-1,0)(3011=-1,-1,-1,-1,0)(3012=-1,-1,-1,-1,0)(3013=-1,-1,-1,-1,0)(3014=-1,-1,-1,-1,0)(99=-1,-1,-1,-1,0)(5068=-1,-1,-1,-1,0)(91=-1,-1,-1,-1,0)(92=-1,-1,-1,-1,0)(93=-1,-1,-1,-1,0)(3010=-1,-1,-1,-1,0)(3009=1653,348,1888,597,1)(5092=-1,-1,-1,-1,0)(95=2624,242,2870,447,0)(100=2623,489,2923,778,0)(5057=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(5047=-1,-1,-1,-1,0)(5093=-1,-1,-1,-1,0)(1002=-1,-1,-1,-1,0)(5094=-1,-1,-1,-1,0)(5096=-1,-1,-1,-1,0)(5061=-1,-1,-1,-1,0)(5067=-1,-1,-1,-1,0)(5095=-1,-1,-1,-1,0)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -150,24 +150,7 @@
           <Name>200,50,700</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint>
-        <Bp>
-          <Number>0</Number>
-          <Type>0</Type>
-          <LineNumber>73</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>-16773375</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>PTC_POINTEURLUMINEUX.C</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\test slave SPI\PTC_POINTEURLUMINEUX\73</Expression>
-        </Bp>
-      </Breakpoint>
+      <Breakpoint/>
       <WatchWindow1>
         <Ww>
           <count>0</count>
@@ -213,6 +196,61 @@
           <count>8</count>
           <WinNumber>1</WinNumber>
           <ItemText>tmp,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>9</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>angle</ItemText>
+        </Ww>
+        <Ww>
+          <count>10</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>str_angle</ItemText>
+        </Ww>
+        <Ww>
+          <count>11</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Pchaine_courante</ItemText>
+        </Ww>
+        <Ww>
+          <count>12</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>str_name</ItemText>
+        </Ww>
+        <Ww>
+          <count>13</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>str_angle</ItemText>
+        </Ww>
+        <Ww>
+          <count>14</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>str_param</ItemText>
+        </Ww>
+        <Ww>
+          <count>15</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>tmp,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>16</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>temp_servo_V,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>17</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>last_time_capture_servo_V,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>18</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Time_ms,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>19</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>flag_print_arrive_servo_V</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

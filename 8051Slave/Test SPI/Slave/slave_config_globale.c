@@ -119,7 +119,8 @@ void Init_PCA(void) {
 	PCA0CPM0    |= (1<<1);  //PWM Enable
 
     //Pour le cervo-moteur : CEX1
-    PCA0CPM1    |= (1<<1); //PWM Enable
+
+    PCA0CPM1    |= 0xC2; //PWM Enable
 }
 
 void Init_timer4() {

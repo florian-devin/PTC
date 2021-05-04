@@ -467,9 +467,13 @@ void Cmd_epreuve_SD(const char *Pchaine_courante) {
 	}
 }
 
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////Commandes recu de l'esclave SPI
 
 
-
+void Cmd_epreuve_SPICSV(void) {//Cette commande signifie que le servomoteur verticale est ariive en position
+	serOutstring("AS V");
+}
 
 
 
