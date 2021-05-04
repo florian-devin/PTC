@@ -10,6 +10,11 @@
 #include "PTC_SPI.h"
 #include "PTC_strOperateurs.h"
 #include "PTC_geter_cmd.h"
+#include "PTC_decodeCmd.h"
+#include "PTC_timer.h"
+#include "PTC_pointeurLumineux.h"
+#include "PTC_PWM.h"
+
 
 #ifndef CFG_Globale
    #define CFG_Globale
@@ -21,6 +26,16 @@ void decodage_commande(char *Pchaine_courante_SPI);
 //--------------------------Variables Globales
 //En lien avec la SPI
 char chaine_courante_SPI[64] = {0};//chaine total qui vas contenir le mot recu
+
+//En lien avec le pointeur lumineu
+char            Lumiere_loop_Enable = 0; //1 si il faut faire Lumiere_loop 0 sinon
+unsigned int   Lumiere_Intensite, Lumiere_Lum_Nbre;
+unsigned int    Lumiere_Lum_ON, Lumiere_Lum_OFF;
+
+//En lien avec le cervo moteur vertical
+unsigned char    temp_servo_V;
+char             flag_print_arrive_servo_V = 0;
+unsigned long 	last_time_capture_servo_V 	= 0; //dernier temp capture en ms
 //-------------------Declaration des ports E/S
 
 //--------------------------------------------
@@ -44,26 +59,42 @@ void setup() {
 
 void loop() {
     if (Rx_chaine_SPI(chaine_courante_SPI)) {
-        serOutstring("Rx = 1\r\n");
         decodage_commande(chaine_courante_SPI);
+    }
+
+    if (Lumiere_loop_Enable) {//Routine alumage lumiere
+        Lumiere_loop();
     }
 }
 
 void decodage_commande(char *Pchaine_courante_SPI){ //fonction qui decode les commades et les applique
 	char commande[7] = {0};
 	get_commande(Pchaine_courante_SPI,commande);
-    if (my_strcmp(commande,"SPI")) { //Pour le test de la liaison SPI
+
+	if (my_strcmp(commande,"CS")) 
+		Cmd_epreuve_CS_Slave(Pchaine_courante_SPI);
+	else if (my_strcmp(commande,"L"))
+		Cmd_epreuve_L_Slave(Pchaine_courante_SPI);
+	else if (my_strcmp(commande,"LS"))
+		Cmd_epreuve_LS_Slave(); 
+	else if (my_strcmp(commande,"ASS"))
+		Cmd_epreuve_ASS_Slave(Pchaine_courante_SPI);
+	else if (my_strcmp(commande,"SD"))
+		Cmd_epreuve_SD_Slave(Pchaine_courante_SPI);
+	else if (my_strcmp(commande,"SPI")) { //Pour le test de la liaison SPI
 		serOutstring("Commande SPI bien recu !\r\n");
         serOutstring_SPI("Cmd SPI ok");
-	}
+	} 
+
 	RAZ_str(Pchaine_courante_SPI);
 }
 
 void startup() {
     serOutstring("UART Slave Ready \r\n");
-	while(serInchar_SPI() != 0x01);
+ 	while(serInchar_SPI() != 0x01);
 	serOutchar_SPI(0x02);
 	serOutstring("SPI Slave Ready \r\n");
+	
 } 
 
 
@@ -74,4 +105,5 @@ void main(){
         loop();
     }
 }
+
 

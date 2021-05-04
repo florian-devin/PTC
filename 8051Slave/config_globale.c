@@ -133,10 +133,9 @@ EIE2 |= (1<<2);
 
 //reload value
 RCAP4 = 0xA99A;// = 43418
-
 }
 
-void Init_Timer3(void) {
+void Init_Timer3(void) {//TODO : comprendre a quoi il sert
     //TMR3RL  = 0xFFFF - T_T3; //valeur de reload
     TMR3RL  = 0xFFFF - 22118; //valeur de reload
     TMR3CN |= (1<<2); //Timer 3 enable

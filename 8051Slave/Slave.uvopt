@@ -115,7 +115,7 @@
         <bEvRecOn>1</bEvRecOn>
         <bSchkAxf>0</bSchkAxf>
         <bTchkAxf>0</bTchkAxf>
-        <nTsel>12</nTsel>
+        <nTsel>10</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
         <sDlgDll></sDlgDll>
@@ -163,7 +163,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>SPI_RingBuffer_Slave.c</Filename>
+          <Filename>C:\Users\florian\Desktop\PTC2\PTC\8051Slave\SPI_RingBuffer_Slave.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -179,7 +179,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>SPI_RingBuffer_Slave.c</Filename>
+          <Filename>C:\Users\florian\Desktop\PTC2\PTC\8051Slave\SPI_RingBuffer_Slave.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -195,7 +195,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>main.c</Filename>
+          <Filename>C:\Users\florian\Desktop\PTC2\PTC\8051Slave\main.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -211,7 +211,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>MAIN.C</Filename>
+          <Filename>C:\Users\florian\Desktop\PTC2\PTC\8051Slave\MAIN.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\MAIN\84</Expression>
         </Bp>
@@ -227,7 +227,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>PTC_SPI.C</Filename>
+          <Filename>C:\Users\florian\Desktop\PTC2\PTC\8051Slave\PTC_SPI.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>

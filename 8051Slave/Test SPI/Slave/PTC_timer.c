@@ -9,7 +9,8 @@
 //------------------------------------------------------
 
 #include "PTC_timer.h"
-#include "config_globale.h"
+#include "c8051F020.h"
+#include "c8051F020_SFR16.h"
 
 #define FREQ_CLK 22118400
 #define DELAY_1US 1
@@ -57,4 +58,9 @@ void Delay_10us(void){
 	unsigned int i;
 	// for(i=0; i <20;i++){} Florin's version
 	for(i=0; i <10;i++){}
+}
+
+void Interrupt_Time(void) interrupt 16 {//interruption declancher par l'overflow du Timer 3 (toutes les ms)
+	T4CON &= ~(1<<7); //interrupt flag
+    Time_increment();
 }

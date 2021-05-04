@@ -53,12 +53,12 @@ void Cmd_epreuve_CS_Slave(const char *Pchaine_courante) { // Cmd = CS V [A:Angle
 }
 
 void Cmd_epreuve_L_Slave(const char *Pchaine_courante) { 
-	char str_param[2] = {0};
-	char num_param    = 1  ;
-	char intensite    = 100;
-	char duree_ON     = 99 ;
-	char duree_OFF    = 0  ;
-	char nb_allumage  = 1  ;
+	char str_param[8] = {0};
+	int  num_param    = 1  ;
+	int  intensite    = 100;
+	int  duree_ON     = 99 ;
+	int  duree_OFF    = 0  ;
+	int  nb_allumage  = 1  ;
 
 	do {
 		get_param(Pchaine_courante,num_param,str_param);
@@ -68,19 +68,19 @@ void Cmd_epreuve_L_Slave(const char *Pchaine_courante) {
 			num_param++;
 			get_complex_param(str_param,str_name,str_value);
 			if (my_strcmp(str_name, "I")){
-				char value = my_atoi(str_value);
+				int value = my_atoi(str_value);
 				intensite = value;
 			}
 			else if  (my_strcmp(str_name, "D")) {
-				char value = my_atoi(str_value);
+				int value = my_atoi(str_value);
 				duree_ON = value;
 			}
 			else if  (my_strcmp(str_name, "E")) {
-				char value = my_atoi(str_value);
+				int value = my_atoi(str_value);
 				duree_OFF = value;
 			}
 			else if  (my_strcmp(str_name, "N")) {
-				char value = my_atoi(str_value);
+				int value = my_atoi(str_value);
 				nb_allumage = value;
 			}
 			else {
