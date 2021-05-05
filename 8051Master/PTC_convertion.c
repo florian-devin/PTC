@@ -48,7 +48,11 @@ char	*my_itoa(const int n, char *dst) {
 	long int	div;
 	long int	nb;
 	int			i;
-
+	if (n == 0){
+		dst[0] = '0';
+		dst[1] = '\0';
+		return (dst);
+	}
 	div = 1;
 	i = 0;
 	nb = (n < 0) ? -n : n;

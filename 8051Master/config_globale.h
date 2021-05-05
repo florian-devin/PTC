@@ -52,7 +52,7 @@ void Port_IO_Init(void);
 //initialise sysclock avec le quartz externe
 //@param rien
 //@return rien
-void Oscillator_Init_Osc_Quartz(void);
+void Oscillator_Init(void);
 
 //initialise le Timer1 en baurate generator (19200baud/s)
 void cfg_Clock_UART(void);
@@ -66,6 +66,12 @@ void cfg_UART1_mode1(void);
 //initialise le Timer2 en mode capture
 void Init_Timer2(void);
 
+//initialise le timer 3
+void Init_Timer3(void);
+
+//initialise le timer 4
+void Init_Timer4(void);
+
 //initialise la liaison SPI 
 //Fonction pas encore devellope
 //@param rien
@@ -76,6 +82,9 @@ void Init_SPI(void);
 //@param rien
 //@return rien
 void Init_interrupt(void);
+
+//initialise le Timer PCA pour les PWM
+void Init_PCA(void);
 
 //initialise le device en appelant toutes les fonctions d'initialisation
 //@param rien
@@ -92,4 +101,14 @@ void Init_Robot(void);
 //@param rien
 //@return rien
 void Robot_restore(void);
+
+
+
+
+
+
+
+
+
+
 
