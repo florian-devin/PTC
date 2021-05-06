@@ -88,10 +88,11 @@ static RB_CREATE(in, unsigned char xdata);            /* static struct { ... } i
 
 
 void SPI_ISR(void) interrupt 6 {
-    if(SPIF){ //fin de la transmission
+	char tes =0;
+	if(SPIF){ //fin de la transmission
 		//1ere etape : on recupere le caractere 
 		char c;
-		if((c=SPI0DAT)){ //si le caractere n'est pas nul 
+		if((c=SPI0DAT) != 0x00){ //si le caractere n'est pas nul 
             if(!RB_FULL(&in)) {                   // si le buffer est plein, la donnee recue est perdue
      	        *RB_PUSHSLOT(&in) = c;        /* store new data in the buffer */
 		        RB_PUSHADVANCE(&in);               /* next write location */
@@ -150,7 +151,7 @@ unsigned char serOutchar_SPI(char c) {
 char serInchar_SPI(void) {
 char c;
 
-  if (!RB_EMPTY(&in))
+   if (!RB_EMPTY(&in))
   {                 /* wait for data */
 
   	c = *RB_POPSLOT(&in);                 /* get character off the buffer */

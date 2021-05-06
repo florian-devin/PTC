@@ -48,11 +48,7 @@ char	*my_itoa(const int n, char *dst) {
 	long int	div;
 	long int	nb;
 	int			i;
-	if (n == 0){
-		dst[0] = '0';
-		dst[1] = '\0';
-		return (dst);
-	}
+
 	div = 1;
 	i = 0;
 	nb = (n < 0) ? -n : n;
@@ -68,4 +64,9 @@ char	*my_itoa(const int n, char *dst) {
 		dst[i++] = (((nb / div) % 10) + 48);
     dst[i++] = '\0';
 	return (dst);
+}
+
+
+long map(long x, long in_min, long in_max, long out_min, long out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }

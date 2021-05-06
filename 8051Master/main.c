@@ -8,6 +8,11 @@
 // Description: Fonctions main
 //------------------------------------------------------
 
+
+///Pour le debug sans le robot 
+//#define WAIT_RX_ROBOT
+
+
 #include "c8051F020_SFR16.h"
 #include "c8051F020.h"
 #include "config_globale.h"
@@ -26,7 +31,12 @@
 #include "PTC_telemetre.h"
 #include "PTC_servoMoteurHorizontal.h"
 #include "PTC_decodeCmd.h"
+#include "PTC_SPI.h"
 #include <math.h>
+
+
+
+
 
 #define POURCENTAGE_ERREUR_TICK 10 //pourcentage d'erreur accepter sur le dif des encodeurs
 
@@ -78,6 +88,7 @@ void setup();
 void startup();
 void loop();
 void decodage_commande(char *Pchaine_courante);
+void decodage_commande_SPI(char *Pchaine_courante);
 void envoie_info_confirmation(void);
 void actu_coord_robot(void);
 //ceci est un com
@@ -103,18 +114,20 @@ void main(){
 void setup(){
   Init_Device(); //fonction de config_globale.c
   Init_Robot(); //rst de la carte serial etc...
+  
 }
 
 
 void startup(){
 	unsigned char temp_init_cervo = CDE_Servo_H(0); //positionnement du cervo a 0deg
-	char c;
 	Delay(temp_init_cervo*10); 
 	serOutstring("go\r\n");
-	serOutchar_SPI('\r');
-	while(c=serInchar_SPI() == 0);
+	
+	while(serInchar_SPI() != 0x02){
+		serOutchar_SPI(0x01);
+		Delay(1);
+	}
 	serOutstring("Slave Ready\r\n");
-	RAZ_str(chaine_courante_SPI);
 	
 }
 	
@@ -122,6 +135,10 @@ void loop() {
 	if (Rx_chaine(chaine_courante) == 1) {
 		decodage_commande(chaine_courante);
 	}
+	if (Rx_chaine_SPI(chaine_courante_SPI) == 1) {
+		decodage_commande_SPI(chaine_courante_SPI);
+	}
+	//while(1) {Delay(10);serOutstring_SPI("LS\r");}
 	if (state_go_coordinates > 0) {
 		go_coordinates_without_obstacles(go_coordinates_x, go_coordinates_y, go_coordinates_angle);
 	}
@@ -177,6 +194,7 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 		else if (my_strcmp(commande,"SD"))
 			Cmd_epreuve_SD(Pchaine_courante);
 		else if (my_strcmp(commande,"SPI")) { //Pour le test de la liaison SPI
+			my_strcat(Pchaine_courante,"\r");
 			serOutstring_SPI(Pchaine_courante);
 			AR_cmd_correcte();
 		} 
@@ -188,6 +206,16 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 	RAZ_str(Pchaine_courante);
 }
  
+
+void decodage_commande_SPI(char *Pchaine_courante){
+	char commande[10] = {0};
+
+	get_commande(Pchaine_courante,commande);
+	if (my_strcmp(commande,"SPICSV"))
+		Cmd_epreuve_SPICSV();
+	
+	RAZ_str(Pchaine_courante);
+}
 void envoie_info_confirmation(void){
 	if (flag_print_arrive_servo_H == 1) {
 		if(temp_servo_H - (get_time_ms() - last_time_capture_servo_H) <= 0) {
@@ -212,7 +240,10 @@ void Interrupt_Time(void) interrupt 16 {//interruption declancher par l'overflow
 void Timer3_ISR(void) interrupt 14 {
     TMR3CN &= ~(1<<7); //flag 
     SPIF = 1; //declanchement de l'ISR de SPI pour envoyer un caractere si il y en a dans le buffer 
+	
 }
+
+
 
 
 /*
@@ -222,26 +253,16 @@ void int6 (void) interrupt 18
 {
 	if ((P3IF & 0x04) == 0x04)
 	{
-		int* bool_echo1;
-		bool_echo1 = get_bool_echo1_AV();
 		TL2 = 0x00;
 		TH2 = 0x00;
 		P3IF |= 0x04;
-		*bool_echo1 = 1;
+		bool_echo1 = 1;
 		P3IF &= 0xBB;
 	} else 
 	{
-		float* T;
-		int* bool_echo2;
 		commandCapture = 1;
 		commandCapture = 0;
-		T = get_T_AV(); 
-		bool_echo2 = get_bool_echo2_AV();
-		*T = RCAP2/22.1184;
-		*bool_echo2 = 1;
-
 		P3IF &= 0xBF;
-		EXF2 = 0;
 	}
 }
 
@@ -251,13 +272,21 @@ Permet de rappeler la commande de detection d'obstacle si temps d'acquisition tr
 */
 void intT2 () interrupt 5
 {
-	int *bool_trig_AV;
-	bool_trig_AV = get_bool_trig_AV();
-	measureCycle += 1;
-	if (measureCycle == 21) // 60.9 ms
+	if (TF2 != 0)
 	{
-		*bool_trig_AV = 1;
-		measureCycle = 1;
+		measureCycle += 1;
+		if (measureCycle == 21) // 60.9 ms
+		{
+			bool_out_distance = 1;
+			measureCycle = 1;
+		}
+		TF2 = 0;
 	}
-	TF2 = 0;
+	if (EXF2 != 0)
+	{
+		T = RCAP2/22.1184;
+		bool_echo2 = 1;
+		P3IF |= 0x04;
+		EXF2 = 0;
+	}
 }

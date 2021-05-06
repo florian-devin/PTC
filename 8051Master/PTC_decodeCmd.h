@@ -91,3 +91,6 @@ void Cmd_epreuve_ASS(const char *Pchaine_courante);
 //@param Pchaine_courante la chaine complete du message recu
 void Cmd_epreuve_SD(const char *Pchaine_courante);
 
+
+//Fonction qui analise et traite la commande SPICSV (Envoie d'une confirmation de l'arrive du servo verticale)
+void Cmd_epreuve_SPICSV(void);

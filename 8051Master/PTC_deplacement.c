@@ -8,6 +8,9 @@
 // Description: Fonctions de deplacement elementaires 
 //------------------------------------------------------
 
+///Pour le debug sans le robot 
+//#define WAIT_RX_ROBOT
+
 #include "PTC_deplacement.h"
 #include "PTC_strOperateurs.h"  // pour my_strcat
 #include "PTC_UART.h" // 
@@ -41,14 +44,15 @@ int angle_initial = 0; //l'angle est remi a zero a chanque appelle de go_coordin
 
 
 void Avancer(char *str_vitesse){
-    char chaine[64] = "mogo 1:";
+    char chaine[64] = "mogo 1:"; 
 	my_strcat(chaine,str_vitesse);
 	my_strcat(chaine," 2:");
 	my_strcat(chaine,str_vitesse);
 	my_strcat(chaine,"\r");
 	serOutstring_uart1(chaine); //evoie du message
-	//Wait_Accuse_RX_Robot();     //attend l'accuse de reception du robot
-	while (serInchar_uart1()==0); //attend un caractere de retour
+	#ifdef WAIT_RX_ROBOT
+    	while (serInchar_uart1()==0);//attend un caractere de retour
+    #endif
 }
 
 void Parcour_dist(char *str_distance_go_coord,char *str_vitesse){
@@ -62,8 +66,9 @@ void Parcour_dist(char *str_distance_go_coord,char *str_vitesse){
 	my_strcat(chaine,str_vitesse);
 	my_strcat(chaine,"\r");
 	serOutstring_uart1(chaine); //evoie du message
-	//Wait_Accuse_RX_Robot();     //attend l'accuse de reception du robot
-	while (serInchar_uart1()==0); //attend un caractere de retour
+	#ifdef WAIT_RX_ROBOT
+    	while (serInchar_uart1()==0);//attend un caractere de retour
+    #endif
 }
 
 void Reculer(char *str_vitesse){
@@ -73,14 +78,16 @@ void Reculer(char *str_vitesse){
 	my_strcat(chaine,str_vitesse);
 	my_strcat(chaine,"\r");
 	serOutstring_uart1(chaine); //evoie du message
-	//Wait_Accuse_RX_Robot();     //attend l'accuse de reception du robot
-	while (serInchar_uart1()==0); //attend un caractere de retour
+	#ifdef WAIT_RX_ROBOT
+    	while (serInchar_uart1()==0);//attend un caractere de retour
+    #endif
 }
 
 void Stop(void){
 	serOutstring_uart1("stop\r");
-	while (serInchar_uart1()==0); //attend un caractere de retour
-	//Wait_Accuse_RX_Robot();
+	#ifdef WAIT_RX_ROBOT
+    	while (serInchar_uart1()==0);//attend un caractere de retour
+    #endif
 }
 
 long get_encoder(char *Id){
@@ -105,7 +112,9 @@ void RAZ_encoder(char *Id) {
 	my_strcat(chaine, Id);
 	my_strcat(chaine, "\r");
 	serOutstring_uart1(chaine); //evoie du message
-	while (serInchar_uart1()==0); //attend un caractere de retour
+	#ifdef WAIT_RX_ROBOT
+    	while (serInchar_uart1()==0);//attend un caractere de retour
+    #endif
 }
 
 
@@ -118,8 +127,9 @@ void turn_right(int angle){
 	my_strcat(chaine,my_itoa(-ticks,str));
 	my_strcat(chaine,":5\r");
 	serOutstring_uart1(chaine); //evoie du message
-	//Wait_Accuse_RX_Robot();
-	while (serInchar_uart1()==0); //attend un caractere de retour
+	#ifdef WAIT_RX_ROBOT
+    	while (serInchar_uart1()==0);//attend un caractere de retour
+    #endif
 	angle_robot -= angle; 
 }
 

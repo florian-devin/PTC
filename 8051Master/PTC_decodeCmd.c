@@ -13,6 +13,7 @@
 #include "PTC_geter_cmd.h"
 #include "PTC_servoMoteurHorizontal.h"
 #include "PTC_strOperateurs.h"
+#include "PTC_telemetre.h"
 #include "UART0_RingBuffer_lib.h"
 #include "SPI_RingBuffer_Master.h"
 //------------------------------------------------------
@@ -27,6 +28,7 @@ extern char             state_go_coordinates;
 
 extern unsigned char    temp_servo_H;
 extern char             flag_print_arrive_servo_H;
+extern char 			Angle_actuel;
 
 //------------------------------------------------------
 //------------------------------------------------------
@@ -270,7 +272,7 @@ void Cmd_epreuve_CS(const char *Pchaine_courante) {
 }
 
 void Cmd_epreuve_L(const char *Pchaine_courante) { //Commande pour la carte esclave
-	char str_param[2] = {0};
+	char str_param[8] = {0};
 	char num_param = 1;
 	do {
 		get_param(Pchaine_courante,num_param,str_param);
@@ -300,17 +302,9 @@ void Cmd_epreuve_L(const char *Pchaine_courante) { //Commande pour la carte escl
 		} 
 	} while (my_strlen(str_param) != 0);
 	
-	if (num_param < 2) {//parametre par default
-		//TODO : mettre des paramettre par default avant d'envoyer a l'esclave
-		AR_cmd_correcte();
-		my_strcat(Pchaine_courante,"\r");
-		serOutstring_SPI(Pchaine_courante);
-	}
-	else {
-		AR_cmd_correcte();
-		my_strcat(Pchaine_courante,"\r");
-		serOutstring_SPI(Pchaine_courante);
-	}
+	AR_cmd_correcte();
+	my_strcat(Pchaine_courante,"\r");
+	serOutstring_SPI(Pchaine_courante);
 }
 
 void Cmd_epreuve_LS(const char *Pchaine_courante) {//Commande pour la carte esclave
@@ -351,17 +345,51 @@ void Cmd_epreuve_ME(const char *Pchaine_courante) {
 
 void Cmd_epreuve_MOU(const char *Pchaine_courante) {
 	char str_param[2] = {0};
+	float dist_AV = -2.0;
+	float dist_AR = -2.0;
 	get_param(Pchaine_courante,1,str_param);
 	if (my_strlen(str_param) > 0 && my_strcmp(str_param,"D")) {
-		//TODO : meusure avant et arriere
+		dist_AV = MES_Dist_AV();
+		dist_AR = MES_Dist_AR();
 		AR_cmd_correcte();
 	}
 	else if(my_strlen(str_param) == 0){
-		//TODO : Meusure avant uniquement 
+		dist_AV = MES_Dist_AV();
 		AR_cmd_correcte();
 	}
 	else 
 		AR_cmd_incorrecte();
+	if (dist_AV != -2.0) {
+		char msg[64] 	  = "KOB ";
+		char strinter[10] = {0};
+		char str_angle[5] = {0};
+		char str_dist[5]  = {0}; 
+		//int  int_angle = 0;
+		//int  int 
+		if (dist_AV == -1.0)
+			dist_AV = 0.0;
+		if (dist_AR == -1.0)
+			dist_AR = 0.0;
+		my_itoa((int)Angle_actuel,str_angle);
+		my_itoa((int)dist_AV, str_dist);
+		my_strcat(msg,str_angle);
+		my_strcat(msg,":");
+		my_strcat(msg,str_dist);
+		if (dist_AR != -2.0){
+			unsigned char angle_AR = 0;
+			if (Angle_actuel >= 0)
+				angle_AR -= 180;
+			else 
+				angle_AR += 180;
+		
+			my_strcat(msg," ");
+			my_strcat(msg, my_itoa((int)angle_AR,strinter));
+			my_strcat(msg,":");
+			my_strcat(msg,my_itoa((int)dist_AR,strinter));
+		}
+		serOutstring(msg);
+	}
+	
 }
 
 void Cmd_epreuve_MOB(const char *Pchaine_courante) {
@@ -475,9 +503,13 @@ void Cmd_epreuve_SD(const char *Pchaine_courante) {
 	}
 }
 
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////Commandes recu de l'esclave SPI
 
 
-
+void Cmd_epreuve_SPICSV(void) {//Cette commande signifie que le servomoteur verticale est ariive en position
+	serOutstring("AS V");
+}
 
 
 

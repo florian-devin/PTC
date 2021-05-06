@@ -1,6 +1,17 @@
 ".\Objects\STARTUP.obj",
 ".\Objects\slave.obj",
 ".\Objects\SPI_RingBuffer_Slave.obj",
-".\Objects\UART0_RingBuffer_lib.obj" 
+".\Objects\UART0_RingBuffer_lib.obj",
+".\Objects\PTC_geter_cmd.obj",
+".\Objects\PTC_SPI.obj",
+".\Objects\PTC_strOperateurs.obj",
+".\Objects\PTC_convertion.obj",
+".\Objects\slave_config_globale.obj",
+".\Objects\PTC_accuseDeReception_SPI.obj",
+".\Objects\PTC_decodeCmd.obj",
+".\Objects\PTC_pointeurLumineux.obj",
+".\Objects\PTC_PWM.obj",
+".\Objects\PTC_servoMoteurVertical.obj",
+".\Objects\PTC_timer.obj" 
 TO ".\Objects\test slave SPI" 
 PRINT(".\Listings\test slave SPI.m51") RAMSIZE(256) 
