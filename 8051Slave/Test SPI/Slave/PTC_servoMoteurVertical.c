@@ -25,7 +25,7 @@ unsigned char Time_deplacement_cervoV(char Angle) {
 
 
 unsigned char CDE_Servo_V(char Angle) {
-	int value = map(Angle,-90,90,1846,3692);
+	int value = map(Angle,-90,90,1400,4500);
     analogWrite_CEX1(value); 
 	Angle_actuel = Angle;
 	return Time_deplacement_cervoV(Angle);
