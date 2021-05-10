@@ -3,14 +3,14 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Tool Versions:</h2>
-IDE-Version: µVision V5.27.1.0
-Copyright (C) 2019 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: DEVIN Florian, CPE Lyon, LIC=32KWD-8DKYI-B73NE-IX6QN-3FT8E-5FIH8
+IDE-Version: µVision V5.25.3.0
+Copyright (C) 2018 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: DEVIN Florian, CPE Lyon, LIC=EXTNL-00NZS-RQJXY-WKH3Y-SR479-UQXGN
  
 Tool Versions:
-Toolchain:       PK51 Prof. Developers Kit for SiLabs  Version: 9.60.0.0
-Toolchain Path:  C:\Program Files\Keil_v5\C51\BIN
-C Compiler:      C51.exe V9.60.0.0
+Toolchain:       PK51 Prof. Developers Kit for SiLabs  Version: 9.59.0.0
+Toolchain Path:  C:\Program Files\ARMKeil\C51\BIN
+C Compiler:      C51.exe V9.59.0.0
 Assembler:       A51.exe V8.2.7.0
 Linker/Locator:  BL51.exe V6.22.2.0
 Library Manager: LIB51.exe V4.30.1.0
@@ -21,8 +21,8 @@ Target DLL:      SiC8051F.dll V4.4.0.0
 Dialog DLL:      TCYG.DLL V2.72.0.0
  
 <h2>Project:</h2>
-C:\Users\mario\OneDrive\Bureau\FLORIAN\PTC\8051Slave\Test SPI\Slave\test slave SPI.uvproj
-Project File Date:  05/06/2021
+C:\Users\florian\Desktop\PTC2\PTC\8051Slave\Test SPI\Slave\test slave SPI.uvproj
+Project File Date:  05/09/2021
 
 <h2>Output:</h2>
 Rebuild target 'Target 1'
@@ -41,6 +41,7 @@ compiling PTC_pointeurLumineux.c...
 compiling PTC_PWM.c...
 compiling PTC_servoMoteurVertical.c...
 compiling PTC_timer.c...
+compiling UART1_RingBuffer_lib.c...
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?SERINCHAR_BIN_SPI?SPI_RINGBUFFER_SLAVE
@@ -49,6 +50,8 @@ linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?SERINCHAR_BIN?UART0_RINGBUFFER_LIB
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?CFG_UART1_MODE1?SLAVE_CONFIG_GLOBALE
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?AR_CMD_CORRECTE_SPI?PTC_ACCUSEDERECEPTION_SPI
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_DELAY?PTC_TIMER
@@ -56,8 +59,12 @@ linking...
     SEGMENT: ?PR?DELAY_1US?PTC_TIMER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?DELAY_10US?PTC_TIMER
-Program Size: data=9.2 xdata=592 code=7794
-".\Objects\test slave SPI" - 0 Error(s), 7 Warning(s).
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SERINCHAR_UART1?UART1_RINGBUFFER_LIB
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SERINCHAR_BIN_UART1?UART1_RINGBUFFER_LIB
+Program Size: data=9.3 xdata=738 code=8774
+".\Objects\test slave SPI" - 0 Error(s), 10 Warning(s).
 Build Time Elapsed:  00:00:02
 </pre>
 </body>

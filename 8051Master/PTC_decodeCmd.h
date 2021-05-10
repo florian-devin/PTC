@@ -87,10 +87,17 @@ void Cmd_epreuve_MOS(const char *Pchaine_courante);
 //@param Pchaine_courante la chaine complete du message recu
 void Cmd_epreuve_ASS(const char *Pchaine_courante);
 
-//Fonction qui analise et traite la commande ASS (Generation de signaux sonore)
+//Fonction qui analise et traite la commande SD (signaux sonore)
 //@param Pchaine_courante la chaine complete du message recu
 void Cmd_epreuve_SD(const char *Pchaine_courante);
 
+//Fonction qui analise et traite la commande PPH (Prise de vue)
+//@param Pchaine_courante la chaine complete du message recu
+void Cmd_epreuve_PPH(const char *Pchaine_courante);
+
+//Fonction qui analise et traite la commande ASS (Stop la prise de vue en continue)
+//@param Pchaine_courante la chaine complete du message recu
+void Cmd_epreuve_SPH(const char *Pchaine_courante);
 
 //Fonction qui analise et traite la commande SPICSV (Envoie d'une confirmation de l'arrive du servo verticale)
 void Cmd_epreuve_SPICSV(void);

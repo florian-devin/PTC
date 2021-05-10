@@ -26,6 +26,18 @@ void cfg_UART0_mode1(void) {
     ES0 = 1;        // interruption UART0 autorisee	
 }
 
+void cfg_UART1_mode1(void){
+	PCON  |= (1<<4);
+	//config uart
+	SCON1 |= (1<<6);//Mode 1 8bit de data asynchrone
+	SCON1 |= (1<<5);//Bit de Stop enable
+    SCON1 |= (1<<4);//reception active
+
+ // SCON1 |= (1<<1); //TI1 Transmission: octet transmis (pret a recevoir un char
+					          // pour transmettre	
+    EIE2  |= (1<<6); //ES1 interruption UART1 autorisee	
+}
+
 void Reset_Sources_Init(){
     //Desactivation du Watchdog
 	 WDTCN = 0xDE;
@@ -62,8 +74,8 @@ void Port_IO_Init() {
     // P0.3  -  MISO      ,  Pull-push , Digital //C-11
     // P0.4  -  MOSI      ,  Open-Drain, Digital //B-11
     // P0.5  -  NSS       ,  Open-Drain, Digital //A-11
-    // P0.6  -  Unassigned,  Open-Drain, Digital //C-10
-    // P0.7  -  Unassigned,  Open-Drain, Digital //B-10
+    // P0.6  -  Tx1       ,  Pull-push , Digital //C-10
+    // P0.7  -  Rx1       ,  Open-Drain, Digital //B-10
 
     // P1.0  -  LED       ,  Push-Pull , PWM     //C-04
     // P1.1  -  CERVO V   ,  Push-Pull , PWM     //B-04
@@ -95,7 +107,7 @@ void Port_IO_Init() {
 	// P4.0 to P7.7   Unassigned,  Open-Drain, Digital
     P0MDOUT |= (1<<0); //Tx0
     P0MDOUT |= (1<<3); //MISO
-    //P0MDOUT |= (1<<6);//Tx1
+    P0MDOUT |= (1<<6);//Tx1
     P1MDOUT |= (1<<0);//LED    
     P1MDOUT |= (1<<1);//CERVO V
 }
@@ -142,7 +154,6 @@ void Init_Slave(void){
     Oscillator_Init();
 	Port_IO_Init();
     Init_crossbar();
-    
     cfg_Clock_UART();
     cfg_UART0_mode1();
     Init_SPI();

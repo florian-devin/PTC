@@ -12,6 +12,7 @@
 ".\Objects\PTC_pointeurLumineux.obj",
 ".\Objects\PTC_PWM.obj",
 ".\Objects\PTC_servoMoteurVertical.obj",
-".\Objects\PTC_timer.obj" 
+".\Objects\PTC_timer.obj",
+".\Objects\UART1_RingBuffer_lib.obj" 
 TO ".\Objects\test slave SPI" 
 PRINT(".\Listings\test slave SPI.m51") RAMSIZE(256) 

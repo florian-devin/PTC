@@ -193,6 +193,10 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 			Cmd_epreuve_ASS(Pchaine_courante);
 		else if (my_strcmp(commande,"SD"))
 			Cmd_epreuve_SD(Pchaine_courante);
+		else if (my_strcmp(commande,"PPH"))
+			Cmd_epreuve_PPH(Pchaine_courante);
+		else if (my_strcmp(commande,"SPH"))
+			Cmd_epreuve_SPH(Pchaine_courante);
 		else if (my_strcmp(commande,"SPI")) { //Pour le test de la liaison SPI
 			my_strcat(Pchaine_courante,"\r");
 			serOutstring_SPI(Pchaine_courante);

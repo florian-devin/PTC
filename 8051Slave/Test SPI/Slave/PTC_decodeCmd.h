@@ -49,5 +49,10 @@ void Cmd_epreuve_ASS_Slave(const char *Pchaine_courante_SPI);
 //@param Pchaine_courante_SPI la chaine complete du message recu
 void Cmd_epreuve_SD_Slave(const char *Pchaine_courante_SPI);
 
+//Fonction qui analise et traite la commande PPH (commande de prise de vue)
+//@param Pchaine_courante_SPI la chaine complete du message recu
+void Cmd_epreuve_PPH_Slave(const char *Pchaine_courante_SPI);
 
-
+//Fonction qui analise et traite la commande SPH (commande extinction des prises de vue)
+//@param Pchaine_courante_SPI la chaine complete du message recu
+void Cmd_epreuve_SPH_Slave(void);

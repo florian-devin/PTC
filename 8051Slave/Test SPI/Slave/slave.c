@@ -7,6 +7,7 @@
 #include "slave_config_globale.h"
 #include "SPI_RingBuffer_Slave.h"
 #include "UART0_RingBuffer_lib.h"
+#include "UART1_RingBuffer_lib.h"
 #include "PTC_SPI.h"
 #include "PTC_strOperateurs.h"
 #include "PTC_geter_cmd.h"
@@ -53,6 +54,7 @@ unsigned long 	last_time_capture_servo_V 	= 0; //dernier temp capture en ms
 void setup() {
     Init_Slave();
     init_Serial_Buffer();//UART0
+	init_Serial_Buffer_uart1();
     init_Serial_Buffer_SPI();
     EA    = 1; //interruption general enable
 }
@@ -83,6 +85,10 @@ void decodage_commande(char *Pchaine_courante_SPI){ //fonction qui decode les co
 		Cmd_epreuve_ASS_Slave(Pchaine_courante_SPI);
 	else if (my_strcmp(commande,"SD"))
 		Cmd_epreuve_SD_Slave(Pchaine_courante_SPI);
+	else if (my_strcmp(commande,"PPH"))
+		Cmd_epreuve_PPH_Slave(Pchaine_courante_SPI);
+	else if (my_strcmp(commande,"SPH"))
+		Cmd_epreuve_SPH_Slave();
 	else if (my_strcmp(commande,"SPI")) { //Pour le test de la liaison SPI
 		serOutstring("Commande SPI bien recu !\r\n");
         serOutstring_SPI("Cmd SPI ok");
