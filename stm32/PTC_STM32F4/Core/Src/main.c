@@ -22,6 +22,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h> //printf()
+
+#include "PTC_UART3.h"
+
 #define CLK_APB1_P 42000000
 #define CLK_APB1_T 84000000
 #define CLK_APB2_P 84000000
@@ -51,6 +55,9 @@ DMA_HandleTypeDef hdma_dac1;
 
 TIM_HandleTypeDef htim6;
 
+UART_HandleTypeDef huart3;
+DMA_HandleTypeDef hdma_usart3_rx;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -61,8 +68,15 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_DAC_Init(void);
 static void MX_TIM6_Init(void);
+static void MX_USART3_UART_Init(void);
 /* USER CODE BEGIN PFP */
-
+#ifdef __GNUC__
+  /* With GCC, small printf (option LD Linker->Libraries->Small printf
+     set to 'Yes') calls __io_putchar() */
+  #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+  #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif /* __GNUC__ */
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -75,7 +89,10 @@ struct Music_note {
 };
 
 const uint8_t myDAC_Signal[DAC_BUF_LEN] = {127, 139,151,163,175,186,197,207,216,225,232,239,244,248,251,253,254,253,251,248,244,239,232,225,216,207,197,186,175,163,151,139,127,115,103,91,79,68,57,47,38,29,22,15,10,6,3,1,0,1,3,6,10,15,22,29,38,47,57,68,79,91,103,115,127};
-
+char rx_Buf[256] = {0};
+int  prx_Buf = 0;
+char tx_Buf[32]  = {0};
+char chaine_courante[32] = {0};
 
 /*
 
@@ -117,6 +134,16 @@ void Set_freq_DAC0(uint32_t freq){
   }
 }
 
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+  __NOP();
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  __NOP();
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -150,12 +177,16 @@ int main(void)
   MX_DMA_Init();
   MX_DAC_Init();
   MX_TIM6_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+	
+	RAZ_str(rx_Buf);
 	HAL_TIM_Base_Start(&htim6);
 	HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t *)myDAC_Signal, 65, DAC_ALIGN_8B_R);
-
-
-
+  HAL_UART_Receive_DMA(&huart3, (uint8_t *)rx_Buf,256);
+	HAL_UART_Transmit(&huart3, (uint8_t *)tx_Buf, 32, 100);
+	
+  //printf("Starting ...\r\n");
   Set_freq_DAC0(400);
   Set_freq_DAC0(4000);
   Set_freq_DAC0(628);
@@ -165,7 +196,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   { 
-
+		if (Rx_chaine(chaine_courante) == 1){
+			__NOP();
+		}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -295,6 +328,39 @@ static void MX_TIM6_Init(void)
 }
 
 /**
+  * @brief USART3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART3_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART3_Init 0 */
+
+  /* USER CODE END USART3_Init 0 */
+
+  /* USER CODE BEGIN USART3_Init 1 */
+
+  /* USER CODE END USART3_Init 1 */
+  huart3.Instance = USART3;
+  huart3.Init.BaudRate = 19200;
+  huart3.Init.WordLength = UART_WORDLENGTH_8B;
+  huart3.Init.StopBits = UART_STOPBITS_1;
+  huart3.Init.Parity = UART_PARITY_NONE;
+  huart3.Init.Mode = UART_MODE_TX_RX;
+  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART3_Init 2 */
+
+  /* USER CODE END USART3_Init 2 */
+
+}
+
+/**
   * Enable DMA controller clock
   */
 static void MX_DMA_Init(void)
@@ -304,6 +370,9 @@ static void MX_DMA_Init(void)
   __HAL_RCC_DMA1_CLK_ENABLE();
 
   /* DMA interrupt init */
+  /* DMA1_Stream1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
   /* DMA1_Stream5_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
@@ -322,6 +391,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
 }
 
