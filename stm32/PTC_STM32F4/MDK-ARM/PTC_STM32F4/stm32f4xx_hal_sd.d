@@ -22,8 +22,6 @@ ptc_stm32f4\stm32f4xx_hal_sd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ha
 ptc_stm32f4\stm32f4xx_hal_sd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h
 ptc_stm32f4\stm32f4xx_hal_sd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h
 ptc_stm32f4\stm32f4xx_hal_sd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h
-ptc_stm32f4\stm32f4xx_hal_sd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc.h
-ptc_stm32f4\stm32f4xx_hal_sd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc_ex.h
 ptc_stm32f4\stm32f4xx_hal_sd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dac.h
 ptc_stm32f4\stm32f4xx_hal_sd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dac_ex.h
 ptc_stm32f4\stm32f4xx_hal_sd.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h
