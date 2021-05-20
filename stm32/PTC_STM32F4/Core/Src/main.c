@@ -174,7 +174,6 @@ int main(void)
   MX_DAC_Init();
   MX_TIM6_Init();
   MX_USART3_UART_Init();
-  init_Serial_Buffer();
   /* USER CODE BEGIN 2 */
 	
 	HAL_TIM_Base_Start(&htim6);

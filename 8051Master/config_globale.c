@@ -40,25 +40,28 @@ void Reset_Sources_Init(){
 //test com
 
 void Port_IO_Init() {
-    // P0.0  -  Tx, 				 Pull-push, Digital
-    // P0.1  -  Rx, 				 Open-Drain, Digital
-    // P0.2  -  SCK       ,  Push-Pull , Digital
-    // P0.3  -  MISO      ,  Open-Drain, Digital
-    // P0.4  -  MOSI      ,  Push-Pull , Digital
-    // P0.5  -  NSS       ,  Open-Drain, Digital
-    // P0.6  -  Tx1,         Pull-push, Digital
-    // P0.7  -  Rx1,         Open-Drain, Digital
+    //GND                                        //B-0
+    //3.3V                                       //A-0
 
-    // P1.0  -  Servo H   ,  Puss_pull, Digital
-    // P1.1  -  T2EX      ,  Open-Drain, Digital //telemetrie
-    // P1.2  -  Unassigned,  Open-Drain, Digital
-    // P1.3  -  Unassigned,  Open-Drain, Digital
-    // P1.4  -  Unassigned,  Open-Drain, Digital
-    // P1.5  -  Unassigned,  Open-Drain, Digital
+    // P0.0  -  Tx, 				 Pull-push, Digital //C-12
+    // P0.1  -  Rx, 				 Open-Drain, Digital//B-12
+    // P0.2  -  SCK       ,  Push-Pull , Digital//A-12
+    // P0.3  -  MISO      ,  Open-Drain, Digital//C-11
+    // P0.4  -  MOSI      ,  Push-Pull , Digital//B-11
+    // P0.5  -  NSS       ,  Open-Drain, Digital//A-11
+    // P0.6  -  Tx1,         Pull-push, Digital  //C-10
+    // P0.7  -  Rx1,         Open-Drain, Digital//B-10
+
+    // P1.0  -  Servo H   ,  Puss_pull, Digital //C-04
+    // P1.1  -  T2EX      ,  Open-Drain, Digital //B-04//telemetrie
+    // P1.2  -  Unassigned,  Open-Drain, Digital//A-04
+    // P1.3  -  Unassigned,  Open-Drain, Digital//C-03
+    // P1.4  -  Unassigned,  Open-Drain, Digital //B-03
+    // P1.5  -  Unassigned,  Open-Drain, Digital//A-03
     // P1.6  -  Unassigned,  Open-Drain, Digital
     // P1.7  -  Unassigned,  Open-Drain, Digital
 
-    // P2.0  -  SS        ,  Pull-push , Digital
+    // P2.0  -  SS        ,  Pull-push , Digital //B-7
     // P2.1  -  Unassigned,  Open-Drain, Digital
     // P2.2  -  Unassigned,  Open-Drain, Digital
     // P2.3  -  Unassigned,  Open-Drain, Digital
