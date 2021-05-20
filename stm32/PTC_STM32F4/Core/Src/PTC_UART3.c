@@ -1,11 +1,10 @@
 #include "PTC_UART3.h"
+#include "UART0_RingBuffer_lib.h"
 
-extern char *rx_Buf;
-extern int   prx_Buf;
 
 int Rx_chaine(char *Pchaine_courante){
 	char c;
-	if ((c=serInchar_uart3_stm32()) != 0){//TODO a modifier 
+	if ((c=serInchar()) != 0){
 		int i = 0; //cpt position de chaine
 		if(c == '\r'){
 			return 1;
@@ -26,14 +25,3 @@ void RAZ_str(char *str){
     }
 }
 
-
-char serInchar_uart3_stm32(void) {
-    char data = rx_Buf[prx_Buf];
-    if (data != 0x00) {
-  	    rx_Buf[prx_Buf++] = 0x00;      
-        if (prx_Buf > 255)
-            prx_Buf = 0;
-  	    return data;
-    } 
-  else return 0;
-}
