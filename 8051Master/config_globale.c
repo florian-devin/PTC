@@ -30,7 +30,7 @@
 
 extern char Flag_RX1;
 
-sbit        INT6 = P3^6;
+sbit INT6 = P3^6;
 
 void Reset_Sources_Init(){
   //Desactivation du Watchdog
@@ -91,6 +91,7 @@ void Port_IO_Init() {
     P3MDOUT |= 0x06; //Configuration P3.1 et P3.2 en push-pull
     P3 |= 0x40; // Configuration de P3.6 en input
 	  INT6 = 1; // Configuration de P3.6 en input
+	  EIE2 |= 0x10; // Autorisation interruption INT6
 	  // Sensibilite de /INT6 initialement mise a front montant
 	  P3IF |= 0x04;
 	  P3IF &= 0xBF;
