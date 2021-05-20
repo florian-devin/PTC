@@ -25,6 +25,7 @@
 #include <stdio.h> //printf()
 
 #include "PTC_UART3.h"
+#include "UART0_RingBuffer_lib.h"
 
 #define CLK_APB1_P 42000000
 #define CLK_APB1_T 84000000
@@ -56,7 +57,6 @@ DMA_HandleTypeDef hdma_dac1;
 TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart3;
-DMA_HandleTypeDef hdma_usart3_rx;
 
 /* USER CODE BEGIN PV */
 
@@ -89,8 +89,7 @@ struct Music_note {
 };
 
 const uint8_t myDAC_Signal[DAC_BUF_LEN] = {127, 139,151,163,175,186,197,207,216,225,232,239,244,248,251,253,254,253,251,248,244,239,232,225,216,207,197,186,175,163,151,139,127,115,103,91,79,68,57,47,38,29,22,15,10,6,3,1,0,1,3,6,10,15,22,29,38,47,57,68,79,91,103,115,127};
-char rx_Buf[256] = {0};
-int  prx_Buf = 0;
+char rx_Buf = 0;
 char tx_Buf[32]  = {0};
 char chaine_courante[32] = {0};
 
@@ -139,10 +138,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
   __NOP();
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-  __NOP();
-}
+
 
 /* USER CODE END 0 */
 
@@ -178,12 +174,12 @@ int main(void)
   MX_DAC_Init();
   MX_TIM6_Init();
   MX_USART3_UART_Init();
+  init_Serial_Buffer();
   /* USER CODE BEGIN 2 */
 	
-	RAZ_str(rx_Buf);
 	HAL_TIM_Base_Start(&htim6);
 	HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t *)myDAC_Signal, 65, DAC_ALIGN_8B_R);
-  HAL_UART_Receive_DMA(&huart3, (uint8_t *)rx_Buf,256);
+  HAL_UART_Receive_IT(&huart3, (uint8_t *)&rx_Buf,1);
 	HAL_UART_Transmit(&huart3, (uint8_t *)tx_Buf, 32, 100);
 	
   //printf("Starting ...\r\n");
@@ -370,9 +366,6 @@ static void MX_DMA_Init(void)
   __HAL_RCC_DMA1_CLK_ENABLE();
 
   /* DMA interrupt init */
-  /* DMA1_Stream1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
   /* DMA1_Stream5_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);

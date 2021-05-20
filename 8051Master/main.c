@@ -238,6 +238,7 @@ void envoie_info_confirmation(void){
 void Interrupt_Time(void) interrupt 16 {//interruption declancher par l'overflow du Timer 4 (toutes les ms)
 	T4CON &= ~(1<<7); //interrupt flag
     Time_increment();
+	
 }
 
 //Interrupt du timer3 pour declancher une com SPI
