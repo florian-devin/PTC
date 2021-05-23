@@ -69,13 +69,11 @@ int go_coordinates_x, go_coordinates_y, go_coordinates_angle;//pour retenir les 
 
 //En lien avec le telemetre
 sbit commandCapture = P3^3;
-int measureCycle = 1; // Compte le nombre d'overflow du Timer 2
-extern int bool_trig;
-extern int bool_trig;
-extern int bool_echo1;
-extern int bool_echo2;
-extern int bool_out_distance;
-extern float T;
+int measureCycle = 0; // Compte le nombre d'overflow du Timer 2
+int cycleReception = 0; // Cycle auquel on detecte un front montant sur echo
+int bool_trig_AV_AR = 1;
+extern float d_AV;
+extern float d_AR;
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
@@ -193,6 +191,10 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 			Cmd_epreuve_ASS(Pchaine_courante);
 		else if (my_strcmp(commande,"SD"))
 			Cmd_epreuve_SD(Pchaine_courante);
+		else if (my_strcmp(commande,"PPH"))
+			Cmd_epreuve_PPH(Pchaine_courante);
+		else if (my_strcmp(commande,"SPH"))
+			Cmd_epreuve_SPH(Pchaine_courante);
 		else if (my_strcmp(commande,"SPI")) { //Pour le test de la liaison SPI
 			my_strcat(Pchaine_courante,"\r");
 			serOutstring_SPI(Pchaine_courante);
@@ -234,6 +236,7 @@ void envoie_info_confirmation(void){
 void Interrupt_Time(void) interrupt 16 {//interruption declancher par l'overflow du Timer 4 (toutes les ms)
 	T4CON &= ~(1<<7); //interrupt flag
     Time_increment();
+	
 }
 
 //Interrupt du timer3 pour declancher une com SPI
@@ -249,15 +252,15 @@ void Timer3_ISR(void) interrupt 14 {
 /*
 Interruption genere par INT6 permettant de mesurer le temps a l'etat haut du signal Echo
 */
-void int6 (void) interrupt 18
+void int6 () interrupt 18
 {
 	if ((P3IF & 0x04) == 0x04)
 	{
+		P3IF |= 0x04;
+		P3IF &= 0xBB;
+		cycleReception = measureCycle;
 		TL2 = 0x00;
 		TH2 = 0x00;
-		P3IF |= 0x04;
-		bool_echo1 = 1;
-		P3IF &= 0xBB;
 	} else 
 	{
 		commandCapture = 1;
@@ -275,18 +278,50 @@ void intT2 () interrupt 5
 	if (TF2 != 0)
 	{
 		measureCycle += 1;
-		if (measureCycle == 21) // 60.9 ms
-		{
-			bool_out_distance = 1;
-			measureCycle = 1;
-		}
+			if (measureCycle >= 20) // 60 ms
+			{
+				if (bool_trig_AV_AR == 1)
+				{
+					d_AV = -1.0;
+					bool_trig_AV_AR = 2;
+					sendTrig_AR();
+					measureCycle = 0;
+					TL2 = 0x00;
+					TH2 = 0x00;
+				} else 
+				{
+					d_AR = -1.0;
+					bool_trig_AV_AR = 1;
+					sendTrig_AV();
+					measureCycle = 0;
+					TL2 = 0x00;
+					TH2 = 0x00;
+				}
+			}
 		TF2 = 0;
 	}
 	if (EXF2 != 0)
 	{
-		T = RCAP2/22.1184;
-		bool_echo2 = 1;
-		P3IF |= 0x04;
+		if (bool_trig_AV_AR == 1)
+		{
+			d_AV = (RCAP2 + (measureCycle - cycleReception)*65535.0)*1000*360/2/22118400; // distance
+			P3IF |= 0x04;
+			bool_trig_AV_AR = 2;
+			sendTrig_AR();
+			measureCycle = 0;
+			TL2 = 0x00;
+			TH2 = 0x00;
+			
+		} else 
+		{
+			d_AR = (RCAP2 + (measureCycle - cycleReception)*65535.0)*1000*360/2/22118400; // Temps en us
+			P3IF |= 0x04;
+			bool_trig_AV_AR = 1;
+			sendTrig_AV();
+			measureCycle = 0;
+			TL2 = 0x00;
+			TH2 = 0x00;
+		}
 		EXF2 = 0;
 	}
 }

@@ -503,6 +503,58 @@ void Cmd_epreuve_SD(const char *Pchaine_courante) {
 	}
 }
 
+void Cmd_epreuve_PPH(const char *Pchaine_courante){
+	char str_param[8] = {0};
+	char num_param = 1;
+	do {
+		get_param(Pchaine_courante,num_param,str_param);
+		if (my_strlen(str_param) != 0){
+			if (!(str_param[0] == 'O' || str_param[0] == 'S' || str_param[0] == 'C'|| str_param[0] == 'E' || str_param[0] == 'N') && my_strlen(str_param) < 2){
+				AR_cmd_incorrecte();
+				return;
+			}
+			else if (str_param[0] == 'E'){
+				char str_name[2]  = {0};
+				char str_value[4] = {0};
+				int  value        = 0;
+				get_complex_param(str_param,str_name,str_value);
+				value = my_atoi(str_value);
+				if (value < 0 && value > 99){
+					AR_cmd_incorrecte();
+					return;
+				}
+			}
+			else if (str_param[0] == 'N'){
+				char str_name[2]  = {0};
+				char str_value[4] = {0};
+				int  value        = 0;
+				get_complex_param(str_param,str_name,str_value);
+				value = my_atoi(str_value);
+				if (value < 1 && value > 255){
+					AR_cmd_incorrecte();
+					return;
+				}
+			}
+		}
+	} while (my_strlen(str_param) != 0);
+	AR_cmd_correcte();
+	my_strcat(Pchaine_courante,"\r");
+	serOutstring_SPI(Pchaine_courante);
+}
+
+void Cmd_epreuve_SPH(const char *Pchaine_courante){
+	char str_param[2] = {0};
+	get_param(Pchaine_courante,1,str_param);
+	if (my_strlen(str_param) > 0)
+		AR_cmd_incorrecte();
+	else {
+		AR_cmd_correcte();
+		my_strcat(Pchaine_courante,"\r");
+		serOutstring_SPI(Pchaine_courante);
+	}
+}
+
+
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////Commandes recu de l'esclave SPI
 

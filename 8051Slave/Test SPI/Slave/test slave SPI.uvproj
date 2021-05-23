@@ -149,7 +149,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>10</TargetSelection>
+          <TargetSelection>12</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -525,6 +525,16 @@
               <FileName>PTC_timer.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\PTC_timer.h</FilePath>
+            </File>
+            <File>
+              <FileName>UART1_RingBuffer_lib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\UART1_RingBuffer_lib.c</FilePath>
+            </File>
+            <File>
+              <FileName>UART1_RingBuffer_lib.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\UART1_RingBuffer_lib.h</FilePath>
             </File>
           </Files>
         </Group>

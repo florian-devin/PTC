@@ -22,7 +22,17 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "PTC_Aquisition.h"
+#include <stdio.h> //printf()
+
+#include "PTC_UART3.h"
+#include "UART0_RingBuffer_lib.h"
+
+#define CLK_APB1_P 42000000
+#define CLK_APB1_T 84000000
+#define CLK_APB2_P 84000000
+#define CLK_APB2_T 168000000
+
+#define DAC_BUF_LEN 65
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -41,15 +51,12 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-ADC_HandleTypeDef hadc1;
-
 DAC_HandleTypeDef hdac;
+DMA_HandleTypeDef hdma_dac1;
 
-SD_HandleTypeDef hsd;
+TIM_HandleTypeDef htim6;
 
-SPI_HandleTypeDef hspi1;
-
-TIM_HandleTypeDef htim4;
+UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
 
@@ -58,13 +65,18 @@ TIM_HandleTypeDef htim4;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_ADC1_Init(void);
+static void MX_DMA_Init(void);
 static void MX_DAC_Init(void);
-static void MX_SDIO_SD_Init(void);
-static void MX_SPI1_Init(void);
-static void MX_TIM4_Init(void);
+static void MX_TIM6_Init(void);
+static void MX_USART3_UART_Init(void);
 /* USER CODE BEGIN PFP */
-
+#ifdef __GNUC__
+  /* With GCC, small printf (option LD Linker->Libraries->Small printf
+     set to 'Yes') calls __io_putchar() */
+  #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+  #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif /* __GNUC__ */
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -76,36 +88,56 @@ struct Music_note {
   float   freq ;
 };
 
-
+const uint8_t myDAC_Signal[DAC_BUF_LEN] = {127, 139,151,163,175,186,197,207,216,225,232,239,244,248,251,253,254,253,251,248,244,239,232,225,216,207,197,186,175,163,151,139,127,115,103,91,79,68,57,47,38,29,22,15,10,6,3,1,0,1,3,6,10,15,22,29,38,47,57,68,79,91,103,115,127};
+char rx_Buf = 0;
+char tx_Buf[32]  = {0};
+char chaine_courante[32] = {0};
 
 /*
 
-Music_note DO3  ; DO3.code  = 1 ; DO3.freq  = 261.6    ;       
-Music_note RE3  ; RE3.code  = 2 ; RE3.freq  = 293.7    ;       
-Music_note MI3  ; MI3.code  = 3 ; MI3.freq  = 329.7    ;       
-Music_note FA3  ; FA3.code  = 4 ; FA3.freq  = 349.2    ;       
-Music_note SOL3 ; SOL3.code = 5 ; SOL3.freq = 392.0    ;       
-Music_note LA3  ; LA3.code  = 6 ; LA3.freq  = 440.0    ;       
-Music_note SI3  ; SI3.code  = 7 ; SI3.freq  = 493.9    ;
+Music_note DO3  ; DO3.code  = 1 ; DO3.freq  = 261.6    ;       //4940
+Music_note RE3  ; RE3.code  = 2 ; RE3.freq  = 293.7    ;       //4400
+Music_note MI3  ; MI3.code  = 3 ; MI3.freq  = 329.7    ;       //3913
+Music_note FA3  ; FA3.code  = 4 ; FA3.freq  = 349.2    ;       //3700
+Music_note SOL3 ; SOL3.code = 5 ; SOL3.freq = 392.0    ;       //3297
+Music_note LA3  ; LA3.code  = 6 ; LA3.freq  = 440.0    ;       //2937
+Music_note SI3  ; SI3.code  = 7 ; SI3.freq  = 493.9    ;       //2617
 
-Music_note DO4  ; DO4.code  = 8 ; DO4.freq  = 2.0*261.6;    
-Music_note RE4  ; RE4.code  = 9 ; RE4.freq  = 2.0*293.7;    
-Music_note MI4  ; MI4.code  = 10; MI4.freq  = 2.0*329.7;    
-Music_note FA4  ; FA4.code  = 11; FA4.freq  = 2.0*349.2;    
-Music_note SOL4 ; SOL4.code = 12; SOL4.freq = 2.0*392.0;    
-Music_note LA4  ; LA4.code  = 13; LA4.freq  = 2.0*440.0;    
-Music_note SI4  ; SI4.code  = 14; SI4.freq  = 2.0*493.9;    
+Music_note DO4  ; DO4.code  = 8 ; DO4.freq  = 2.0*261.6;       //4940/2 = 2470
+Music_note RE4  ; RE4.code  = 9 ; RE4.freq  = 2.0*293.7;       //4400/2 = 2200
+Music_note MI4  ; MI4.code  = 10; MI4.freq  = 2.0*329.7;       //3913/2 = 1957
+Music_note FA4  ; FA4.code  = 11; FA4.freq  = 2.0*349.2;       //3700/2 = 1850
+Music_note SOL4 ; SOL4.code = 12; SOL4.freq = 2.0*392.0;       //3297/2 = 1649
+Music_note LA4  ; LA4.code  = 13; LA4.freq  = 2.0*440.0;       //2937/2 = 1468
+Music_note SI4  ; SI4.code  = 14; SI4.freq  = 2.0*493.9;       //2617/2 = 1308
 
-Music_note DO5  ; DO5.code  = 15; DO5.freq  = 4.0*261.6;    
-Music_note RE5  ; RE5.code  = 16; RE5.freq  = 4.0*293.7;    
-Music_note MI5  ; MI5.code  = 17; MI5.freq  = 4.0*329.7;    
-Music_note FA5  ; FA5.code  = 18; FA5.freq  = 4.0*349.2;    
-Music_note SOL5 ; SOL5.code = 19; SOL5.freq = 4.0*392.0;    
-Music_note LA5  ; LA5.code  = 20; LA5.freq  = 4.0*440.0;    
-Music_note SI5  ; SI5.code  = 21; SI5.freq  = 4.0*493.9;           
+Music_note DO5  ; DO5.code  = 15; DO5.freq  = 4.0*261.6;       //4940/4 = 1235
+Music_note RE5  ; RE5.code  = 16; RE5.freq  = 4.0*293.7;       //4400/4 = 1100
+Music_note MI5  ; MI5.code  = 17; MI5.freq  = 4.0*329.7;       //3913/4 = 978
+Music_note FA5  ; FA5.code  = 18; FA5.freq  = 4.0*349.2;       //3700/4 = 925
+Music_note SOL5 ; SOL5.code = 19; SOL5.freq = 4.0*392.0;       //3297/4 = 824
+Music_note LA5  ; LA5.code  = 20; LA5.freq  = 4.0*440.0;       //2937/4 = 734
+Music_note SI5  ; SI5.code  = 21; SI5.freq  = 4.0*493.9;       //2617/4 = 654
 */
-uint8_t Audio_Data_IN[255] = {0};
-uint8_t position_Audio_Data_IN = 0; 
+
+/**
+* @brief Configure la frequence du dac 
+* @param freq: Frequence du sinus souhaite en sortie du dac
+* @retval None
+*/
+void Set_freq_DAC0(uint32_t freq){
+  htim6.Init.Period = CLK_APB1_T/(DAC_BUF_LEN*freq)-1;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+  __NOP();
+}
+
 
 
 /* USER CODE END 0 */
@@ -138,23 +170,30 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_ADC1_Init();
+  MX_DMA_Init();
   MX_DAC_Init();
-  MX_SDIO_SD_Init();
-  MX_SPI1_Init();
-  MX_TIM4_Init();
+  MX_TIM6_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-
+	
+	HAL_TIM_Base_Start(&htim6);
+	HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t *)myDAC_Signal, 65, DAC_ALIGN_8B_R);
+  HAL_UART_Receive_IT(&huart3, (uint8_t *)&rx_Buf,1);
+	HAL_UART_Transmit(&huart3, (uint8_t *)tx_Buf, 32, 100);
+	
+  //printf("Starting ...\r\n");
+  Set_freq_DAC0(400);
+  Set_freq_DAC0(4000);
+  Set_freq_DAC0(628);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-  {
-	  if (isFull_RingBuffer_Data_IN()) {
-		   getFull_RingBuffer_Data_IN(Audio_Data_IN);
-	  }
-	  HAL_Delay(1000);
+  { 
+		if (Rx_chaine(chaine_courante) == 1){
+			__NOP();
+		}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -184,8 +223,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 336;
+  RCC_OscInitStruct.PLL.PLLM = 4;
+  RCC_OscInitStruct.PLL.PLLN = 168;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 8;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
@@ -205,56 +244,6 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-}
-
-/**
-  * @brief ADC1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_ADC1_Init(void)
-{
-
-  /* USER CODE BEGIN ADC1_Init 0 */
-
-  /* USER CODE END ADC1_Init 0 */
-
-  ADC_ChannelConfTypeDef sConfig = {0};
-
-  /* USER CODE BEGIN ADC1_Init 1 */
-
-  /* USER CODE END ADC1_Init 1 */
-  /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
-  */
-  hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
-  hadc1.Init.Resolution = ADC_RESOLUTION_8B;
-  hadc1.Init.ScanConvMode = DISABLE;
-  hadc1.Init.ContinuousConvMode = DISABLE;
-  hadc1.Init.DiscontinuousConvMode = DISABLE;
-  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
-  hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 1;
-  hadc1.Init.DMAContinuousRequests = DISABLE;
-  hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
-  if (HAL_ADC_Init(&hadc1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-  */
-  sConfig.Channel = ADC_CHANNEL_2;
-  sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
-  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN ADC1_Init 2 */
-
-  /* USER CODE END ADC1_Init 2 */
-
 }
 
 /**
@@ -283,15 +272,9 @@ static void MX_DAC_Init(void)
   }
   /** DAC channel OUT1 config
   */
-  sConfig.DAC_Trigger = DAC_TRIGGER_NONE;
+  sConfig.DAC_Trigger = DAC_TRIGGER_T6_TRGO;
   sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
   if (HAL_DAC_ConfigChannel(&hdac, &sConfig, DAC_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /** DAC channel OUT2 config
-  */
-  if (HAL_DAC_ConfigChannel(&hdac, &sConfig, DAC_CHANNEL_2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -302,121 +285,89 @@ static void MX_DAC_Init(void)
 }
 
 /**
-  * @brief SDIO Initialization Function
+  * @brief TIM6 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_SDIO_SD_Init(void)
+static void MX_TIM6_Init(void)
 {
 
-  /* USER CODE BEGIN SDIO_Init 0 */
+  /* USER CODE BEGIN TIM6_Init 0 */
 
-  /* USER CODE END SDIO_Init 0 */
+  /* USER CODE END TIM6_Init 0 */
 
-  /* USER CODE BEGIN SDIO_Init 1 */
-
-  /* USER CODE END SDIO_Init 1 */
-  hsd.Instance = SDIO;
-  hsd.Init.ClockEdge = SDIO_CLOCK_EDGE_RISING;
-  hsd.Init.ClockBypass = SDIO_CLOCK_BYPASS_DISABLE;
-  hsd.Init.ClockPowerSave = SDIO_CLOCK_POWER_SAVE_DISABLE;
-  hsd.Init.BusWide = SDIO_BUS_WIDE_1B;
-  hsd.Init.HardwareFlowControl = SDIO_HARDWARE_FLOW_CONTROL_DISABLE;
-  hsd.Init.ClockDiv = 0;
-  if (HAL_SD_Init(&hsd) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_SD_ConfigWideBusOperation(&hsd, SDIO_BUS_WIDE_4B) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN SDIO_Init 2 */
-
-  /* USER CODE END SDIO_Init 2 */
-
-}
-
-/**
-  * @brief SPI1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_SPI1_Init(void)
-{
-
-  /* USER CODE BEGIN SPI1_Init 0 */
-
-  /* USER CODE END SPI1_Init 0 */
-
-  /* USER CODE BEGIN SPI1_Init 1 */
-
-  /* USER CODE END SPI1_Init 1 */
-  /* SPI1 parameter configuration*/
-  hspi1.Instance = SPI1;
-  hspi1.Init.Mode = SPI_MODE_MASTER;
-  hspi1.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
-  hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi1.Init.CRCPolynomial = 10;
-  if (HAL_SPI_Init(&hspi1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN SPI1_Init 2 */
-
-  /* USER CODE END SPI1_Init 2 */
-
-}
-
-/**
-  * @brief TIM4 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM4_Init(void)
-{
-
-  /* USER CODE BEGIN TIM4_Init 0 */
-
-  /* USER CODE END TIM4_Init 0 */
-
-  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
 
-  /* USER CODE BEGIN TIM4_Init 1 */
+  /* USER CODE BEGIN TIM6_Init 1 */
 
-  /* USER CODE END TIM4_Init 1 */
-  htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 2-1;
-  htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 1751-1;
-  htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
-  if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
+  /* USER CODE END TIM6_Init 1 */
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 1-1;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 5017-1;
+  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {
     Error_Handler();
   }
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim4, &sClockSourceConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig) != HAL_OK)
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN TIM4_Init 2 */
+  /* USER CODE BEGIN TIM6_Init 2 */
 
-  /* USER CODE END TIM4_Init 2 */
+  /* USER CODE END TIM6_Init 2 */
+
+}
+
+/**
+  * @brief USART3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART3_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART3_Init 0 */
+
+  /* USER CODE END USART3_Init 0 */
+
+  /* USER CODE BEGIN USART3_Init 1 */
+
+  /* USER CODE END USART3_Init 1 */
+  huart3.Instance = USART3;
+  huart3.Init.BaudRate = 19200;
+  huart3.Init.WordLength = UART_WORDLENGTH_8B;
+  huart3.Init.StopBits = UART_STOPBITS_1;
+  huart3.Init.Parity = UART_PARITY_NONE;
+  huart3.Init.Mode = UART_MODE_TX_RX;
+  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART3_Init 2 */
+
+  /* USER CODE END USART3_Init 2 */
+
+}
+
+/**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Stream5_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
 
 }
 
@@ -427,30 +378,12 @@ static void MX_TIM4_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(D2_GPIO_Port, D2_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin : K1_Pin */
-  GPIO_InitStruct.Pin = K1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(K1_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : D2_Pin */
-  GPIO_InitStruct.Pin = D2_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(D2_GPIO_Port, &GPIO_InitStruct);
 
 }
 

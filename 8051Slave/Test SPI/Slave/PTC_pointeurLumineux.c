@@ -53,7 +53,7 @@ void Lumiere (const unsigned char Intensite, const unsigned int Lum_ON, const un
 void Lumiere_Stop (void) {
     analogWrite_CEX0(0); //On eteind la LED
 		Etat_LED = 0;
-    Lumiere_loop_Enable = 0; //on arrete le processus de clignautement
+    Lumiere_loop_Enable = 0; //on arrete le processus de clignotement
 }
 
 
@@ -61,14 +61,14 @@ void Lumiere_loop (void) {
     if (Lumiere_Lum_Nbre != 0) {
         if (!Etat_LED) { //si la led est eteinte
             if ((get_time_ms() - Temp_init) > Lumiere_Lum_OFF) {
-								unsigned char value = (Lumiere_Intensite*255/100);
-                analogWrite_CEX0(value); //On alume la LED
+				unsigned char value = (Lumiere_Intensite*255/100);
+                analogWrite_CEX0(value); //On allume la LED
                 Etat_LED = 1; //on signal l'etat de la LED
                 Temp_init = get_time_ms(); //Nouvelle reference de temps
             }
         }
         else {
-					long tmp = get_time_ms() - Temp_init;
+			long tmp = get_time_ms() - Temp_init; //debug
             if ((get_time_ms() - Temp_init) > Lumiere_Lum_ON) {
                 analogWrite_CEX0(0); //On eteind la LED
                 Etat_LED = 0; //on signal l'etat de la LED
