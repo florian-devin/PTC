@@ -1,5 +1,6 @@
-#include "TELEMETRE.h"
-
+#include "PTC_telemetre.h"
+#include "c8051F020.h"
+#include "c8051F020_SFR16.h"
 sbit trig_AV = P3^1;
 sbit trig_AR = P3^2;
 float d_AV;
@@ -28,4 +29,4 @@ void sendTrig_AR (void)
 	Delay_10us();
 	trig_AR = 0;
 }
-}
+
