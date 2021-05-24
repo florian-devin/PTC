@@ -38,7 +38,6 @@ void Cmd_epreuve_CS_Slave(const char *Pchaine_courante_SPI);
 void Cmd_epreuve_L_Slave(const char *Pchaine_courante_SPI);
 
 //Fonction qui analise et traite la commande LS (commande extinction du pointeur lumineux)
-//@param Pchaine_courante_SPI la chaine complete du message recu
 void Cmd_epreuve_LS_Slave(void);
 
 //Fonction qui analise et traite la commande ASS (Aquisition de signaux sonores)
@@ -54,5 +53,8 @@ void Cmd_epreuve_SD_Slave(const char *Pchaine_courante_SPI);
 void Cmd_epreuve_PPH_Slave(const char *Pchaine_courante_SPI);
 
 //Fonction qui analise et traite la commande SPH (commande extinction des prises de vue)
-//@param Pchaine_courante_SPI la chaine complete du message recu
 void Cmd_epreuve_SPH_Slave(void);
+
+//Fonction qui analise et traite la commande SPH (commande extinction des prises de vue)
+//@param Pchaine_courante_SPI la chaine complete du message recu
+void Cmd_epreuve_SD_Slave(const char *Pchaine_courante_SPI);

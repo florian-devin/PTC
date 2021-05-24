@@ -89,6 +89,8 @@ void decodage_commande(char *Pchaine_courante_SPI){ //fonction qui decode les co
 		Cmd_epreuve_PPH_Slave(Pchaine_courante_SPI);
 	else if (my_strcmp(commande,"SPH"))
 		Cmd_epreuve_SPH_Slave();
+	else if (my_strcmp(commande,"SD"))
+		Cmd_epreuve_SD_Slave(Pchaine_courante_SPI);
 	else if (my_strcmp(commande,"SPI")) { //Pour le test de la liaison SPI
 		serOutstring("Commande SPI bien recu !\r\n");
         serOutstring_SPI("Cmd SPI ok");
@@ -116,7 +118,16 @@ void startup() {
     serOutstring("UART Slave Ready \r\n");
  	while(serInchar_SPI() != 0x01);
 	serOutchar_SPI(0x02);
-	serOutstring("SPI Slave Ready \r\n");
+	while(serInchar() != 't'){//Stm32
+		serOutchar('s');
+		Delay(1);
+	}
+	serOutchar_SPI(0x03);
+	while(serInchar_uart1() != 'b'){ //Rasp
+		serOutchar_uart1('a');
+		Delay(1);
+	}
+	serOutchar_SPI(0x04);
 	analogWrite_CEX1(3692);
 } 
 

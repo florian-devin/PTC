@@ -118,6 +118,8 @@ void setup(){
 
 void startup(){
 	unsigned char temp_init_cervo = CDE_Servo_H(0); //positionnement du cervo a 0deg
+	char c = 0;
+	char n = 0;
 	Delay(temp_init_cervo*10); 
 	serOutstring("go\r\n");
 	
@@ -126,6 +128,21 @@ void startup(){
 		Delay(1);
 	}
 	serOutstring("Slave Ready\r\n");
+	
+	while(n<2){
+		c = serInchar_SPI();
+		if (c == 0x03) {
+			serOutstring("STM32 Ready\r\n");
+			n++;
+		}
+		else if (c == 0x04) {
+			serOutstring("Raspberry pi Ready\r\n");
+			n++;
+		}
+	}
+	serOutstring("STM32 Ready\r\n");
+	while(serInchar_SPI() != 0x04){}
+	serOutstring("STM32 Ready\r\n");
 	
 }
 	
@@ -195,6 +212,8 @@ void decodage_commande(char *Pchaine_courante){ //fonction qui decode les commad
 			Cmd_epreuve_PPH(Pchaine_courante);
 		else if (my_strcmp(commande,"SPH"))
 			Cmd_epreuve_SPH(Pchaine_courante);
+		else if (my_strcmp(Pchaine_courante,"SD"))
+			Cmd_epreuve_SD(Pchaine_courante);
 		else if (my_strcmp(commande,"SPI")) { //Pour le test de la liaison SPI
 			my_strcat(Pchaine_courante,"\r");
 			serOutstring_SPI(Pchaine_courante);

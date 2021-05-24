@@ -116,7 +116,10 @@ void Cmd_epreuve_SPH_Slave(void) {//Commande pour la Raspberry
 }
 
 
-
+void Cmd_epreuve_SD_Slave(const char *Pchaine_courante_SPI){
+	my_strcat(Pchaine_courante_SPI,"\r");
+	serOutstring(Pchaine_courante_SPI);
+}
 
 
 
