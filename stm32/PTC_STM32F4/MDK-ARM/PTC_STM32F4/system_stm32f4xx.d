@@ -1,4 +1,4 @@
-ptc_stm32f4\system_stm32f4xx.o: ../Core/Src/system_stm32f4xx.c
+ptc_stm32f4\system_stm32f4xx.o: ..\Core\Src\system_stm32f4xx.c
 ptc_stm32f4\system_stm32f4xx.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h
 ptc_stm32f4\system_stm32f4xx.o: ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h
 ptc_stm32f4\system_stm32f4xx.o: ../Drivers/CMSIS/Include/core_cm4.h

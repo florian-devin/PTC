@@ -9,8 +9,8 @@
 //------------------------------------------------------
 //*************************************************************************************************  
 #include <stdio.h>
-#include < .h>
 #include <string.h>
+#include "main.h"
 #include "UART0_RingBuffer_lib.h"
 
 //*************************************************************************************************
@@ -30,10 +30,10 @@
 		
 #define RB_CREATE(rb, type) \
    struct { \
-     type *rb_start; \	   
-     type *rb_end; \	   
+     type *rb_start; \
+     type *rb_end; \
      type *rb_in; \
-	   type *rb_out; \		
+	   type *rb_out; \
 	  } rb
 
 //Initialisation de la structure de pointeurs 
@@ -69,43 +69,35 @@
 
 //*************************************************************************************************
 
+extern UART_HandleTypeDef huart3;
 
-/* Transmission and Reception Data Buffers */
-static char  xdata outbuf[MAX_BUFLEN];     /* memory for transmission ring buffer #1 (TXD) */
-static char  xdata inbuf [MAX_BUFLEN];     /* memory for reception ring buffer #2 (RXD) */
-static  bit   TXactive = 0;             /* transmission status flag (off) */
+/* Reception Data Buffers */
+static char  inbuf [MAX_BUFLEN];     /* memory for reception ring buffer #2 (RXD) */
+extern char rx_Buf;
 
-/* define out (transmission)  and in (reception)  ring buffer control structures */
-static RB_CREATE(out,unsigned char xdata);            /* static struct { ... } out; */
-static RB_CREATE(in, unsigned char xdata);            /* static struct { ... } in; */
+/* define in (reception)  ring buffer control structures */
+static RB_CREATE(in, char);            /* static struct { ... } in; */
 
 //**************************************************************************************************
 //**************************************************************************************************
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
- 
 		if(!RB_FULL(&in)) {                   // si le buffer est plein, la donnee reeue est perdue
-     	*RB_PUSHSLOT(&in) = SBUF0;        /* store new data in the buffer */
+     	*RB_PUSHSLOT(&in) = rx_Buf;        /* store new data in the buffer */
 		  RB_PUSHADVANCE(&in);               /* next write location */
-//		  cp_rx++;
 	  }
-  }
 }
+
 // **************************************************************************************************
 // init_Serial_Buffer: Initialisation des structuresde gestion des buffers transmission et reception
 // *************************************************************************************************
 //**************************************************************************************************
 void init_Serial_Buffer(void) {
-
-    RB_INIT(&out, outbuf, MAX_BUFLEN-1);           /* set up TX ring buffer */
     RB_INIT(&in, inbuf,MAX_BUFLEN-1);             /* set up RX ring buffer */
-
 }
 
 
-
-
 char serInchar(void) {
-char c;
+	char c;
 
   if (!RB_EMPTY(&in))
   {                 /* wait for data */

@@ -90,7 +90,7 @@ struct Music_note {
 
 const uint8_t myDAC_Signal[DAC_BUF_LEN] = {127, 139,151,163,175,186,197,207,216,225,232,239,244,248,251,253,254,253,251,248,244,239,232,225,216,207,197,186,175,163,151,139,127,115,103,91,79,68,57,47,38,29,22,15,10,6,3,1,0,1,3,6,10,15,22,29,38,47,57,68,79,91,103,115,127};
 char rx_Buf = 0;
-char tx_Buf[32]  = {0};
+char tx_Buf[32]  = "Start\r\n";
 char chaine_courante[32] = {0};
 
 /*
@@ -175,16 +175,13 @@ int main(void)
   MX_TIM6_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-	
+
 	HAL_TIM_Base_Start(&htim6);
 	HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t *)myDAC_Signal, 65, DAC_ALIGN_8B_R);
   HAL_UART_Receive_IT(&huart3, (uint8_t *)&rx_Buf,1);
 	HAL_UART_Transmit(&huart3, (uint8_t *)tx_Buf, 32, 100);
 	
   //printf("Starting ...\r\n");
-  Set_freq_DAC0(400);
-  Set_freq_DAC0(4000);
-  Set_freq_DAC0(628);
   /* USER CODE END 2 */
 
   /* Infinite loop */
