@@ -466,42 +466,6 @@ void Cmd_epreuve_ASS(const char *Pchaine_courante) {
 	}
 }
 
-void Cmd_epreuve_SD(const char *Pchaine_courante) {
-	char str_param[2] = {0};
-	char num_param = 1;
-	do {
-		get_param(Pchaine_courante,num_param,str_param);
-		if (my_strlen(str_param) != 0){
-			char str_value[4] = {0};
-			char str_name[2]  = {0};
-			num_param++;
-			get_complex_param(str_param,str_name,str_value);
-			if  (my_strcmp(str_name, "F") || my_strcmp(str_name, "P") || my_strcmp(str_name, "W") || my_strcmp(str_name, "B")) {
-				char value = my_atoi(str_value);
-				if (!(value >= 0 && value < 100)) {
-					AR_cmd_incorrecte();
-					return;
-				}
-			}
-			else {
-				AR_cmd_incorrecte();
-				return;
-			}
-		} 
-	} while (my_strlen(str_param) != 0);
-	
-	if (num_param < 2) {//parametre par default
-		//TODO : mettre des paramettre par default avant d'envoyer a l'esclave
-		AR_cmd_correcte();
-		my_strcat(Pchaine_courante,"\r");
-		serOutstring_SPI(Pchaine_courante);
-	}
-	else {
-		AR_cmd_correcte();
-		my_strcat(Pchaine_courante,"\r");
-		serOutstring_SPI(Pchaine_courante);
-	}
-}
 
 void Cmd_epreuve_PPH(const char *Pchaine_courante){
 	char str_param[8] = {0};

@@ -44,9 +44,7 @@ void Cmd_epreuve_LS_Slave(void);
 //@param Pchaine_courante_SPI la chaine complete du message recu
 void Cmd_epreuve_ASS_Slave(const char *Pchaine_courante_SPI);
 
-//Fonction qui analise et traite la commande ASS (Generation de signaux sonore)
-//@param Pchaine_courante_SPI la chaine complete du message recu
-void Cmd_epreuve_SD_Slave(const char *Pchaine_courante_SPI);
+
 
 //Fonction qui analise et traite la commande PPH (commande de prise de vue)
 //@param Pchaine_courante_SPI la chaine complete du message recu

@@ -17,6 +17,7 @@
 #include "PTC_convertion.h"
 #include "PTC_decodeCmd.h"
 #include "UART1_RingBuffer_lib.h"
+#include "UART0_RingBuffer_lib.h"
 //------------------------------------------------------
 //------------------------------------Variables Globales
 extern unsigned char    temp_servo_V;
@@ -100,10 +101,6 @@ void Cmd_epreuve_ASS_Slave(const char *Pchaine_courante) {
 	//serOutchar_UART0(Pchaine_courante); 
 }
 
-void Cmd_epreuve_SD_Slave(const char *Pchaine_courante) {
-	my_strcat(Pchaine_courante,"\r");
-	//serOutchar_UART0(Pchaine_courante); 
-}
 
 
 void Cmd_epreuve_PPH_Slave(const char *Pchaine_courante_SPI){//Commande pour la Raspberry
