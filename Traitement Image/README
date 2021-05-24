@@ -1,0 +1,5 @@
+Dézippez le rar contenant toutes les Images réelles 
+Exécuter le python Image_real
+De nouveaux dossiers devrait se créer (logs, result_Carré_Jaune) 
+
+Attention, nous envoyons une photo test qui appartient au répertoire Coeur-Vert. Ceci est juste pour montrer le principe de l'algorithme
