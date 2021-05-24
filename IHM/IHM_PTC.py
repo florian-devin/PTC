@@ -9,20 +9,20 @@ import serial
 import time
 import PySimpleGUI as sg
 
-ser = serial.Serial()
-ser.port = 'COM4'
-ser.baudrate = 19200
-ser.bytesize = 8
-ser.parity = 'N'
-ser.stopbits = 1
-
 ser1 = serial.Serial()
-ser1.port = 'COM2'
+ser1.port = 'COM3'
 ser1.baudrate = 19200
 ser1.bytesize = 8
 ser1.parity = 'N'
 ser1.stopbits = 1
 
+
+ser = serial.Serial()
+ser.port = 'COM3'
+ser.baudrate = 19200
+ser.bytesize = 8
+ser.parity = 'N'
+ser.stopbits = 1
 
 
 def envoi_message(msg):
@@ -40,89 +40,16 @@ def lire_message():
     return com
     
     
-#sg.theme('DarkAmber')   # Add a touch of color
-## All the stuff inside your window.
-#layout = [  [sg.Text('Some text on Row 1')],
-#            [sg.Text('Enter something on Row 2'), sg.InputText()],
-#            [sg.Button('Ok'), sg.Button('Cancel')] ]
-#
-## Create the Window
-#window = sg.Window('Window Title', layout)
-## Event Loop to process "events" and get the "values" of the inputs
-#while True:
-#    event, values = window.read()
-#    if event == sg.WIN_CLOSED or event == 'Cancel': # if user closes window or clicks cancel
-#        break
-#    print('You entered ', values[0])
-##
-#window.close()
-#
-#event, values = sg.Window('Get filename example', [[sg.Text('Filename')], [sg.Input(), sg.FileBrowse()], [sg.OK(), sg.Cancel()] ]).read(close=True)
-
-#layout = [[sg.InputText('')],
-#        [sg.Button('Ok'), sg.Button('Cancel'),sg.Submit('Envoyer')]]
-#window = sg.Window('Window Title', layout)
-#while True:
-#    event, values = window.read()
-#    if event == sg.WIN_CLOSED or event == 'Cancel': # if user closes window or clicks cancel
-#        break
-#window.close()
-#
-#gui_rows = [[sg.Text('Robotics Remote Control')],
-#            [sg.T(' '  * 10), sg.RealtimeButton('Forward')],
-#            [sg.RealtimeButton('Left'), sg.T(' '  * 15), sg.RealtimeButton('Right')],
-#            [sg.T(' '  * 10), sg.RealtimeButton('Reverse')],
-#            [sg.T('')],
-#            [sg.Quit(button_color=('black', 'orange'))]
-#            ]
-#
-#window = sg.Window('Robotics Remote Control', gui_rows)
-#
-##
-## Some place later in your code...
-## You need to perform a Read or Refresh call on your window every now and then or
-## else it will apprear as if the program has locked up.
-##
-## your program's main loop
-#while (True):
-#    # This is the code that reads and updates your window
-#    event, values = window.read(timeout=50)
-#    print(event)
-#    if event in ('Quit', sg.WIN_CLOSED):
-#        break
-#
-#window.close()  # Don't forget to close your window!
-#
-#
-#layout = [ [sg.Text('My layout', key='-TEXT-')],
-#           [sg.Button('Read')]]
-#
-#window = sg.Window('My new window', layout)
-#
-#while True:             # Event Loop
-#    event, values = window.read()
-#    if event == sg.WIN_CLOSED:
-#        break
-#    window['-TEXT-'].update('My new text value')
-#    
-#def test_button():
-#    print("oui")
-#layout = [[sg.InputText('')],
-#        [sg.Button('Ok'), sg.Button('Cancel'),sg.Submit('Envoyer'),sg.Button('test', key = 'test_button',)]]
-#window = sg.Window('Window Title', layout)
-#while True:
-#    event, values = window.read()
-#    if event == sg.WIN_CLOSED or event == 'Cancel': # if user closes window or clicks cancel
-#        break
-#    elif event == 'test_button':
-#        test_button()
-#window.close()
 
 
 ## creation de la fenêtre
 
 layout = [[sg.Cancel(),sg.Button("Début de l'epreuve", key = '-START-'),sg.Text('type_epreuve(1-8) :'),sg.InputText('',size = (1,1)),sg.Button("Fin de l'epreuve", key = '-END-'), sg.Button("Arret d'urgence", key = '-USTOP-')],
-            [sg.Button("Avancer", key = '-FORWARD-'), sg.Text('Avancer à la vitesse(5-100) :'),sg.InputText('', size = (3,1)),sg.Button("Reculer", key = '-BACKWARD-'), sg.Text('Reculer à la vitesse(5-100) :'),sg.InputText('', size = (3,1)),sg.Button("Regler la vitesse", key = '-SPEED-'), sg.Text('Mettre la vitesse a(5-100) :'),sg.InputText('20', size = (3,1)), sg.Button("Stop", key = '-STOP-')]]
+            [sg.Button("Avancer", key = '-FORWARD-'), sg.Text('Avancer à la vitesse(5-100) :'),sg.InputText('', size = (3,1)),sg.Button("Reculer", key = '-BACKWARD-'), sg.Text('Reculer à la vitesse(5-100) :'),sg.InputText('', size = (3,1)),sg.Button("Regler la vitesse", key = '-SPEED-'), sg.Text('Mettre la vitesse a(5-100) :'),sg.InputText('20', size = (3,1)), sg.Button("Stop", key = '-STOP-'),],
+            [sg.Button("Rotation 90 à droite", 'key = -RD-'),sg.Button("Rotation 90 à gauche", 'key = -RG-'),sg.Button("Rotation 180", key = '-RC-'), sg.Text('Tourner de 180 vers (D/G) :'), sg.InputText('', size = (1,1)), sg.Button("Rotation spécifiée", key = '-RA-'),sg.Text('Rotation de (D/G):(0-180)'),sg.InputText('D',size = (1,1)),sg.InputText('90', size = (3,1))],
+            [sg.Button("Mesure courant", key = '-MI-'),sg.Button("Detection d'obstacle", key = '-OBS-'), sg.Text('Parametre D pour avant et arriere :'),sg.InputText('', size = (1,1))],
+            [sg.Button("Allumage pointeur lumineux", key = '-LON-'), sg.Text('Intensité(1-100), Durée allumage(0,1-9,9), Durée extinction(0,1-9,9), Nombre d''allumages(1-99)'),sg.InputText('',size = (3,1)),sg.InputText('',size = (3,1)),sg.InputText('',size = (3,1)),sg.InputText('',size = (3,1)),sg.Button("Fin allumage", key = '-LOFF-')],
+            [sg.Button("Commande servomoteur", key = '-SERVO-'), sg.Text('Sens(H/V) et angle(-90 - 90))'), sg.InputText('', size = (1,1)), sg.InputText('', size = (3,1)), sg.Button("Prise de photos", key = '-PIC-'), sg.Text('Mode(O/C/S), Temps entre 2 photos(0-9,9), Nb de photos(1-255)'),sg.InputText('', size = (3,1)),sg.InputText('', size = (3,1)),sg.InputText('', size = (3,1)),sg.Button("Arret photo", key = '-PICOFF-')]]
 
 
 window = sg.Window('Centrale de commande',layout)
@@ -150,6 +77,82 @@ while True:
         msg = 'TV' + ' ' + values[3]
     elif event == '-STOP-':
         msg = 'S'
+    elif event == '-RD-':
+        msg = 'RD'
+    elif event == '-RG-':
+        msg = 'RG' 
+    elif event == '-RC-':
+        msg = 'RC'
+        if values[2] != '':
+            msg = 'RC' + ' ' + values[4]
+    elif event == '-RA-':
+        msg = 'RA' + ' ' + values[5] + ':' + values[6]
+    elif event == '-MI-':
+        msg = 'MI'
+    elif event == '-OBS-':
+        msg = 'MOU'
+        if values[7] != '':
+            msg = 'MOU' + ' ' + values[7]
+    elif event == '-LON-':
+        msg = 'L'
+        if values[8] != '' and values[9] != '' and values[10] != '' and values[11] != '':
+            msg = 'L' + ' ' + 'I:' + values[8] + ' ' + 'D:' + values[9] + ' ' + 'E:' + values[10] + ' ' + 'N:' + values[11]
+        elif values[8] == '' and values[9] != '' and values[10] != '' and values[11] != '':
+            msg = 'L' + ' ' + 'D:' + values[9] + ' ' + 'E:' + values[10] + ' ' + 'N:' + values[11]
+        elif values[8] != '' and values[9] == '' and values[10] != '' and values[11] != '':
+            msg = 'L' + ' ' + 'I:' + values[8] + ' ' + 'E:' + values[10] + ' ' + 'N:' + values[11]
+        elif values[8] != '' and values[9] != '' and values[10] == '' and values[11] != '':
+            msg = 'L' + ' ' + 'I:' + values[8] + ' ' + 'D:' + values[9] + ' ' + 'N:' + values[11]
+        elif values[8] != '' and values[9] != '' and values[10] != '' and values[11] == '':
+            msg = 'L' + ' ' + 'I:' + values[8] + ' ' + 'D:' + values[9] + ' ' + 'E:' + values[10]
+        elif values[8] == '' and values[9] == '' and values[10] != '' and values[11] != '':
+            msg = 'L' + ' ' + 'E:' + values[10] + ' ' + 'N:' + values[11]
+        elif values[8] == '' and values[9] != '' and values[10] == '' and values[11] != '':
+            msg = 'L' + ' ' + 'D:' + values[9] + ' ' + 'N:' + values[11]
+        elif values[8] == '' and values[9] != '' and values[10] != '' and values[11] == '':
+            msg = 'L' + ' ' + 'D:' + values[9] + ' ' + 'E:' + values[10]
+        elif values[8] != '' and values[9] == '' and values[10] == '' and values[11] != '':
+            msg = 'L' + ' ' + 'I:' + values[8] + ' ' + 'N:' + values[11]
+        elif values[8] != '' and values[9] == '' and values[10] != '' and values[11] == '':
+            msg = 'L' + ' ' + 'I:' + values[8] + ' ' + 'E:' + values[10]
+        elif values[8] != '' and values[9] != '' and values[10] == '' and values[11] == '':
+            msg = 'L' + ' ' + 'I:' + values[8] + ' ' + 'D:' + values[9]
+        elif values[8] != '':
+            msg = 'L' + ' ' + 'I:' + values[8]
+        elif values[9] != '':
+            msg = 'L' + ' ' + 'D:' + values[9]
+        elif values[10] != '':
+            msg = 'L' + ' ' + 'E:' + values[10]
+        else:
+            msg = 'L' + ' ' + 'N:' + values[11]
+    elif event == '-LOFF-':
+        msg = 'LS'
+    elif event == '-SERVO-':
+        msg = 'CS'
+        if values[12] != '':
+            msg = 'CS' + ' ' + values[12]
+        elif values[13] != '':
+            msg = 'CS' + 'A:' + values[13]
+    elif event == '-PIC-':
+        msg = 'PPH'
+        if values[14] != '' and values[15] != '' and values[16] != '':
+            msg = 'PPH' + ' ' + values[14] + ' ' + 'E:' + values[15] + ' ' + 'N:' + values[16]
+        elif values[14] == '' and values[15] != '' and values[16] != '':
+            msg = 'PPH' + ' ' + 'E:' + values[15] + ' ' + 'N:' + values[16]
+        elif values[14] != '' and values[15] == '' and values[16] != '':
+            msg = 'PPH' + ' ' + values[14] + ' ' + 'N:' + values[16]
+        elif values[14] != '' and values[15] != '' and values[16] == '':
+            msg = 'PPH' + ' ' + values[14] + ' ' + 'E:' + values[15]
+        elif values[14] != '':
+            msg = 'PPH' + ' ' + values[14]
+        elif values[15] != '':
+            msg = 'PPH' + ' ' + 'E:' + values[15]
+        else:
+            msg = 'PPH' + ' ' + 'N:' + values[16]
+    elif event == '-PICOFF-':
+        msg = 'SPH'
+    
+    
     envoi_message(msg)
     print(lire_message())
 
