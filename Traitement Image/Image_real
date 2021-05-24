@@ -1,0 +1,168 @@
+#Importation Librairies
+
+import cv2
+import numpy as np
+from PIL import Image
+from numpy import asarray
+import requests
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import sys
+import datetime
+from tensorflow import keras
+from tensorflow.keras.models import Model
+import tensorflow as tf
+import pathlib
+from pathlib import Path 
+import os
+from zipfile import ZipFile
+
+url_Triangle_Vert = r'https://github.com/florian-devin/PTC/blob/main/Triangle_Vert.jpg?raw=true'
+resp = requests.get(url_Triangle_Vert, stream=True).raw
+image_array_Triangle_Vert = np.asarray(bytearray(resp.read()), dtype="uint8")
+image_Triangle_Vert = cv2.imdecode(image_array_Triangle_Vert, cv2.IMREAD_COLOR)
+#plt.axis('off')
+#plt.imshow(cv2.cvtColor(image_Triangle_Vert, cv2.COLOR_BGR2RGB)) 
+#plt.show()
+
+url_Coeur_Vert = r'https://github.com/florian-devin/PTC/blob/main/Coeur_Vert.jpg?raw=true'
+resp = requests.get(url_Coeur_Vert, stream=True).raw
+image_array_Coeur_Vert = np.asarray(bytearray(resp.read()), dtype="uint8")
+image_Coeur_Vert= cv2.imdecode(image_array_Coeur_Vert, cv2.IMREAD_COLOR)
+#plt.axis('off')
+#plt.imshow(cv2.cvtColor(image_Coeur_Vert, cv2.COLOR_BGR2RGB))
+#plt.show()
+
+url_Carre_Jaune = r'https://github.com/florian-devin/PTC/blob/main/Carr%C3%A9_Jaune.jpg?raw=true'
+resp = requests.get(url_Carre_Jaune, stream=True).raw
+image_array_Carre_Jaune = np.asarray(bytearray(resp.read()), dtype="uint8")
+image_Carre_Jaune = cv2.imdecode(image_array_Carre_Jaune, cv2.IMREAD_COLOR)
+#plt.axis('off')
+#plt.imshow(cv2.cvtColor(image_Carre_Jaune, cv2.COLOR_BGR2RGB)) #opencv if BGR color, matplotlib usr RGB so we need to switch otherwise the pikachu will be blue ... O:)
+#plt.show()
+
+os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
+
+#Extraction du zip (local donc différent)
+Nom_du_Zip= "Images_Réeles.zip"
+
+with ZipFile(Nom_du_Zip, 'r') as zip: 
+    #zip.printdir() #affiche nom du répertoire
+    zip.extractall('Images_Réeles') #extraction du fichier zip dans fichier 'Image_Réelles'
+
+#Affichage des données
+#print(Nom_du_Zip)
+#print(os.path.abspath(Nom_du_Zip))
+
+#Dossier = pathlib.Path('Traitement_Image/Image_Réelles')
+#print(Dossier)
+#print(os.path.abspath(Dossier))
+
+#Taille 
+batch_size = 20  #taille des 'paquets d'images'
+img_height= 200 #images carrées
+img_width=200 #200*200
+
+data_dir = pathlib.Path('Images_Réeles')
+print(data_dir)
+print(os.path.abspath(data_dir))
+
+#Prétraitement des images : mettre à la même taille et les mettre en 'paquet'
+train_data = tf.keras.preprocessing.image_dataset_from_directory(
+  data_dir,
+  validation_split=0.2,
+  subset="training",
+  seed=42,
+  image_size=(img_height, img_width),
+  batch_size=batch_size,
+  )
+
+#jeu de validation
+val_data = tf.keras.preprocessing.image_dataset_from_directory(
+  data_dir,
+  validation_split=0.2,
+  subset="validation",
+  seed=42,
+  image_size=(img_height, img_width),
+  batch_size=batch_size)
+
+class_names = val_data.class_names
+print(class_names)
+
+#Affichage 
+plt.figure(figsize=(10, 10))
+for images, labels in train_data.take(1):
+  for i in range(10):
+    ax = plt.subplot(1, 10, i + 1)
+    plt.imshow(images[i].numpy().astype("uint8"))
+    plt.title(class_names[labels[i]])
+    plt.axis("off")
+
+##Creation des masques
+ 
+from tensorflow.keras import layers
+
+num_classes = 3 #Trois classes pour l'instant
+
+#Réseaux de Neurones 
+
+model = tf.keras.Sequential([   #Definir le modèle
+    layers.experimental.preprocessing.Rescaling(1./255),   #Couche de Rescaling pour normaliser de 1 à 255
+    layers.Conv2D(128,4, activation='relu'),  #Une couche de convolution (trouver les filtres pour bien correspondre pour décrire images )
+    layers.MaxPooling2D(),   #Un couche de pooling (Max Pooling: prend le maximum du phénomère de Pooling)(Réduire les données pour avoir un réseau dense)
+    layers.Conv2D(64,4, activation='relu'), #et ainsi de suite mais on réduit par 2 à chaque fois 
+    layers.MaxPooling2D(),
+    layers.Conv2D(32,4, activation='relu'),
+    layers.MaxPooling2D(),
+    layers.Conv2D(16,4, activation='relu'),
+    layers.MaxPooling2D(),
+    layers.Flatten(),  #Couche de Flatten pour construire vecteur à partir de la matrice 
+    layers.Dense(64,activation='relu'),   #Couche Dense 
+    layers.Dense(num_classes, activation='softmax')  #Sortir la probabilité entre différentes classes
+])
+
+model.compile(optimizer='adam',
+              loss=tf.losses.SparseCategoricalCrossentropy(from_logits=True),
+  metrics=['accuracy'],)
+
+logdir="logs"
+
+#Possibilité de visualiser l'apprentissage du modèle
+tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir,histogram_freq=1, write_images=logdir,
+                                                   embeddings_data=train_data)
+
+model.fit( 
+    train_data,
+  validation_data=val_data,
+  epochs=3,
+  callbacks=[tensorboard_callback]
+)
+
+#Visualiser entiéreté réseau de neurones
+
+model.summary()
+
+
+image_to_predict = cv2.imread('test.jpg',cv2.IMREAD_COLOR)
+# plt.imshow(cv2.cvtColor(image_to_predict, cv2.COLOR_BGR2RGB))
+# plt.show()
+img_to_predict = np.expand_dims(cv2.resize(image_to_predict,(200,200)), axis=0)  #on la remet au forme des images
+Prob_im=model.predict(img_to_predict)
+res = model.predict_classes(img_to_predict) #Predire la classe
+print(model.predict_classes(img_to_predict))  
+print(model.predict(img_to_predict))        #Predire la probabilité
+
+
+if res == 0:
+    plt.imshow(cv2.cvtColor(image_Carre_Jaune, cv2.COLOR_BGR2RGB))
+    plt.show()
+    print("C'est un Carré Jaune !")
+if res == 1:
+    plt.imshow(cv2.cvtColor(image_Coeur_Vert, cv2.COLOR_BGR2RGB))
+    plt.show()
+    print("C'est un Coeur Vert !")
+elif res == 2 :
+    plt.imshow(cv2.cvtColor(image_Triangle_Vert, cv2.COLOR_BGR2RGB))
+    plt.show()
+    print("C'est un Triangle Vert !")
+
