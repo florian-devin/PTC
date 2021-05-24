@@ -23,9 +23,14 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h> //printf()
+#include <string.h>
 
+#include "PTC_decodeCmd.h"
 #include "PTC_UART3.h"
 #include "UART0_RingBuffer_lib.h"
+#include "PTC_geter_cmd.h"
+#include "PTC_convertion.h"
+
 
 #define CLK_APB1_P 42000000
 #define CLK_APB1_T 84000000
@@ -47,12 +52,14 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+RTC_TimeTypeDef currentTime;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 DAC_HandleTypeDef hdac;
 DMA_HandleTypeDef hdma_dac1;
+
+RTC_HandleTypeDef hrtc;
 
 TIM_HandleTypeDef htim6;
 
@@ -69,6 +76,7 @@ static void MX_DMA_Init(void);
 static void MX_DAC_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_USART3_UART_Init(void);
+static void MX_RTC_Init(void);
 /* USER CODE BEGIN PFP */
 #ifdef __GNUC__
   /* With GCC, small printf (option LD Linker->Libraries->Small printf
@@ -93,6 +101,15 @@ char rx_Buf = 0;
 char tx_Buf[32]  = "Start\r\n";
 char chaine_courante[32] = {0};
 
+//en lien avec la generation de son 
+char Code_frequence;
+int  Timer_freq;
+unsigned int Duree_son;
+unsigned int Duree_silence;
+char Nombre_bips;
+char Sound_Loop_Enable = 0;
+char Etat_Bip = 0;
+unsigned long Temp_init;
 /*
 
 Music_note DO3  ; DO3.code  = 1 ; DO3.freq  = 261.6    ;       //4940
@@ -100,7 +117,7 @@ Music_note RE3  ; RE3.code  = 2 ; RE3.freq  = 293.7    ;       //4400
 Music_note MI3  ; MI3.code  = 3 ; MI3.freq  = 329.7    ;       //3913
 Music_note FA3  ; FA3.code  = 4 ; FA3.freq  = 349.2    ;       //3700
 Music_note SOL3 ; SOL3.code = 5 ; SOL3.freq = 392.0    ;       //3297
-Music_note LA3  ; LA3.code  = 6 ; LA3.freq  = 440.0    ;       //2937
+Music_note LA3  ; LA3.code  = 6 ; LA3.freq  = 440.Nombre_dips0    ;       //2937
 Music_note SI3  ; SI3.code  = 7 ; SI3.freq  = 493.9    ;       //2617
 
 Music_note DO4  ; DO4.code  = 8 ; DO4.freq  = 2.0*261.6;       //4940/2 = 2470
@@ -126,11 +143,51 @@ Music_note SI5  ; SI5.code  = 21; SI5.freq  = 4.0*493.9;       //2617/4 = 654
 * @retval None
 */
 void Set_freq_DAC0(uint32_t freq){
-  htim6.Init.Period = CLK_APB1_T/(DAC_BUF_LEN*freq)-1;
-  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
-  {
+	if (freq == 0){
+		HAL_DAC_Stop_DMA(&hdac ,DAC1_CHANNEL_1);
+	}
+	else {
+		HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t *)myDAC_Signal, 65, DAC_ALIGN_8B_R);
+		//htim6.Init.Period = CLK_APB1_T/(DAC_BUF_LEN*freq)-1;
+		htim6.Init.Period = freq;
+		if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+		{
     Error_Handler();
-  }
+		}
+	}
+  
+}
+
+void decodage_commande(char *Pchaine_courante){
+	char commande[10] ={0};
+	get_commande(Pchaine_courante,commande);
+	if (strcmp(commande,"SD") == 0){
+		Cmd_epreuve_SD_stm32(Pchaine_courante);
+	}
+	RAZ_str(Pchaine_courante);
+}
+
+void Sound_Callback(){
+    if (Nombre_bips != 0) {
+        if (!Etat_Bip) { //si la led est eteinte
+            if ((HAL_GetTick() - Temp_init) > Duree_silence) {
+                Set_freq_DAC0(Timer_freq); //On allume la LED
+                Etat_Bip = 1; //on signal l'etat de la LED
+                Temp_init = HAL_GetTick(); //Nouvelle reference de temps
+            }
+        }
+        else {
+			long tmp = HAL_GetTick() - Temp_init; //debug
+            if ((HAL_GetTick() - Temp_init) > Duree_son) {
+                Set_freq_DAC0(0); //On eteind la LED
+                Etat_Bip = 0; //on signal l'etat de la LED
+                Temp_init = HAL_GetTick(); //Nouvelle reference de temps
+                Nombre_bips--; //On decremente le nombre de cycle
+                if (Nombre_bips == 0)
+                    Sound_Loop_Enable = 0;
+            }
+        }
+    }
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
@@ -174,22 +231,30 @@ int main(void)
   MX_DAC_Init();
   MX_TIM6_Init();
   MX_USART3_UART_Init();
+  MX_RTC_Init();
   /* USER CODE BEGIN 2 */
-
+	init_Serial_Buffer();
 	HAL_TIM_Base_Start(&htim6);
-	HAL_DAC_Start_DMA(&hdac, DAC1_CHANNEL_1, (uint32_t *)myDAC_Signal, 65, DAC_ALIGN_8B_R);
   HAL_UART_Receive_IT(&huart3, (uint8_t *)&rx_Buf,1);
-	HAL_UART_Transmit(&huart3, (uint8_t *)tx_Buf, 32, 100);
+	HAL_UART_Transmit(&huart3, (uint8_t *)tx_Buf, strlen(tx_Buf), 100);
 	
-  //printf("Starting ...\r\n");
+	while(rx_Buf != 0x73){}
+	HAL_UART_Transmit(&huart3, (uint8_t *)"t", 1, 100);
+	Rx_chaine(chaine_courante);
+	RAZ_str(chaine_courante);
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-  { 
+		{ 
 		if (Rx_chaine(chaine_courante) == 1){
 			__NOP();
+			decodage_commande(chaine_courante);
+		}
+		if (Sound_Loop_Enable == 1) {
+			Sound_Callback();
 		}
     /* USER CODE END WHILE */
 
@@ -208,6 +273,7 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
   /** Configure the main internal regulator output voltage
   */
@@ -216,8 +282,9 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 4;
@@ -238,6 +305,12 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC;
+  PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
     Error_Handler();
   }
@@ -278,6 +351,68 @@ static void MX_DAC_Init(void)
   /* USER CODE BEGIN DAC_Init 2 */
 
   /* USER CODE END DAC_Init 2 */
+
+}
+
+/**
+  * @brief RTC Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_RTC_Init(void)
+{
+
+  /* USER CODE BEGIN RTC_Init 0 */
+
+  /* USER CODE END RTC_Init 0 */
+
+  RTC_TimeTypeDef sTime = {0};
+  RTC_DateTypeDef sDate = {0};
+
+  /* USER CODE BEGIN RTC_Init 1 */
+
+  /* USER CODE END RTC_Init 1 */
+  /** Initialize RTC Only
+  */
+  hrtc.Instance = RTC;
+  hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
+  hrtc.Init.AsynchPrediv = 127;
+  hrtc.Init.SynchPrediv = 255;
+  hrtc.Init.OutPut = RTC_OUTPUT_DISABLE;
+  hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+  hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
+  if (HAL_RTC_Init(&hrtc) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* USER CODE BEGIN Check_RTC_BKUP */
+
+  /* USER CODE END Check_RTC_BKUP */
+
+  /** Initialize RTC and set the Time and Date
+  */
+  sTime.Hours = 0x0;
+  sTime.Minutes = 0x0;
+  sTime.Seconds = 0x0;
+  sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+  sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+  if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sDate.WeekDay = RTC_WEEKDAY_MONDAY;
+  sDate.Month = RTC_MONTH_JANUARY;
+  sDate.Date = 0x1;
+  sDate.Year = 0x0;
+
+  if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN RTC_Init 2 */
+
+  /* USER CODE END RTC_Init 2 */
 
 }
 

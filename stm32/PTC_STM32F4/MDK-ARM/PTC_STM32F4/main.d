@@ -30,9 +30,15 @@ ptc_stm32f4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h
 ptc_stm32f4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h
 ptc_stm32f4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 ptc_stm32f4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
+ptc_stm32f4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc.h
+ptc_stm32f4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc_ex.h
 ptc_stm32f4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 ptc_stm32f4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 ptc_stm32f4\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 ptc_stm32f4\main.o: C:\Program Files\ARMKeil\ARM\ARMCC\Bin\..\include\stdio.h
+ptc_stm32f4\main.o: C:\Program Files\ARMKeil\ARM\ARMCC\Bin\..\include\string.h
+ptc_stm32f4\main.o: ../Core/Inc/PTC_decodeCmd.h
 ptc_stm32f4\main.o: ../Core/Inc/PTC_UART3.h
 ptc_stm32f4\main.o: ../Core/Inc/UART0_RingBuffer_lib.h
+ptc_stm32f4\main.o: ../Core/Inc/PTC_geter_cmd.h
+ptc_stm32f4\main.o: ../Core/Inc/PTC_convertion.h

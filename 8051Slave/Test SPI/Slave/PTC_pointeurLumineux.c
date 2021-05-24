@@ -37,17 +37,6 @@ void Lumiere (const unsigned char Intensite, const unsigned int Lum_ON, const un
     Lumiere_Lum_ON      = Lum_ON;
     Lumiere_Intensite   = Intensite;
     Temp_init           = get_time_ms();
-
-    my_strcat(str_debug,my_itoa(Lum_Nbre,str_inter));
-    my_strcat(str_debug," Lum_OFF = ");
-    my_strcat(str_debug,my_itoa(Lum_OFF,str_inter));
-    my_strcat(str_debug," Lum_ON = ");
-    my_strcat(str_debug,my_itoa(Lum_ON,str_inter));
-    my_strcat(str_debug," Intensite = ");
-    my_strcat(str_debug,my_itoa(Intensite,str_inter));
-    my_strcat(str_debug,"\r\n");
-    serOutstring(str_debug);
-
 }
 
 void Lumiere_Stop (void) {

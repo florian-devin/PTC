@@ -85,6 +85,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
      	*RB_PUSHSLOT(&in) = rx_Buf;        /* store new data in the buffer */
 		  RB_PUSHADVANCE(&in);               /* next write location */
 	  }
+		HAL_UART_Receive_IT(&huart3, (uint8_t *)&rx_Buf,1);
 }
 
 // **************************************************************************************************
